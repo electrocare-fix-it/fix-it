@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>gestionpiecesdetachees</class>
+ <widget class="QWidget" name="gestionpiecesdetachees">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1219</width>
+    <height>822</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QStackedWidget" name="stackedWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>1211</width>
+     <height>801</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="page">
+    <widget class="QGroupBox" name="groupBoxFormulaire">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>79</y>
+       <width>1041</width>
+       <height>311</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Informations de la Pièce</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <property name="horizontalSpacing">
+       <number>15</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>12</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblReference_2">
+        <property name="text">
+         <string>Référence :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDoubleSpinBox" name="spinPrix_2">
+        <property name="decimals">
+         <number>3</number>
+        </property>
+        <property name="minimum">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>999999.989999999990687</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QSpinBox" name="spinQuantite_2">
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>99999</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="txtNom_2">
+        <property name="placeholderText">
+         <string>Ex: Écran LCD</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="lblDateSortie_2">
+        <property name="text">
+         <string>Date de sortie :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="txtFournisseur_2">
+        <property name="placeholderText">
+         <string>Nom du fournisseur</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QDateEdit" name="dateSortie_2">
+        <property name="calendarPopup">
+         <bool>true</bool>
+        </property>
+        <property name="date">
+         <date>
+          <year>2025</year>
+          <month>10</month>
+          <day>7</day>
+         </date>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="lblCategorie_2">
+        <property name="text">
+         <string>Catégorie :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="lblQuantite_2">
+        <property name="text">
+         <string>Quantité en stock :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="lblPrix_2">
+        <property name="text">
+         <string>Prix unitaire (DT) :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="4">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <property name="spacing">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="btnAjouter_2">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #87CEEB;</string>
+          </property>
+          <property name="text">
+           <string>➕ Ajouter</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnModifier_2">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #B0E0E6;</string>
+          </property>
+          <property name="text">
+           <string>✏️ Modifier</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnSupprimer_2">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #B0E0E6;</string>
+          </property>
+          <property name="text">
+           <string>🗑️ Supprimer</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnNouveau_2">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #87CEEB;</string>
+          </property>
+          <property name="text">
+           <string>🔄 Nouveau</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="lblDateEntree_2">
+        <property name="text">
+         <string>Date d'entrée :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="lblFournisseur_2">
+        <property name="text">
+         <string>Fournisseur :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="txtReference_2">
+        <property name="placeholderText">
+         <string>Ex: REF-2024-001</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="lblNom_2">
+        <property name="text">
+         <string>Nom de la pièce :</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cmbCategorie_2">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Écrans</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Batteries</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Connecteurs</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Câbles</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Circuits imprimés</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Composants électroniques</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QDateEdit" name="dateEntree_2">
+        <property name="calendarPopup">
+         <bool>true</bool>
+        </property>
+        <property name="date">
+         <date>
+          <year>2025</year>
+          <month>10</month>
+          <day>7</day>
+         </date>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBoxRecherche">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>394</y>
+       <width>1041</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Recherche et Filtrage</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="lblRecherche_2">
+        <property name="text">
+         <string>🔍 Rechercher :</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="txtRecherche_2">
+        <property name="styleSheet">
+         <string notr="true">background-color: #5DADE2;</string>
+        </property>
+        <property name="placeholderText">
+         <string>Rechercher par référence, nom, catégorie ou fournisseur...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblFiltreCategorie_2">
+        <property name="text">
+         <string>Catégorie :</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="cmbFiltreCategorie_2">
+        <item>
+         <property name="text">
+          <string>Toutes les catégories</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Écrans</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Batteries</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Connecteurs</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Câbles</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnRechercher_2">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: #5DADE2;</string>
+        </property>
+        <property name="text">
+         <string>🔍 Rechercher</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QLabel" name="lblTitre">
+     <property name="geometry">
+      <rect>
+       <x>-150</x>
+       <y>-10</y>
+       <width>1401</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size: 24px; font-weight: bold; color: #2C5F75; padding: 15px; background-color: #87CEEB; border-radius: 10px;</string>
+     </property>
+     <property name="text">
+      <string>Gestion des Pièces Détachées</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBoxTableau">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>510</y>
+       <width>1041</width>
+       <height>221</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Liste des Pièces Détachées</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QTableWidget" name="tablePieces_2">
+        <property name="editTriggers">
+         <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+        <column>
+         <property name="text">
+          <string>Référence</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Nom de la pièce</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Catégorie</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Quantité</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Prix unitaire (DT)</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Fournisseur</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Date d'entrée</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Date de sortie</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QLabel" name="lblAlerteStock_2">
+          <property name="styleSheet">
+           <string notr="true">color: #FF5722; font-weight: bold;</string>
+          </property>
+          <property name="text">
+           <string>⚠️ Alerte stock minimum : Affichage des pièces en quantité faible</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnExportPDF_2">
+          <property name="minimumSize">
+           <size>
+            <width>140</width>
+            <height>35</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>📄 Exporter PDF</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnExportExcel_2">
+          <property name="minimumSize">
+           <size>
+            <width>140</width>
+            <height>35</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>📊 Exporter Excel</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>950</x>
+       <y>50</y>
+       <width>111</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(148, 255, 191);
+color: rgb(7, 7, 7);</string>
+     </property>
+     <property name="text">
+      <string>Home</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

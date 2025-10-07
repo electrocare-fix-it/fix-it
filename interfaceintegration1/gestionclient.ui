@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>gestionclient</class>
+ <widget class="QWidget" name="gestionclient">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1711</width>
+    <height>877</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QStackedWidget" name="stackedWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>20</y>
+     <width>1271</width>
+     <height>841</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="page">
+    <widget class="QGroupBox" name="groupBox_history">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>89</y>
+       <width>561</width>
+       <height>391</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #4682B4;</string>
+     </property>
+     <property name="title">
+      <string>📚 Historique des Clients</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_history">
+      <property name="spacing">
+       <number>12</number>
+      </property>
+      <property name="leftMargin">
+       <number>15</number>
+      </property>
+      <property name="topMargin">
+       <number>15</number>
+      </property>
+      <property name="rightMargin">
+       <number>15</number>
+      </property>
+      <property name="bottomMargin">
+       <number>15</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_selectClient">
+        <property name="text">
+         <string>🔽 Sélectionner un Client:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBox_selectClient">
+        <property name="editable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_historyDetails">
+        <property name="text">
+         <string>📝 Détails de l'Historique:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTextEdit" name="textEdit_history">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
+         <string>L'historique du client sélectionné s'affichera ici...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_showHistory">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>55</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: #5DADE2;
+color:balck;</string>
+        </property>
+        <property name="text">
+         <string>🔍 Afficher Historique</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_listClients">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>500</y>
+       <width>1151</width>
+       <height>241</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>📋 Liste des Clients</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_list">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>10</number>
+      </property>
+      <property name="rightMargin">
+       <number>10</number>
+      </property>
+      <property name="bottomMargin">
+       <number>10</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="searchLayout">
+        <property name="spacing">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_search">
+          <property name="text">
+           <string>🔍 Recherche:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="lineEdit_search">
+          <property name="placeholderText">
+           <string>Rechercher par nom, CIN, téléphone, email...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_search_2">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>55</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #B0E0E6;</string>
+          </property>
+          <property name="text">
+           <string>statistiques</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_search">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>55</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #87CEEB;</string>
+          </property>
+          <property name="text">
+           <string>Rechercher</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="table_clients">
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+        <column>
+         <property name="text">
+          <string>CIN</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Nom</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Prénom</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Téléphone</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Email</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Adresse</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Date de Naissance</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="buttonsLayout">
+        <property name="spacing">
+         <number>15</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="btn_modifier">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>55</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #B0E0E6;</string>
+          </property>
+          <property name="text">
+           <string>✏️ Modifier</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_supprimer">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>55</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #B0E0E6;</string>
+          </property>
+          <property name="text">
+           <string>🗑️ Supprimer</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_modifier_2">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>55</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #5DADE2;</string>
+          </property>
+          <property name="text">
+           <string>📄 Exportation PDF</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btn_notifier">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>55</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #87CEEB;</string>
+          </property>
+          <property name="text">
+           <string>📧 Notifier</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_addClient">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>60</y>
+       <width>561</width>
+       <height>431</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">
+color: #4682B4;</string>
+     </property>
+     <property name="title">
+      <string>➕ Ajouter un Client</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_addClient">
+      <property name="spacing">
+       <number>8</number>
+      </property>
+      <property name="leftMargin">
+       <number>15</number>
+      </property>
+      <property name="topMargin">
+       <number>15</number>
+      </property>
+      <property name="rightMargin">
+       <number>15</number>
+      </property>
+      <property name="bottomMargin">
+       <number>15</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>👤 Nom du Client:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_2">
+        <property name="placeholderText">
+         <string>Entrez le nom du client</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>👤 Prénom du Client:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="placeholderText">
+         <string>Entrez le prénom du client</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>🆔 CIN:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_3">
+        <property name="placeholderText">
+         <string>Numéro de CIN</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>📞 Téléphone:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_5">
+        <property name="placeholderText">
+         <string>+216 XX XXX XXX</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>📧 Email:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_4">
+        <property name="placeholderText">
+         <string>email@exemple.com</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>📍 Adresse:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_6">
+        <property name="placeholderText">
+         <string>Adresse complète</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>📅 Date de Naissance:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDateEdit" name="dateEdit">
+        <property name="displayFormat">
+         <string>dd/MM/yyyy</string>
+        </property>
+        <property name="calendarPopup">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_addClient">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>55</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: #87CEEB;
+color:black;</string>
+        </property>
+        <property name="text">
+         <string>✅ Ajouter le Client</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Orientation::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>890</x>
+       <y>60</y>
+       <width>261</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(148, 255, 191);
+color: rgb(7, 7, 7);</string>
+     </property>
+     <property name="text">
+      <string>Home </string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lblTitle">
+     <property name="geometry">
+      <rect>
+       <x>-10</x>
+       <y>-10</y>
+       <width>1311</width>
+       <height>62</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size: 24px; font-weight: bold; color: #2C5F75; padding: 15px; background-color: #87CEEB; border-radius: 10px;</string>
+     </property>
+     <property name="text">
+      <string>GESTION DES CLIENTS</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
