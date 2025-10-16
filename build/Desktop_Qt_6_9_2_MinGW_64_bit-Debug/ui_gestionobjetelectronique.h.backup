@@ -1,0 +1,255 @@
+/********************************************************************************
+** Form generated from reading UI file 'gestionobjetelectronique.ui'
+**
+** Created by: Qt User Interface Compiler version 6.9.2
+**
+** WARNING! All changes made in this file will be lost when recompiling UI file!
+********************************************************************************/
+
+#ifndef UI_GESTIONOBJETELECTRONIQUE_H
+#define UI_GESTIONOBJETELECTRONIQUE_H
+
+#include <QtCore/QVariant>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QFormLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QWidget>
+
+QT_BEGIN_NAMESPACE
+
+class Ui_gestionobjetelectronique
+{
+public:
+    QVBoxLayout *verticalLayout;
+    QStackedWidget *stackedWidget;
+    QWidget *page_19;
+    QVBoxLayout *verticalLayout_2;
+    QLabel *labelTitre;
+    QTableWidget *tableWidget;
+    QWidget *layoutWidget_2;
+    QHBoxLayout *horizontalLayout_17;
+    QGroupBox *groupBoxAjout_6;
+    QFormLayout *formLayout_11;
+    QLabel *labelReference_6;
+    QLineEdit *lineEditReference_6;
+    QLabel *labelNomObjet_6;
+    QLineEdit *lineEditNomObjet_6;
+    QLabel *labelMarque_6;
+    QLineEdit *lineEditMarque_6;
+    QLabel *labelModele_6;
+    QLineEdit *lineEditModele_6;
+    QLabel *labelCouleur_6;
+    QLineEdit *lineEditCouleur_6;
+    QLabel *labelPrix_6;
+    QSpinBox *spinBoxPrix_6;
+    QHBoxLayout *horizontalLayout_buttons;
+    QPushButton *pushButton_ajouter;
+    QPushButton *pushButton_modifier;
+    QPushButton *pushButton_supprimer;
+    QPushButton *pushButton;
+    QSpacerItem *horizontalSpacer;
+
+    void setupUi(QWidget *gestionobjetelectronique)
+    {
+        if (gestionobjetelectronique->objectName().isEmpty())
+            gestionobjetelectronique->setObjectName("gestionobjetelectronique");
+        gestionobjetelectronique->resize(1200, 800);
+        verticalLayout = new QVBoxLayout(gestionobjetelectronique);
+        verticalLayout->setObjectName("verticalLayout");
+        stackedWidget = new QStackedWidget(gestionobjetelectronique);
+        stackedWidget->setObjectName("stackedWidget");
+        page_19 = new QWidget();
+        page_19->setObjectName("page_19");
+        verticalLayout_2 = new QVBoxLayout(page_19);
+        verticalLayout_2->setObjectName("verticalLayout_2");
+        labelTitre = new QLabel(page_19);
+        labelTitre->setObjectName("labelTitre");
+        labelTitre->setAlignment(Qt::AlignCenter);
+        labelTitre->setStyleSheet(QString::fromUtf8("font-size: 18px; font-weight: bold; color: #2C3E50;"));
+
+        verticalLayout_2->addWidget(labelTitre);
+
+        tableWidget = new QTableWidget(page_19);
+        if (tableWidget->columnCount() < 5)
+            tableWidget->setColumnCount(5);
+        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
+        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
+        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
+        QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(3, __qtablewidgetitem3);
+        QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(4, __qtablewidgetitem4);
+        tableWidget->setObjectName("tableWidget");
+        tableWidget->setAlternatingRowColors(true);
+        tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+        verticalLayout_2->addWidget(tableWidget);
+
+        layoutWidget_2 = new QWidget(page_19);
+        layoutWidget_2->setObjectName("layoutWidget_2");
+        layoutWidget_2->setGeometry(QRect(0, 0, 400, 300));
+        horizontalLayout_17 = new QHBoxLayout(layoutWidget_2);
+        horizontalLayout_17->setObjectName("horizontalLayout_17");
+        horizontalLayout_17->setContentsMargins(0, 0, 0, 0);
+        groupBoxAjout_6 = new QGroupBox(layoutWidget_2);
+        groupBoxAjout_6->setObjectName("groupBoxAjout_6");
+        formLayout_11 = new QFormLayout(groupBoxAjout_6);
+        formLayout_11->setObjectName("formLayout_11");
+        labelReference_6 = new QLabel(groupBoxAjout_6);
+        labelReference_6->setObjectName("labelReference_6");
+
+        formLayout_11->setWidget(0, QFormLayout::ItemRole::LabelRole, labelReference_6);
+
+        lineEditReference_6 = new QLineEdit(groupBoxAjout_6);
+        lineEditReference_6->setObjectName("lineEditReference_6");
+
+        formLayout_11->setWidget(0, QFormLayout::ItemRole::FieldRole, lineEditReference_6);
+
+        labelNomObjet_6 = new QLabel(groupBoxAjout_6);
+        labelNomObjet_6->setObjectName("labelNomObjet_6");
+
+        formLayout_11->setWidget(1, QFormLayout::ItemRole::LabelRole, labelNomObjet_6);
+
+        lineEditNomObjet_6 = new QLineEdit(groupBoxAjout_6);
+        lineEditNomObjet_6->setObjectName("lineEditNomObjet_6");
+
+        formLayout_11->setWidget(1, QFormLayout::ItemRole::FieldRole, lineEditNomObjet_6);
+
+        labelMarque_6 = new QLabel(groupBoxAjout_6);
+        labelMarque_6->setObjectName("labelMarque_6");
+
+        formLayout_11->setWidget(2, QFormLayout::ItemRole::LabelRole, labelMarque_6);
+
+        lineEditMarque_6 = new QLineEdit(groupBoxAjout_6);
+        lineEditMarque_6->setObjectName("lineEditMarque_6");
+
+        formLayout_11->setWidget(2, QFormLayout::ItemRole::FieldRole, lineEditMarque_6);
+
+        labelModele_6 = new QLabel(groupBoxAjout_6);
+        labelModele_6->setObjectName("labelModele_6");
+
+        formLayout_11->setWidget(3, QFormLayout::ItemRole::LabelRole, labelModele_6);
+
+        lineEditModele_6 = new QLineEdit(groupBoxAjout_6);
+        lineEditModele_6->setObjectName("lineEditModele_6");
+
+        formLayout_11->setWidget(3, QFormLayout::ItemRole::FieldRole, lineEditModele_6);
+
+        labelCouleur_6 = new QLabel(groupBoxAjout_6);
+        labelCouleur_6->setObjectName("labelCouleur_6");
+
+        formLayout_11->setWidget(4, QFormLayout::ItemRole::LabelRole, labelCouleur_6);
+
+        lineEditCouleur_6 = new QLineEdit(groupBoxAjout_6);
+        lineEditCouleur_6->setObjectName("lineEditCouleur_6");
+
+        formLayout_11->setWidget(4, QFormLayout::ItemRole::FieldRole, lineEditCouleur_6);
+
+        labelPrix_6 = new QLabel(groupBoxAjout_6);
+        labelPrix_6->setObjectName("labelPrix_6");
+
+        formLayout_11->setWidget(5, QFormLayout::ItemRole::LabelRole, labelPrix_6);
+
+        spinBoxPrix_6 = new QSpinBox(groupBoxAjout_6);
+        spinBoxPrix_6->setObjectName("spinBoxPrix_6");
+        spinBoxPrix_6->setMaximum(999999);
+
+        formLayout_11->setWidget(5, QFormLayout::ItemRole::FieldRole, spinBoxPrix_6);
+
+
+        horizontalLayout_17->addWidget(groupBoxAjout_6);
+
+
+        verticalLayout_2->addWidget(layoutWidget_2);
+
+        horizontalLayout_buttons = new QHBoxLayout();
+        horizontalLayout_buttons->setObjectName("horizontalLayout_buttons");
+        pushButton_ajouter = new QPushButton(page_19);
+        pushButton_ajouter->setObjectName("pushButton_ajouter");
+
+        horizontalLayout_buttons->addWidget(pushButton_ajouter);
+
+        pushButton_modifier = new QPushButton(page_19);
+        pushButton_modifier->setObjectName("pushButton_modifier");
+
+        horizontalLayout_buttons->addWidget(pushButton_modifier);
+
+        pushButton_supprimer = new QPushButton(page_19);
+        pushButton_supprimer->setObjectName("pushButton_supprimer");
+
+        horizontalLayout_buttons->addWidget(pushButton_supprimer);
+
+        pushButton = new QPushButton(page_19);
+        pushButton->setObjectName("pushButton");
+
+        horizontalLayout_buttons->addWidget(pushButton);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        horizontalLayout_buttons->addItem(horizontalSpacer);
+
+
+        verticalLayout_2->addLayout(horizontalLayout_buttons);
+
+        stackedWidget->addWidget(page_19);
+
+        verticalLayout->addWidget(stackedWidget);
+
+
+        retranslateUi(gestionobjetelectronique);
+
+        stackedWidget->setCurrentIndex(0);
+
+
+        QMetaObject::connectSlotsByName(gestionobjetelectronique);
+    } // setupUi
+
+    void retranslateUi(QWidget *gestionobjetelectronique)
+    {
+        gestionobjetelectronique->setWindowTitle(QCoreApplication::translate("gestionobjetelectronique", "Gestion Objets Electroniques", nullptr));
+        labelTitre->setText(QCoreApplication::translate("gestionobjetelectronique", "Gestion des Objets Electroniques", nullptr));
+        QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
+        ___qtablewidgetitem->setText(QCoreApplication::translate("gestionobjetelectronique", "R\303\251f\303\251rence", nullptr));
+        QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
+        ___qtablewidgetitem1->setText(QCoreApplication::translate("gestionobjetelectronique", "Nom", nullptr));
+        QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
+        ___qtablewidgetitem2->setText(QCoreApplication::translate("gestionobjetelectronique", "Marque", nullptr));
+        QTableWidgetItem *___qtablewidgetitem3 = tableWidget->horizontalHeaderItem(3);
+        ___qtablewidgetitem3->setText(QCoreApplication::translate("gestionobjetelectronique", "Mod\303\250le", nullptr));
+        QTableWidgetItem *___qtablewidgetitem4 = tableWidget->horizontalHeaderItem(4);
+        ___qtablewidgetitem4->setText(QCoreApplication::translate("gestionobjetelectronique", "Prix", nullptr));
+        groupBoxAjout_6->setTitle(QCoreApplication::translate("gestionobjetelectronique", "Ajouter/Modifier Objet", nullptr));
+        labelReference_6->setText(QCoreApplication::translate("gestionobjetelectronique", "R\303\251f\303\251rence:", nullptr));
+        labelNomObjet_6->setText(QCoreApplication::translate("gestionobjetelectronique", "Nom:", nullptr));
+        labelMarque_6->setText(QCoreApplication::translate("gestionobjetelectronique", "Marque:", nullptr));
+        labelModele_6->setText(QCoreApplication::translate("gestionobjetelectronique", "Mod\303\250le:", nullptr));
+        labelCouleur_6->setText(QCoreApplication::translate("gestionobjetelectronique", "Couleur:", nullptr));
+        labelPrix_6->setText(QCoreApplication::translate("gestionobjetelectronique", "Prix:", nullptr));
+        pushButton_ajouter->setText(QCoreApplication::translate("gestionobjetelectronique", "Ajouter", nullptr));
+        pushButton_modifier->setText(QCoreApplication::translate("gestionobjetelectronique", "Modifier", nullptr));
+        pushButton_supprimer->setText(QCoreApplication::translate("gestionobjetelectronique", "Supprimer", nullptr));
+        pushButton->setText(QCoreApplication::translate("gestionobjetelectronique", "Retour au Menu", nullptr));
+    } // retranslateUi
+
+};
+
+namespace Ui {
+    class gestionobjetelectronique: public Ui_gestionobjetelectronique {};
+} // namespace Ui
+
+QT_END_NAMESPACE
+
+#endif // UI_GESTIONOBJETELECTRONIQUE_H

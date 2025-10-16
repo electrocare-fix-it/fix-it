@@ -1,0 +1,10 @@
+release/main.o
+release/mainwindow.o
+release/menuprincipale.o
+release/gestionobjetelectronique.o
+release/gestionclient.o
+release/qrc_img.o
+release/moc_mainwindow.o
+release/moc_menuprincipale.o
+release/moc_gestionobjetelectronique.o
+release/moc_gestionclient.o

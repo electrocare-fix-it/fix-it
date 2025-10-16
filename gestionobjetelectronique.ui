@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>gestionobjetelectronique</class>
+ <widget class="QWidget" name="gestionobjetelectronique">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1711</width>
+    <height>862</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QStackedWidget" name="stackedWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>-30</y>
+     <width>1335</width>
+     <height>811</height>
+    </rect>
+   </property>
+   <widget class="QWidget" name="page_19">
+    <widget class="QLabel" name="labelTitre">
+     <property name="geometry">
+      <rect>
+       <x>-20</x>
+       <y>30</y>
+       <width>1287</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size: 24px; font-weight: bold; color: #2C5F75; padding: 15px; background-color: #87CEEB; border-radius: 10px;</string>
+     </property>
+     <property name="text">
+      <string>GESTION DES OBJETS ÉLECTRONIQUES</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>720</y>
+       <width>1231</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #1A3A4A; font-weight: bold; background-color: #DDF6FF; gridline-color: #87CEEB; alternate-background-color: #E0F6FF;</string>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+     </property>
+     <column>
+      <property name="text">
+       <string>Référence</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Nom Objet</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Marque</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Modèle</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Couleur</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>N° Série</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Type</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>État</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Technicien</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Prix (TND)</string>
+      </property>
+     </column>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>110</y>
+       <width>1171</width>
+       <height>537</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_17">
+      <item>
+       <widget class="QGroupBox" name="groupBoxAjout_6">
+        <property name="styleSheet">
+         <string notr="true">font-weight: bold; color: #1A3A4A;</string>
+        </property>
+        <property name="title">
+         <string> Informations de l'Objet </string>
+        </property>
+        <layout class="QFormLayout" name="formLayout_11">
+         <property name="horizontalSpacing">
+          <number>10</number>
+         </property>
+         <property name="verticalSpacing">
+          <number>12</number>
+         </property>
+         <property name="leftMargin">
+          <number>15</number>
+         </property>
+         <property name="topMargin">
+          <number>20</number>
+         </property>
+         <property name="rightMargin">
+          <number>15</number>
+         </property>
+         <property name="bottomMargin">
+          <number>15</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelReference_6">
+           <property name="styleSheet">
+            <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+           </property>
+           <property name="text">
+            <string>Référence (ID unique):</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="lineEditReference_6">
+           <property name="placeholderText">
+            <string>Ex: REF-001</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="labelNomObjet_6">
+           <property name="styleSheet">
+            <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+           </property>
+           <property name="text">
+            <string>Nom de l'objet:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEditNomObjet_6">
+           <property name="placeholderText">
+            <string>Ex: iPhone 12</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="labelMarque_6">
+           <property name="styleSheet">
+            <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+           </property>
+           <property name="text">
+            <string>Marque:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="lineEditMarque_6">
+           <property name="placeholderText">
+            <string>Ex: Apple, Samsung, HP...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="labelModele_6">
+           <property name="styleSheet">
+            <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+           </property>
+           <property name="text">
+            <string>Modèle:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="lineEditModele_6">
+           <property name="placeholderText">
+            <string>Ex: Pro Max, Galaxy S21...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="labelCouleur_6">
+           <property name="styleSheet">
+            <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+           </property>
+           <property name="text">
+            <string>Couleur:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="lineEditCouleur_6">
+           <property name="placeholderText">
+            <string>Ex: Noir, Blanc, Bleu...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="labelNumeroSerie_6">
+           <property name="styleSheet">
+            <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+           </property>
+           <property name="text">
+            <string>Numéro de série:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="lineEditNumeroSerie_6">
+           <property name="placeholderText">
+            <string>Ex: SN123456789</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="labelType_6">
+           <property name="styleSheet">
+            <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+           </property>
+           <property name="text">
+            <string>Type:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QComboBox" name="comboBoxType_6">
+           <item>
+            <property name="text">
+             <string>-- Sélectionner --</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>PC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Téléphone</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Imprimante</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Tablette</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Autre</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="labelEtat_6">
+           <property name="styleSheet">
+            <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+           </property>
+           <property name="text">
+            <string>État:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <widget class="QComboBox" name="comboBoxEtat_6">
+           <item>
+            <property name="text">
+             <string>-- Sélectionner --</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>En panne</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>En réparation</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Réparé</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>En attente de pièces</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QLabel" name="labelTechnicien_6">
+           <property name="styleSheet">
+            <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+           </property>
+           <property name="text">
+            <string>Technicien:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
+          <widget class="QLineEdit" name="lineEditTechnicien_6">
+           <property name="placeholderText">
+            <string>Nom du technicien</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="0" colspan="2">
+          <layout class="QHBoxLayout" name="horizontalLayout_16">
+           <item>
+            <widget class="QPushButton" name="btnAjouter_6">
+             <property name="styleSheet">
+              <string notr="true">background-color: #87CEEB; padding: 10px; color: #1A3A4A; font-weight: bold;</string>
+             </property>
+             <property name="text">
+              <string>Ajouter</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnModifier_6">
+             <property name="styleSheet">
+              <string notr="true">padding: 10px; background-color: #5DADE2; color: #1A3A4A; font-weight: bold;</string>
+             </property>
+             <property name="text">
+              <string>Modifier</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnSupprimer_6">
+             <property name="styleSheet">
+              <string notr="true">background-color: #B0E0E6; padding: 10px; color: #1A3A4A; font-weight: bold;</string>
+             </property>
+             <property name="text">
+              <string>Supprimer</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnRechercher_6">
+             <property name="styleSheet">
+              <string notr="true">padding: 10px; background-color: #5DADE2; color: #1A3A4A; font-weight: bold;</string>
+             </property>
+             <property name="text">
+              <string>Rechercher</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnExportPDF_6">
+             <property name="styleSheet">
+              <string notr="true">background-color: #87CEEB; padding: 10px; color: #1A3A4A; font-weight: bold;</string>
+             </property>
+             <property name="text">
+              <string>Export PDF</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnReinitialiser_6">
+             <property name="styleSheet">
+              <string notr="true">background-color: #B0E0E6; padding: 10px; color: #1A3A4A; font-weight: bold;</string>
+             </property>
+             <property name="text">
+              <string>Réinitialiser</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_17">
+        <item>
+         <widget class="QGroupBox" name="groupBoxSMS_6">
+          <property name="styleSheet">
+           <string notr="true">font-weight: bold; color: #1A3A4A;</string>
+          </property>
+          <property name="title">
+           <string> SMS Rendez-vous </string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_18">
+           <property name="spacing">
+            <number>10</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="labelInfoSMS_6">
+             <property name="styleSheet">
+              <string notr="true">font-size: 11px; color: #1A3A4A; font-weight: bold;</string>
+             </property>
+             <property name="text">
+              <string>Le SMS sera généré automatiquement selon l'appareil et le problème</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTextEdit" name="textEditSMS_6">
+             <property name="placeholderText">
+              <string>Le message SMS apparaîtra ici...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnGenererSMS_6">
+             <property name="styleSheet">
+              <string notr="true">background-color: #87CEEB; color: #1A3A4A; font-weight: bold;</string>
+             </property>
+             <property name="text">
+              <string>Générer SMS</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnEnvoyerSMS_6">
+             <property name="styleSheet">
+              <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+             </property>
+             <property name="text">
+              <string>Envoyer SMS</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBoxPrix_6">
+          <property name="styleSheet">
+           <string notr="true">font-weight: bold; color: #1A3A4A;</string>
+          </property>
+          <property name="title">
+           <string> Prix Estimé </string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_19">
+           <item>
+            <layout class="QFormLayout" name="formLayout_12">
+             <item row="0" column="0">
+              <widget class="QLabel" name="labelProbleme_6">
+               <property name="styleSheet">
+                <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+               </property>
+               <property name="text">
+                <string>Problème:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="comboBoxProbleme_6">
+               <item>
+                <property name="text">
+                 <string>-- Sélectionner --</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Écran cassé</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Batterie défectueuse</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Problème logiciel</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Ne s'allume pas</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Problème de charge</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Autre</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="labelPrixEstime_6">
+               <property name="styleSheet">
+                <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+               </property>
+               <property name="text">
+                <string>Prix (TND):</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QSpinBox" name="spinBoxPrix_6">
+               <property name="suffix">
+                <string> TND</string>
+               </property>
+               <property name="maximum">
+                <number>10000</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnCalculerPrix_6">
+             <property name="styleSheet">
+              <string notr="true">background-color: #87CEEB; color: #1A3A4A; font-weight: bold;</string>
+             </property>
+             <property name="text">
+              <string>Calculer Prix Estimé</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBoxRecherche">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>650</y>
+       <width>1181</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-weight: bold; color: #1A3A4A;</string>
+     </property>
+     <property name="title">
+      <string> Recherche Tri </string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_18">
+      <item>
+       <widget class="QLabel" name="labelRechercheType_6">
+        <property name="styleSheet">
+         <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+        </property>
+        <property name="text">
+         <string>Par Type:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBoxRechercheType_6">
+        <item>
+         <property name="text">
+          <string>Tous</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PC</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Téléphone</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Imprimante</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelRechercheMarque_6">
+        <property name="styleSheet">
+         <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+        </property>
+        <property name="text">
+         <string>Par Marque:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEditRechercheMarque_6">
+        <property name="placeholderText">
+         <string>Entrez la marque...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelRechercheEtat_6">
+        <property name="styleSheet">
+         <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+        </property>
+        <property name="text">
+         <string>Par État:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBoxRechercheEtat_6">
+        <item>
+         <property name="text">
+          <string>Tous</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>En panne</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>En réparation</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Réparé</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelRechercheModele_6">
+        <property name="styleSheet">
+         <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+        </property>
+        <property name="text">
+         <string>Par Modèle:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEditRechercheModele_6">
+        <property name="placeholderText">
+         <string>Entrez le modèle...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>920</x>
+       <y>90</y>
+       <width>90</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(148, 255, 191);
+color: rgb(7, 7, 7);</string>
+     </property>
+     <property name="text">
+      <string>Home</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="page_20"/>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

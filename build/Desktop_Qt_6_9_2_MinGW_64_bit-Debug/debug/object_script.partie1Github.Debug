@@ -1,0 +1,10 @@
+debug/main.o
+debug/mainwindow.o
+debug/menuprincipale.o
+debug/gestionobjetelectronique.o
+debug/gestionclient.o
+debug/qrc_img.o
+debug/moc_mainwindow.o
+debug/moc_menuprincipale.o
+debug/moc_gestionobjetelectronique.o
+debug/moc_gestionclient.o
