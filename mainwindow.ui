@@ -14,6 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+<<<<<<< HEAD
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="leftMargin">
      <number>0</number>
@@ -37,6 +38,25 @@
        <number>0</number>
       </property>
       <widget class="QWidget" name="page">
+=======
+   <widget class="QStackedWidget" name="stackedWidget">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>20</y>
+      <width>1191</width>
+      <height>781</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #E0F6FF;
+</string>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="page">
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
      <widget class="QPushButton" name="pushButton">
       <property name="geometry">
        <rect>
@@ -221,10 +241,15 @@ font: 14pt &quot;Segoe UI&quot;;
        <string/>
       </property>
      </widget>
+<<<<<<< HEAD
       </widget>
      </widget>
     </item>
    </layout>
+=======
+    </widget>
+   </widget>
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

@@ -42,10 +42,15 @@ template <> constexpr inline auto menuprincipale::qt_create_metaobjectdata<qt_me
         "homeClicked",
         "",
         "openObjects",
+<<<<<<< HEAD
         "openClients",
         "on_homeButton_clicked",
         "on_gestionObjectsButton_clicked",
         "on_gestionClientsButton_clicked"
+=======
+        "on_homeButton_clicked",
+        "on_gestionObjectsButton_clicked"
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -53,6 +58,7 @@ template <> constexpr inline auto menuprincipale::qt_create_metaobjectdata<qt_me
         QtMocHelpers::SignalData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
         // Signal 'openObjects'
         QtMocHelpers::SignalData<void()>(3, 2, QMC::AccessPublic, QMetaType::Void),
+<<<<<<< HEAD
         // Signal 'openClients'
         QtMocHelpers::SignalData<void()>(4, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'on_homeButton_clicked'
@@ -61,6 +67,12 @@ template <> constexpr inline auto menuprincipale::qt_create_metaobjectdata<qt_me
         QtMocHelpers::SlotData<void()>(6, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_gestionClientsButton_clicked'
         QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
+=======
+        // Slot 'on_homeButton_clicked'
+        QtMocHelpers::SlotData<void()>(4, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_gestionObjectsButton_clicked'
+        QtMocHelpers::SlotData<void()>(5, 2, QMC::AccessPrivate, QMetaType::Void),
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -86,10 +98,15 @@ void menuprincipale::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         switch (_id) {
         case 0: _t->homeClicked(); break;
         case 1: _t->openObjects(); break;
+<<<<<<< HEAD
         case 2: _t->openClients(); break;
         case 3: _t->on_homeButton_clicked(); break;
         case 4: _t->on_gestionObjectsButton_clicked(); break;
         case 5: _t->on_gestionClientsButton_clicked(); break;
+=======
+        case 2: _t->on_homeButton_clicked(); break;
+        case 3: _t->on_gestionObjectsButton_clicked(); break;
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
         default: ;
         }
     }
@@ -98,8 +115,11 @@ void menuprincipale::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
             return;
         if (QtMocHelpers::indexOfMethod<void (menuprincipale::*)()>(_a, &menuprincipale::openObjects, 1))
             return;
+<<<<<<< HEAD
         if (QtMocHelpers::indexOfMethod<void (menuprincipale::*)()>(_a, &menuprincipale::openClients, 2))
             return;
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
     }
 }
 
@@ -122,6 +142,7 @@ int menuprincipale::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
+<<<<<<< HEAD
         if (_id < 6)
             qt_static_metacall(this, _c, _id, _a);
         _id -= 6;
@@ -130,6 +151,16 @@ int menuprincipale::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         if (_id < 6)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
         _id -= 6;
+=======
+        if (_id < 4)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 4;
+    }
+    if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        if (_id < 4)
+            *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
+        _id -= 4;
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
     }
     return _id;
 }
@@ -145,10 +176,13 @@ void menuprincipale::openObjects()
 {
     QMetaObject::activate(this, &staticMetaObject, 1, nullptr);
 }
+<<<<<<< HEAD
 
 // SIGNAL 2
 void menuprincipale::openClients()
 {
     QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
 }
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 QT_WARNING_POP

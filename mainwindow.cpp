@@ -8,7 +8,10 @@ MainWindow::MainWindow(QWidget *parent)
     //ADD USER CODE HERE
     ui->stackedWidget->insertWidget(1,&principale);
     ui->stackedWidget->insertWidget(2,&objets);
+<<<<<<< HEAD
     ui->stackedWidget->insertWidget(3,&clients);
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
 
 
@@ -20,9 +23,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(&principale,SIGNAL(homeClicked()),this,SLOT(moveHome()));
     connect(&principale,SIGNAL(openObjects()),this,SLOT(openObjectsPage()));
+<<<<<<< HEAD
     connect(&principale,SIGNAL(openClients()),this,SLOT(openClientsPage()));
     connect(&objets,SIGNAL(homeRequested()),this,SLOT(moveHome()));
     connect(&clients,SIGNAL(HomeCliked()),this,SLOT(moveHome()));
+=======
+    connect(&objets,SIGNAL(homeRequested()),this,SLOT(moveHome()));
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 }
 
 MainWindow::~MainWindow()
@@ -53,8 +60,11 @@ void MainWindow::openObjectsPage()
     ui->stackedWidget->setCurrentIndex(2);
 }
 
+<<<<<<< HEAD
 void MainWindow::openClientsPage()
 {
     ui->stackedWidget->setCurrentIndex(3);
 }
 
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0

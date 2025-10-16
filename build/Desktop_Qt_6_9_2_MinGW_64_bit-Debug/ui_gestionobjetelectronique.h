@@ -132,7 +132,10 @@ public:
         tableWidget->setHorizontalHeaderItem(9, __qtablewidgetitem9);
         tableWidget->setObjectName("tableWidget");
         tableWidget->setGeometry(QRect(0, 720, 1231, 71));
+<<<<<<< HEAD
         tableWidget->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold; background-color: #DDF6FF; gridline-color: #87CEEB; alternate-background-color: #E0F6FF;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
         tableWidget->setAlternatingRowColors(true);
         tableWidget->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
         layoutWidget_2 = new QWidget(page_19);
@@ -143,7 +146,10 @@ public:
         horizontalLayout_17->setContentsMargins(0, 0, 0, 0);
         groupBoxAjout_6 = new QGroupBox(layoutWidget_2);
         groupBoxAjout_6->setObjectName("groupBoxAjout_6");
+<<<<<<< HEAD
         groupBoxAjout_6->setStyleSheet(QString::fromUtf8("font-weight: bold; color: #1A3A4A;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
         formLayout_11 = new QFormLayout(groupBoxAjout_6);
         formLayout_11->setObjectName("formLayout_11");
         formLayout_11->setHorizontalSpacing(10);
@@ -151,7 +157,10 @@ public:
         formLayout_11->setContentsMargins(15, 20, 15, 15);
         labelReference_6 = new QLabel(groupBoxAjout_6);
         labelReference_6->setObjectName("labelReference_6");
+<<<<<<< HEAD
         labelReference_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         formLayout_11->setWidget(0, QFormLayout::ItemRole::LabelRole, labelReference_6);
 
@@ -162,7 +171,10 @@ public:
 
         labelNomObjet_6 = new QLabel(groupBoxAjout_6);
         labelNomObjet_6->setObjectName("labelNomObjet_6");
+<<<<<<< HEAD
         labelNomObjet_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         formLayout_11->setWidget(1, QFormLayout::ItemRole::LabelRole, labelNomObjet_6);
 
@@ -173,7 +185,10 @@ public:
 
         labelMarque_6 = new QLabel(groupBoxAjout_6);
         labelMarque_6->setObjectName("labelMarque_6");
+<<<<<<< HEAD
         labelMarque_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         formLayout_11->setWidget(2, QFormLayout::ItemRole::LabelRole, labelMarque_6);
 
@@ -184,7 +199,10 @@ public:
 
         labelModele_6 = new QLabel(groupBoxAjout_6);
         labelModele_6->setObjectName("labelModele_6");
+<<<<<<< HEAD
         labelModele_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         formLayout_11->setWidget(3, QFormLayout::ItemRole::LabelRole, labelModele_6);
 
@@ -195,7 +213,10 @@ public:
 
         labelCouleur_6 = new QLabel(groupBoxAjout_6);
         labelCouleur_6->setObjectName("labelCouleur_6");
+<<<<<<< HEAD
         labelCouleur_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         formLayout_11->setWidget(4, QFormLayout::ItemRole::LabelRole, labelCouleur_6);
 
@@ -206,7 +227,10 @@ public:
 
         labelNumeroSerie_6 = new QLabel(groupBoxAjout_6);
         labelNumeroSerie_6->setObjectName("labelNumeroSerie_6");
+<<<<<<< HEAD
         labelNumeroSerie_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         formLayout_11->setWidget(5, QFormLayout::ItemRole::LabelRole, labelNumeroSerie_6);
 
@@ -217,7 +241,10 @@ public:
 
         labelType_6 = new QLabel(groupBoxAjout_6);
         labelType_6->setObjectName("labelType_6");
+<<<<<<< HEAD
         labelType_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         formLayout_11->setWidget(6, QFormLayout::ItemRole::LabelRole, labelType_6);
 
@@ -234,7 +261,10 @@ public:
 
         labelEtat_6 = new QLabel(groupBoxAjout_6);
         labelEtat_6->setObjectName("labelEtat_6");
+<<<<<<< HEAD
         labelEtat_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         formLayout_11->setWidget(7, QFormLayout::ItemRole::LabelRole, labelEtat_6);
 
@@ -250,7 +280,10 @@ public:
 
         labelTechnicien_6 = new QLabel(groupBoxAjout_6);
         labelTechnicien_6->setObjectName("labelTechnicien_6");
+<<<<<<< HEAD
         labelTechnicien_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         formLayout_11->setWidget(8, QFormLayout::ItemRole::LabelRole, labelTechnicien_6);
 
@@ -263,37 +296,63 @@ public:
         horizontalLayout_16->setObjectName("horizontalLayout_16");
         btnAjouter_6 = new QPushButton(groupBoxAjout_6);
         btnAjouter_6->setObjectName("btnAjouter_6");
+<<<<<<< HEAD
         btnAjouter_6->setStyleSheet(QString::fromUtf8("background-color: #87CEEB; padding: 10px; color: #1A3A4A; font-weight: bold;"));
+=======
+        btnAjouter_6->setStyleSheet(QString::fromUtf8("background-color: #87CEEB; padding: 10px;"));
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         horizontalLayout_16->addWidget(btnAjouter_6);
 
         btnModifier_6 = new QPushButton(groupBoxAjout_6);
         btnModifier_6->setObjectName("btnModifier_6");
+<<<<<<< HEAD
         btnModifier_6->setStyleSheet(QString::fromUtf8("padding: 10px; background-color: #5DADE2; color: #1A3A4A; font-weight: bold;"));
+=======
+        btnModifier_6->setStyleSheet(QString::fromUtf8("padding: 10px;\n"
+"background-color: #5DADE2;"));
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         horizontalLayout_16->addWidget(btnModifier_6);
 
         btnSupprimer_6 = new QPushButton(groupBoxAjout_6);
         btnSupprimer_6->setObjectName("btnSupprimer_6");
+<<<<<<< HEAD
         btnSupprimer_6->setStyleSheet(QString::fromUtf8("background-color: #B0E0E6; padding: 10px; color: #1A3A4A; font-weight: bold;"));
+=======
+        btnSupprimer_6->setStyleSheet(QString::fromUtf8("background-color: #B0E0E6; padding: 10px;"));
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         horizontalLayout_16->addWidget(btnSupprimer_6);
 
         btnRechercher_6 = new QPushButton(groupBoxAjout_6);
         btnRechercher_6->setObjectName("btnRechercher_6");
+<<<<<<< HEAD
         btnRechercher_6->setStyleSheet(QString::fromUtf8("padding: 10px; background-color: #5DADE2; color: #1A3A4A; font-weight: bold;"));
+=======
+        btnRechercher_6->setStyleSheet(QString::fromUtf8("padding: 10px;\n"
+"background-color: #5DADE2;"));
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         horizontalLayout_16->addWidget(btnRechercher_6);
 
         btnExportPDF_6 = new QPushButton(groupBoxAjout_6);
         btnExportPDF_6->setObjectName("btnExportPDF_6");
+<<<<<<< HEAD
         btnExportPDF_6->setStyleSheet(QString::fromUtf8("background-color: #87CEEB; padding: 10px; color: #1A3A4A; font-weight: bold;"));
+=======
+        btnExportPDF_6->setStyleSheet(QString::fromUtf8("background-color: #87CEEB; padding: 10px;"));
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         horizontalLayout_16->addWidget(btnExportPDF_6);
 
         btnReinitialiser_6 = new QPushButton(groupBoxAjout_6);
         btnReinitialiser_6->setObjectName("btnReinitialiser_6");
+<<<<<<< HEAD
         btnReinitialiser_6->setStyleSheet(QString::fromUtf8("background-color: #B0E0E6; padding: 10px; color: #1A3A4A; font-weight: bold;"));
+=======
+        btnReinitialiser_6->setStyleSheet(QString::fromUtf8("background-color: #B0E0E6; padding: 10px;"));
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         horizontalLayout_16->addWidget(btnReinitialiser_6);
 
@@ -307,13 +366,20 @@ public:
         verticalLayout_17->setObjectName("verticalLayout_17");
         groupBoxSMS_6 = new QGroupBox(layoutWidget_2);
         groupBoxSMS_6->setObjectName("groupBoxSMS_6");
+<<<<<<< HEAD
         groupBoxSMS_6->setStyleSheet(QString::fromUtf8("font-weight: bold; color: #1A3A4A;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
         verticalLayout_18 = new QVBoxLayout(groupBoxSMS_6);
         verticalLayout_18->setSpacing(10);
         verticalLayout_18->setObjectName("verticalLayout_18");
         labelInfoSMS_6 = new QLabel(groupBoxSMS_6);
         labelInfoSMS_6->setObjectName("labelInfoSMS_6");
+<<<<<<< HEAD
         labelInfoSMS_6->setStyleSheet(QString::fromUtf8("font-size: 11px; color: #1A3A4A; font-weight: bold;"));
+=======
+        labelInfoSMS_6->setStyleSheet(QString::fromUtf8("font-size: 11px; color: #5A9FBF;"));
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
         labelInfoSMS_6->setWordWrap(true);
 
         verticalLayout_18->addWidget(labelInfoSMS_6);
@@ -325,13 +391,20 @@ public:
 
         btnGenererSMS_6 = new QPushButton(groupBoxSMS_6);
         btnGenererSMS_6->setObjectName("btnGenererSMS_6");
+<<<<<<< HEAD
         btnGenererSMS_6->setStyleSheet(QString::fromUtf8("background-color: #87CEEB; color: #1A3A4A; font-weight: bold;"));
+=======
+        btnGenererSMS_6->setStyleSheet(QString::fromUtf8("background-color: #87CEEB;"));
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         verticalLayout_18->addWidget(btnGenererSMS_6);
 
         btnEnvoyerSMS_6 = new QPushButton(groupBoxSMS_6);
         btnEnvoyerSMS_6->setObjectName("btnEnvoyerSMS_6");
+<<<<<<< HEAD
         btnEnvoyerSMS_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         verticalLayout_18->addWidget(btnEnvoyerSMS_6);
 
@@ -340,14 +413,20 @@ public:
 
         groupBoxPrix_6 = new QGroupBox(layoutWidget_2);
         groupBoxPrix_6->setObjectName("groupBoxPrix_6");
+<<<<<<< HEAD
         groupBoxPrix_6->setStyleSheet(QString::fromUtf8("font-weight: bold; color: #1A3A4A;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
         verticalLayout_19 = new QVBoxLayout(groupBoxPrix_6);
         verticalLayout_19->setObjectName("verticalLayout_19");
         formLayout_12 = new QFormLayout();
         formLayout_12->setObjectName("formLayout_12");
         labelProbleme_6 = new QLabel(groupBoxPrix_6);
         labelProbleme_6->setObjectName("labelProbleme_6");
+<<<<<<< HEAD
         labelProbleme_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         formLayout_12->setWidget(0, QFormLayout::ItemRole::LabelRole, labelProbleme_6);
 
@@ -365,7 +444,10 @@ public:
 
         labelPrixEstime_6 = new QLabel(groupBoxPrix_6);
         labelPrixEstime_6->setObjectName("labelPrixEstime_6");
+<<<<<<< HEAD
         labelPrixEstime_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         formLayout_12->setWidget(1, QFormLayout::ItemRole::LabelRole, labelPrixEstime_6);
 
@@ -380,7 +462,11 @@ public:
 
         btnCalculerPrix_6 = new QPushButton(groupBoxPrix_6);
         btnCalculerPrix_6->setObjectName("btnCalculerPrix_6");
+<<<<<<< HEAD
         btnCalculerPrix_6->setStyleSheet(QString::fromUtf8("background-color: #87CEEB; color: #1A3A4A; font-weight: bold;"));
+=======
+        btnCalculerPrix_6->setStyleSheet(QString::fromUtf8("background-color: #87CEEB;"));
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         verticalLayout_19->addWidget(btnCalculerPrix_6);
 
@@ -393,12 +479,18 @@ public:
         groupBoxRecherche = new QGroupBox(page_19);
         groupBoxRecherche->setObjectName("groupBoxRecherche");
         groupBoxRecherche->setGeometry(QRect(0, 650, 1181, 71));
+<<<<<<< HEAD
         groupBoxRecherche->setStyleSheet(QString::fromUtf8("font-weight: bold; color: #1A3A4A;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
         horizontalLayout_18 = new QHBoxLayout(groupBoxRecherche);
         horizontalLayout_18->setObjectName("horizontalLayout_18");
         labelRechercheType_6 = new QLabel(groupBoxRecherche);
         labelRechercheType_6->setObjectName("labelRechercheType_6");
+<<<<<<< HEAD
         labelRechercheType_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         horizontalLayout_18->addWidget(labelRechercheType_6);
 
@@ -413,7 +505,10 @@ public:
 
         labelRechercheMarque_6 = new QLabel(groupBoxRecherche);
         labelRechercheMarque_6->setObjectName("labelRechercheMarque_6");
+<<<<<<< HEAD
         labelRechercheMarque_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         horizontalLayout_18->addWidget(labelRechercheMarque_6);
 
@@ -424,7 +519,10 @@ public:
 
         labelRechercheEtat_6 = new QLabel(groupBoxRecherche);
         labelRechercheEtat_6->setObjectName("labelRechercheEtat_6");
+<<<<<<< HEAD
         labelRechercheEtat_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         horizontalLayout_18->addWidget(labelRechercheEtat_6);
 
@@ -439,7 +537,10 @@ public:
 
         labelRechercheModele_6 = new QLabel(groupBoxRecherche);
         labelRechercheModele_6->setObjectName("labelRechercheModele_6");
+<<<<<<< HEAD
         labelRechercheModele_6->setStyleSheet(QString::fromUtf8("color: #1A3A4A; font-weight: bold;"));
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
         horizontalLayout_18->addWidget(labelRechercheModele_6);
 

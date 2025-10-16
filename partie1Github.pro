@@ -12,20 +12,32 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     menuprincipale.cpp \
+<<<<<<< HEAD
     gestionobjetelectronique.cpp \
     gestionclient.cpp
+=======
+    gestionobjetelectronique.cpp
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
 HEADERS += \
     mainwindow.h \
     menuprincipale.h \
+<<<<<<< HEAD
     gestionobjetelectronique.h \
     gestionclient.h
+=======
+    gestionobjetelectronique.h
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
 FORMS += \
     mainwindow.ui \
     menuprincipale.ui \
+<<<<<<< HEAD
     gestionobjetelectronique.ui \
     gestionclient.ui
+=======
+    ../gestionobjetelectronique.ui
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

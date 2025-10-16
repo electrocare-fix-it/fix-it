@@ -4,7 +4,10 @@
 #include <QMainWindow>
 #include "menuprincipale.h" // insérer la class menuprincipale
 #include "gestionobjetelectronique.h"
+<<<<<<< HEAD
 #include "gestionclient.h"
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
 
 
@@ -33,14 +36,20 @@ private slots:
     void on_pushButton_2_clicked();// pour la boutton login
     void moveHome();//fonction pour le boutton Home
     void openObjectsPage();
+<<<<<<< HEAD
     void openClientsPage();
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
 
 private:
     Ui::MainWindow *ui;
     menuprincipale principale;// creation d'objet pour la fenetre de menuprinciple qui contient les 4 bouttons des 4 différents gestions
     gestionobjetelectronique objets;
+<<<<<<< HEAD
     gestionclient clients;
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 
 
 

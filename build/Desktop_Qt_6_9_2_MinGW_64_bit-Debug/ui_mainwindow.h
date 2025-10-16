@@ -18,7 +18,10 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QStatusBar>
+<<<<<<< HEAD
 #include <QtWidgets/QVBoxLayout>
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -27,7 +30,10 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralwidget;
+<<<<<<< HEAD
     QVBoxLayout *verticalLayout;
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
     QStackedWidget *stackedWidget;
     QWidget *page;
     QPushButton *pushButton;
@@ -51,11 +57,17 @@ public:
         MainWindow->resize(1388, 875);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
+<<<<<<< HEAD
         verticalLayout = new QVBoxLayout(centralwidget);
         verticalLayout->setObjectName("verticalLayout");
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         stackedWidget = new QStackedWidget(centralwidget);
         stackedWidget->setObjectName("stackedWidget");
+=======
+        stackedWidget = new QStackedWidget(centralwidget);
+        stackedWidget->setObjectName("stackedWidget");
+        stackedWidget->setGeometry(QRect(50, 20, 1191, 781));
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
         stackedWidget->setStyleSheet(QString::fromUtf8("background-color: #E0F6FF;\n"
 ""));
         page = new QWidget();
@@ -117,9 +129,12 @@ public:
         label_6->setGeometry(QRect(940, 40, 191, 171));
         label_6->setStyleSheet(QString::fromUtf8("image: url(:/res/equipe.png);"));
         stackedWidget->addWidget(page);
+<<<<<<< HEAD
 
         verticalLayout->addWidget(stackedWidget);
 
+=======
+>>>>>>> ce00fc6046d5fbcbf1f0d666eb5b330477ad36f0
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
