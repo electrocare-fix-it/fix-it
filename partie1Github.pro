@@ -21,7 +21,8 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui \
-    menuprincipale.ui
+    menuprincipale.ui \
+    gestionobjetelectronique.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
