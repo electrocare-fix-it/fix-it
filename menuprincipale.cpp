@@ -28,6 +28,11 @@ void menuprincipale::on_gestionClientsButton_clicked()
     emit openClients();
 }
 
+void menuprincipale::on_gestionEmployeButton_clicked()
+{
+    emit openEmploye();
+}
+
 
 
 

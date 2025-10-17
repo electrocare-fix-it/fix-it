@@ -5,6 +5,7 @@
 #include "menuprincipale.h" // insérer la class menuprincipale
 #include "gestionobjetelectronique.h"
 #include "gestionclient.h"
+#include "gestionemploye.h"
 
 
 
@@ -34,6 +35,7 @@ private slots:
     void moveHome();//fonction pour le boutton Home
     void openObjectsPage();
     void openClientsPage();
+    void openEmployePage();
 
 
 private:
@@ -41,6 +43,7 @@ private:
     menuprincipale principale;// creation d'objet pour la fenetre de menuprinciple qui contient les 4 bouttons des 4 différents gestions
     gestionobjetelectronique objets;
     gestionclient clients;
+    gestionemploye employes;
 
 
 

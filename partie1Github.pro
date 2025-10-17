@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    gestionemploye.cpp \
     main.cpp \
     mainwindow.cpp \
     menuprincipale.cpp \
@@ -16,12 +17,14 @@ SOURCES += \
     gestionclient.cpp
 
 HEADERS += \
+    gestionemploye.h \
     mainwindow.h \
     menuprincipale.h \
     gestionobjetelectronique.h \
     gestionclient.h
 
 FORMS += \
+    gestionemploye.ui \
     mainwindow.ui \
     menuprincipale.ui \
     gestionobjetelectronique.ui \

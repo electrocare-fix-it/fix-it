@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->stackedWidget->insertWidget(1,&principale);
     ui->stackedWidget->insertWidget(2,&objets);
     ui->stackedWidget->insertWidget(3,&clients);
+    ui->stackedWidget->insertWidget(4,&employes);
 
 
 
@@ -21,8 +22,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&principale,SIGNAL(homeClicked()),this,SLOT(moveHome()));
     connect(&principale,SIGNAL(openObjects()),this,SLOT(openObjectsPage()));
     connect(&principale,SIGNAL(openClients()),this,SLOT(openClientsPage()));
+    connect(&principale,SIGNAL(openEmploye()),this,SLOT(openEmployePage()));
     connect(&objets,SIGNAL(homeRequested()),this,SLOT(moveHome()));
     connect(&clients,SIGNAL(HomeCliked()),this,SLOT(moveHome()));
+    connect(&employes,SIGNAL(HomeRequested()),this,SLOT(moveHome()));
 }
 
 MainWindow::~MainWindow()
@@ -56,4 +59,9 @@ void MainWindow::openObjectsPage()
 void MainWindow::openClientsPage()
 {
     ui->stackedWidget->setCurrentIndex(3);
+}
+
+void MainWindow::openEmployePage()
+{
+    ui->stackedWidget->setCurrentIndex(4);
 }
