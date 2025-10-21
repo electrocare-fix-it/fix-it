@@ -1,0 +1,174 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="44EEAB7A-6101-FF4B-B4CD-55EEB30039C0" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="REPARER">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>REPARER</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID_REPARATION" id="AFDE2BEF-DA34-ABA0-2B61-39545572E893">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>REPARER</sourceObjSchema>
+<sourceObjName>ID_REPARATION</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ID_OBJET" id="0C504452-F014-972E-B5B8-232879D3CEF1">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>REPARER</sourceObjSchema>
+<sourceObjName>ID_OBJET</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="C36327E8-594E-54BB-641C-A5EB6B59B52E" referredColumn="604F1DEE-C7A4-708E-7142-CEF326AEF63A"/>
+</associations>
+</Column>
+<Column name="ID_EMPLOYE" id="04D1765C-2C0A-F948-5D88-2684229ED44B">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>REPARER</sourceObjSchema>
+<sourceObjName>ID_EMPLOYE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="AC0F008D-2A4C-7D98-3980-D20F6479143C" referredColumn="CA9BA876-D6C7-77F9-1A34-442E3FE38B78"/>
+</associations>
+</Column>
+<Column name="DATE_DEBUT" id="B1FA1EA0-98E5-B5A2-07CF-2D9E5A87A17C">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>REPARER</sourceObjSchema>
+<sourceObjName>DATE_DEBUT</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<defaultValue>SYSDATE</defaultValue>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DATE_FIN" id="9B1BB829-0EA5-C930-36BE-D0A9DD40223F">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>REPARER</sourceObjSchema>
+<sourceObjName>DATE_FIN</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DESCRIPTION" id="E490A322-864A-4336-DBA7-35840DFEB0BB">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>REPARER</sourceObjSchema>
+<sourceObjName>DESCRIPTION</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>4000 BYTE</dataTypeSize>
+<ownDataTypeParameters>4000 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="STATUT_REPARATION" id="DA0106F2-1B7D-D2E3-B779-1EEB15481A9E">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>REPARER</sourceObjSchema>
+<sourceObjName>STATUT_REPARATION</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>30 BYTE</dataTypeSize>
+<ownDataTypeParameters>30 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="9FF6CCDD-43FF-6FE2-2F56-C4791C214C1F" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="REPARER_PK">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>SYS_C007039</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="AFDE2BEF-DA34-ABA0-2B61-39545572E893"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="1F9BB9A1-4ED6-DECB-53F7-1F421901A9B3" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="IDX_REPAR_EMPLOYE">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>IDX_REPAR_EMPLOYE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="04D1765C-2C0A-F948-5D88-2684229ED44B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="52ED8A3D-F1A8-3658-2368-7CD3BA2CEBE8" name="FK_REPAR_EMPLOYE">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="04D1765C-2C0A-F948-5D88-2684229ED44B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="C474320F-B997-F1C6-E099-A3570DAFF1CA" name="FK_REPAR_OBJET">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0C504452-F014-972E-B5B8-232879D3CEF1"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

@@ -1,0 +1,62 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev11g class="oracle.dbtools.crest.model.design.storage.oracle.v11g.TableProxyOraclev11g" name="UTILISER" directorySegmentName="seg_0" id="5C1ADC5C-41C2-A30F-4E4B-ADB571DAA244">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>E1D5D17F-08BA-3033-E094-AD969669C68D</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="ID_PIECE" id="0E1F1E6B-455E-FDDF-428A-B399FD3B6319">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="DATE_UTILISATION" id="44EA130F-0D3C-E978-1021-3BD5E49E6194">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="QUANTITE_UTILISEE" id="508932B1-2932-5E6E-43B9-EF8F8082BA8C">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<defaultValue>1</defaultValue>
+</ColumnProxy>
+<ColumnProxy name="ID_OBJET" id="BFF4F81E-5C69-C724-67AC-362B16A9F9F8">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<foreignKeys>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="FK_UTILISER_PIECE" id="85EA6798-E352-A751-CA8A-29BE739B3337">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ForeignKey>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="FK_UTILISER_OBJET" id="EA487400-C380-2B67-92EA-F7883852425C">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ForeignKey>
+</foreignKeys>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="UTILISER_PK" id="31D4EE17-DC71-266C-06C8-38717EBB011C">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<segment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+<indexSegment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev11g>

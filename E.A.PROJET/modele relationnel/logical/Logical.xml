@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<LogicalDesign class="oracle.dbtools.crest.model.design.logical.LogicalDesign" name="Logical" id="A15339D9-D99B-EBC1-0652-736D2002D670" mainViewID="64CA183D-CA55-168C-1B04-33F3D17225B6">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:44:25 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</LogicalDesign>

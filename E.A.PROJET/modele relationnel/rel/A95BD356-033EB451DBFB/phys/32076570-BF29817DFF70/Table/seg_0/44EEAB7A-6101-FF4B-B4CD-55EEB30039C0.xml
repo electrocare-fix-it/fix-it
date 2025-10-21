@@ -1,0 +1,87 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev11g class="oracle.dbtools.crest.model.design.storage.oracle.v11g.TableProxyOraclev11g" name="REPARER" directorySegmentName="seg_0" id="44EEAB7A-6101-FF4B-B4CD-55EEB30039C0">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>E1D5D17F-08BA-3033-E094-AD969669C68D</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="ID_EMPLOYE" id="04D1765C-2C0A-F948-5D88-2684229ED44B">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="ID_OBJET" id="0C504452-F014-972E-B5B8-232879D3CEF1">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="DATE_FIN" id="9B1BB829-0EA5-C930-36BE-D0A9DD40223F">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="ID_REPARATION" id="AFDE2BEF-DA34-ABA0-2B61-39545572E893">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="DATE_DEBUT" id="B1FA1EA0-98E5-B5A2-07CF-2D9E5A87A17C">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<defaultValue>SYSDATE</defaultValue>
+</ColumnProxy>
+<ColumnProxy name="STATUT_REPARATION" id="DA0106F2-1B7D-D2E3-B779-1EEB15481A9E">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="DESCRIPTION" id="E490A322-864A-4336-DBA7-35840DFEB0BB">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<indexProxies>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="IDX_REPAR_EMPLOYE" id="1F9BB9A1-4ED6-DECB-53F7-1F421901A9B3">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<segment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+</IndexProxy>
+</indexProxies>
+<foreignKeys>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="FK_REPAR_EMPLOYE" id="52ED8A3D-F1A8-3658-2368-7CD3BA2CEBE8">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ForeignKey>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="FK_REPAR_OBJET" id="C474320F-B997-F1C6-E099-A3570DAFF1CA">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ForeignKey>
+</foreignKeys>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="REPARER_PK" id="9FF6CCDD-43FF-6FE2-2F56-C4791C214C1F">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<segment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+<indexSegment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev11g>

@@ -1,0 +1,79 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev11g class="oracle.dbtools.crest.model.design.storage.oracle.v11g.TableProxyOraclev11g" name="PIECE_DETACHEE" directorySegmentName="seg_0" id="E5E0D6AB-05E3-4E2A-3191-35A7CF3FA5FB">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>E1D5D17F-08BA-3033-E094-AD969669C68D</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="PRIX_UNITAIRE" id="1AECAE90-6B1C-1914-F726-617BA9C28629">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="CATEGORIE" id="233064B9-9D59-4623-5F4F-31649E05F0C4">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="DATE_SORTIE" id="583F7661-6B20-7096-2BC8-D01B1ACEA8EB">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="ID_PIECE" id="80148B8A-D1FC-7C1B-CE6E-F40F5BEAA4E3">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="NOM_PIECE" id="AD1E7DBB-DE5B-3FDC-25D5-EC61E16079CD">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="FOURNISSEUR" id="B931CF20-E32D-0D85-D93C-19222AA62897">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="DATE_ENTREE" id="E8F0F948-C641-FAE3-D0C5-529F761C7C44">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="QUANTITE_STOCK" id="FDE2B9EB-32B5-5873-42CC-48E84613536C">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<indexProxies>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="IDX_PIECE_CATEGORIE" id="85356BCA-F1EA-3D9D-428E-72780C2F0818">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<segment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+</IndexProxy>
+</indexProxies>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="PIECE_DETACHEE_PK" id="47DC66BA-68F3-CA8E-F865-FB093071FED4">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<segment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+<indexSegment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev11g>
