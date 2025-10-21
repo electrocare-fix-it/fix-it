@@ -57,3 +57,4 @@ void MainWindow::openClientsPage()
 {
     ui->stackedWidget->setCurrentIndex(3);
 }
+
