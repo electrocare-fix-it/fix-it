@@ -36,7 +36,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: #4682B4;</string>
+      <string notr="true">color: #1A3A4A; font-weight: bold;</string>
      </property>
      <property name="title">
       <string>📚 Historique des Clients</string>
@@ -102,8 +102,7 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: #5DADE2;
-color:balck;</string>
+         <string notr="true">background-color: #5DADE2; color: #1A3A4A; font-weight: bold;</string>
         </property>
         <property name="text">
          <string>🔍 Afficher Historique</string>
@@ -120,6 +119,9 @@ color:balck;</string>
        <width>1151</width>
        <height>241</height>
       </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #1A3A4A; font-weight: bold;</string>
      </property>
      <property name="title">
       <string>📋 Liste des Clients</string>
@@ -147,6 +149,9 @@ color:balck;</string>
         </property>
         <item>
          <widget class="QLabel" name="label_search">
+          <property name="styleSheet">
+           <string notr="true">color: #1A3A4A; font-weight: bold;</string>
+          </property>
           <property name="text">
            <string>🔍 Recherche:</string>
           </property>
@@ -168,7 +173,7 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #B0E0E6;</string>
+           <string notr="true">background-color: #87CEEB; color: #1A3A4A; font-weight: bold;</string>
           </property>
           <property name="text">
            <string>statistiques</string>
@@ -184,7 +189,7 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #87CEEB;</string>
+           <string notr="true">background-color: #5DADE2; color: #1A3A4A; font-weight: bold;</string>
           </property>
           <property name="text">
            <string>Rechercher</string>
@@ -195,6 +200,9 @@ color:balck;</string>
       </item>
       <item>
        <widget class="QTableWidget" name="table_clients">
+        <property name="styleSheet">
+         <string notr="true">color: #1A3A4A; font-weight: bold; background-color: #DDF6FF; gridline-color: #87CEEB; alternate-background-color: #E0F6FF;</string>
+        </property>
         <property name="alternatingRowColors">
          <bool>true</bool>
         </property>
@@ -258,7 +266,7 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #B0E0E6;</string>
+           <string notr="true">background-color: #87CEEB; color: #1A3A4A; font-weight: bold;</string>
           </property>
           <property name="text">
            <string>✏️ Modifier</string>
@@ -274,7 +282,7 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #B0E0E6;</string>
+           <string notr="true">background-color: #87CEEB; color: #1A3A4A; font-weight: bold;</string>
           </property>
           <property name="text">
            <string>🗑️ Supprimer</string>
@@ -290,7 +298,7 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #5DADE2;</string>
+           <string notr="true">background-color: #5DADE2; color: #1A3A4A; font-weight: bold;</string>
           </property>
           <property name="text">
            <string>📄 Exportation PDF</string>
@@ -306,7 +314,7 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #87CEEB;</string>
+           <string notr="true">background-color: #5DADE2; color: #1A3A4A; font-weight: bold;</string>
           </property>
           <property name="text">
            <string>📧 Notifier</string>
@@ -327,8 +335,7 @@ color:balck;</string>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">
-color: #4682B4;</string>
+      <string notr="true">color: #1A3A4A; font-weight: bold;</string>
      </property>
      <property name="title">
       <string>➕ Ajouter un Client</string>
@@ -464,8 +471,7 @@ color: #4682B4;</string>
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: #87CEEB;
-color:black;</string>
+         <string notr="true">background-color: #87CEEB; color: #1A3A4A; font-weight: bold;</string>
         </property>
         <property name="text">
          <string>✅ Ajouter le Client</string>
