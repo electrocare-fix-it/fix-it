@@ -1,5 +1,6 @@
 #include "gestionobjetelectronique.h"
 #include "ui_gestionobjetelectronique.h"
+#include <QRegularExpression>
 
 gestionobjetelectronique::gestionobjetelectronique(QWidget *parent)
     : QWidget(parent)
@@ -149,6 +150,143 @@ void gestionobjetelectronique::clearForm()
     ui->spinBoxPrix_6->setValue(0);
 }
 
+bool gestionobjetelectronique::validateFields(const QString &ref, const QString &nom, const QString &marque,
+                        const QString &modele, const QString &couleur, const QString &numeroSerie,
+                        const QString &type, const QString &etat, const QString &technicien, int prix)
+{
+    // Validation de la Référence (ID unique)
+    if (ref.isEmpty()) {
+        QMessageBox::warning(this, "Validation", "La référence (ID unique) est obligatoire.");
+        return false;
+    }
+    if (ref.length() > 50) {
+        QMessageBox::warning(this, "Validation", "La référence ne doit pas dépasser 50 caractères.");
+        return false;
+    }
+    // Format de référence: lettres, chiffres, tirets et underscores uniquement
+    QRegularExpression refPattern("^[A-Za-z0-9_-]+$");
+    if (!refPattern.match(ref).hasMatch()) {
+        QMessageBox::warning(this, "Validation", "La référence ne doit contenir que des lettres, chiffres, tirets (-) et underscores (_).");
+        return false;
+    }
+
+    // Validation du Nom de l'objet
+    if (nom.isEmpty()) {
+        QMessageBox::warning(this, "Validation", "Le nom de l'objet est obligatoire.");
+        return false;
+    }
+    if (nom.length() < 2) {
+        QMessageBox::warning(this, "Validation", "Le nom de l'objet doit contenir au moins 2 caractères.");
+        return false;
+    }
+    if (nom.length() > 100) {
+        QMessageBox::warning(this, "Validation", "Le nom de l'objet ne doit pas dépasser 100 caractères.");
+        return false;
+    }
+
+    // Validation de la Marque
+    if (marque.isEmpty()) {
+        QMessageBox::warning(this, "Validation", "La marque est obligatoire.");
+        return false;
+    }
+    if (marque.length() < 2) {
+        QMessageBox::warning(this, "Validation", "La marque doit contenir au moins 2 caractères.");
+        return false;
+    }
+    if (marque.length() > 50) {
+        QMessageBox::warning(this, "Validation", "La marque ne doit pas dépasser 50 caractères.");
+        return false;
+    }
+    // La marque ne doit contenir que des lettres, espaces, tirets et apostrophes
+    QRegularExpression marquePattern("^[A-Za-zÀ-ÿ\\s'-]+$");
+    if (!marquePattern.match(marque).hasMatch()) {
+        QMessageBox::warning(this, "Validation", "La marque ne doit contenir que des lettres, espaces, tirets et apostrophes.");
+        return false;
+    }
+
+    // Validation du Modèle (optionnel mais si rempli, doit être valide)
+    if (!modele.isEmpty()) {
+        if (modele.length() < 1) {
+            QMessageBox::warning(this, "Validation", "Le modèle doit contenir au moins 1 caractère.");
+            return false;
+        }
+        if (modele.length() > 100) {
+            QMessageBox::warning(this, "Validation", "Le modèle ne doit pas dépasser 100 caractères.");
+            return false;
+        }
+    }
+
+    // Validation de la Couleur (optionnel mais si rempli, doit être valide)
+    if (!couleur.isEmpty()) {
+        if (couleur.length() > 30) {
+            QMessageBox::warning(this, "Validation", "La couleur ne doit pas dépasser 30 caractères.");
+            return false;
+        }
+        // La couleur ne doit contenir que des lettres, espaces et tirets
+        QRegularExpression couleurPattern("^[A-Za-zÀ-ÿ\\s-]+$");
+        if (!couleurPattern.match(couleur).hasMatch()) {
+            QMessageBox::warning(this, "Validation", "La couleur ne doit contenir que des lettres, espaces et tirets.");
+            return false;
+        }
+    }
+
+    // Validation du Numéro de série (optionnel mais si rempli, doit être valide)
+    if (!numeroSerie.isEmpty()) {
+        if (numeroSerie.length() < 3) {
+            QMessageBox::warning(this, "Validation", "Le numéro de série doit contenir au moins 3 caractères.");
+            return false;
+        }
+        if (numeroSerie.length() > 50) {
+            QMessageBox::warning(this, "Validation", "Le numéro de série ne doit pas dépasser 50 caractères.");
+            return false;
+        }
+        // Format du numéro de série: lettres, chiffres, tirets et underscores
+        QRegularExpression snPattern("^[A-Za-z0-9_-]+$");
+        if (!snPattern.match(numeroSerie).hasMatch()) {
+            QMessageBox::warning(this, "Validation", "Le numéro de série ne doit contenir que des lettres, chiffres, tirets (-) et underscores (_).");
+            return false;
+        }
+    }
+
+    // Validation du Type
+    if (type.isEmpty() || type == "-- Sélectionner --") {
+        QMessageBox::warning(this, "Validation", "Veuillez sélectionner un type.");
+        return false;
+    }
+
+    // Validation de l'État
+    if (etat.isEmpty() || etat == "-- Sélectionner --") {
+        QMessageBox::warning(this, "Validation", "Veuillez sélectionner un état.");
+        return false;
+    }
+
+    // Validation du Technicien (optionnel mais si rempli, doit être valide)
+    if (!technicien.isEmpty()) {
+        if (technicien.length() < 2) {
+            QMessageBox::warning(this, "Validation", "Le nom du technicien doit contenir au moins 2 caractères.");
+            return false;
+        }
+        if (technicien.length() > 50) {
+            QMessageBox::warning(this, "Validation", "Le nom du technicien ne doit pas dépasser 50 caractères.");
+            return false;
+        }
+        // Le nom du technicien ne doit contenir que des lettres, espaces, tirets et apostrophes
+        QRegularExpression technicienPattern("^[A-Za-zÀ-ÿ\\s'-]+$");
+        if (!technicienPattern.match(technicien).hasMatch()) {
+            QMessageBox::warning(this, "Validation", "Le nom du technicien ne doit contenir que des lettres, espaces, tirets et apostrophes.");
+            return false;
+        }
+    }
+
+    // Validation du Prix (optionnel mais doit être positif si renseigné)
+    if (prix < 0) {
+        QMessageBox::warning(this, "Validation", "Le prix ne peut pas être négatif.");
+        return false;
+    }
+
+    return true;
+}
+
 bool gestionobjetelectronique::readForm(QString &ref, QString &nom, QString &marque, QString &modele,
                   QString &couleur, QString &numeroSerie, QString &type,
                   QString &etat, QString &technicien, int &prix)
@@ -164,10 +302,16 @@ bool gestionobjetelectronique::readForm(QString &ref, QString &nom, QString &mar
     technicien = ui->lineEditTechnicien_6->text().trimmed();
     prix = ui->spinBoxPrix_6->value();
 
-    if (ref.isEmpty()) {
-        QMessageBox::warning(this, "Validation", "La référence (ID) est obligatoire.");
+    if (!validateFields(ref, nom, marque, modele, couleur, numeroSerie, type, etat, technicien, prix)) {
+        // Focus sur le premier champ en erreur si possible
+        if (ref.isEmpty()) ui->lineEditReference_6->setFocus();
+        else if (nom.isEmpty()) ui->lineEditNomObjet_6->setFocus();
+        else if (marque.isEmpty()) ui->lineEditMarque_6->setFocus();
+        else if (type.isEmpty() || type == "-- Sélectionner --") ui->comboBoxType_6->setFocus();
+        else if (etat.isEmpty() || etat == "-- Sélectionner --") ui->comboBoxEtat_6->setFocus();
         return false;
     }
+
     return true;
 }
 
@@ -264,7 +408,7 @@ void gestionobjetelectronique::on_tableWidget_cellChanged(int row, int /*column*
     if (!isTableEditMode) return; // only react in edit mode
     if (row < 0) return;
     // Read entire row from table
-    auto get = [&](int c){ QTableWidgetItem *it = ui->tableWidget->item(row, c); return it ? it->text() : QString(); };
+    auto get = [&](int c){ QTableWidgetItem *it = ui->tableWidget->item(row, c); return it ? it->text().trimmed() : QString(); };
     QString refNew = get(0);
     QString nom = get(1);
     QString marque = get(2);
@@ -275,6 +419,13 @@ void gestionobjetelectronique::on_tableWidget_cellChanged(int row, int /*column*
     QString etat = get(7);
     QString technicien = get(8);
     int prix = get(9).toInt();
+
+    // Valider les champs avant de mettre à jour la base de données
+    if (!validateFields(refNew, nom, marque, modele, couleur, numeroSerie, type, etat, technicien, prix)) {
+        // Annuler la modification en restaurant la valeur précédente
+        refreshTable();
+        return;
+    }
 
     // original reference stored in UserRole of column 0 item
     QTableWidgetItem *refItem = ui->tableWidget->item(row, 0);
@@ -296,6 +447,7 @@ void gestionobjetelectronique::on_tableWidget_cellChanged(int row, int /*column*
     q.addBindValue(refOld);
     if (!q.exec()) {
         QMessageBox::warning(this, "Modification", "Échec de modification: " + q.lastError().text());
+        refreshTable();
         return;
     }
     // update stored original ref for this row since PK may have changed
@@ -314,5 +466,3 @@ void gestionobjetelectronique::on_tableWidget_cellChanged(int row, int /*column*
     ui->spinBoxPrix_6->setValue(prix);
     currentSelectedReference = refNew;
 }
-
-

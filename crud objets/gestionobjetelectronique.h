@@ -8,6 +8,9 @@
 #include <QMessageBox>
 #include <QVector>
 #include <QPair>
+#include <QAbstractItemView>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
 namespace Ui {
 class gestionobjetelectronique;
@@ -48,6 +51,9 @@ private:
     bool readForm(QString &ref, QString &nom, QString &marque, QString &modele,
                   QString &couleur, QString &numeroSerie, QString &type,
                   QString &etat, QString &technicien, int &prix);
+    bool validateFields(const QString &ref, const QString &nom, const QString &marque,
+                        const QString &modele, const QString &couleur, const QString &numeroSerie,
+                        const QString &type, const QString &etat, const QString &technicien, int prix);
 };
 
 #endif // GESTIONOBJETELECTRONIQUE_H
