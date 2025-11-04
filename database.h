@@ -7,6 +7,7 @@
 #include <QString>
 #include <QList>
 #include "client.h"
+#include "objetelectronique.h"
 
 class DatabaseManager
 {
@@ -26,6 +27,13 @@ public:
     QList<Client> getAllClients();
     Client getClientByCin(const QString& cin);
     bool clientExists(const QString& cin) const;
+    
+    bool insertObjet(const ObjetElectronique& objet);
+    bool updateObjet(const ObjetElectronique& objet);
+    bool deleteObjet(const QString& reference);
+    QList<ObjetElectronique> getAllObjets();
+    ObjetElectronique getObjetByReference(const QString& reference);
+    bool objetExists(const QString& reference) const;
     
     QString getLastError() const;
 

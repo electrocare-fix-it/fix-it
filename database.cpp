@@ -98,6 +98,24 @@ bool DatabaseManager::createTables()
         return false;
     }
     
+    QString createObjetsTableQuery = "CREATE TABLE IF NOT EXISTS objets ("
+                                     "reference TEXT PRIMARY KEY NOT NULL,"
+                                     "nom TEXT NOT NULL,"
+                                     "marque TEXT NOT NULL,"
+                                     "modele TEXT,"
+                                     "couleur TEXT,"
+                                     "numero_serie TEXT,"
+                                     "type TEXT NOT NULL,"
+                                     "etat TEXT NOT NULL,"
+                                     "technicien TEXT,"
+                                     "prix INTEGER NOT NULL DEFAULT 0"
+                                     ")";
+    
+    if (!query.exec(createObjetsTableQuery)) {
+        m_lastError = query.lastError().text();
+        return false;
+    }
+    
     return true;
 }
 
@@ -250,6 +268,178 @@ bool DatabaseManager::clientExists(const QString& cin) const
     QSqlQuery query(m_db);
     query.prepare("SELECT COUNT(*) FROM clients WHERE cin = :cin");
     query.bindValue(":cin", cin);
+    
+    if (!query.exec() || !query.next()) {
+        return false;
+    }
+    
+    return query.value(0).toInt() > 0;
+}
+
+bool DatabaseManager::insertObjet(const ObjetElectronique& objet)
+{
+    if (!m_db.isOpen()) {
+        return false;
+    }
+    
+    QSqlQuery query(m_db);
+    query.prepare("INSERT INTO objets (reference, nom, marque, modele, couleur, numero_serie, type, etat, technicien, prix) "
+                  "VALUES (:reference, :nom, :marque, :modele, :couleur, :numero_serie, :type, :etat, :technicien, :prix)");
+    
+    query.bindValue(":reference", objet.getReference());
+    query.bindValue(":nom", objet.getNom());
+    query.bindValue(":marque", objet.getMarque());
+    query.bindValue(":modele", objet.getModele());
+    query.bindValue(":couleur", objet.getCouleur());
+    query.bindValue(":numero_serie", objet.getNumeroSerie());
+    query.bindValue(":type", objet.getType());
+    query.bindValue(":etat", objet.getEtat());
+    query.bindValue(":technicien", objet.getTechnicien());
+    query.bindValue(":prix", objet.getPrix());
+    
+    if (!query.exec()) {
+        m_lastError = query.lastError().text();
+        return false;
+    }
+    
+    return true;
+}
+
+bool DatabaseManager::updateObjet(const ObjetElectronique& objet)
+{
+    if (!m_db.isOpen()) {
+        return false;
+    }
+    
+    QSqlQuery query(m_db);
+    query.prepare("UPDATE objets SET "
+                  "nom = :nom, "
+                  "marque = :marque, "
+                  "modele = :modele, "
+                  "couleur = :couleur, "
+                  "numero_serie = :numero_serie, "
+                  "type = :type, "
+                  "etat = :etat, "
+                  "technicien = :technicien, "
+                  "prix = :prix "
+                  "WHERE reference = :reference");
+    
+    query.bindValue(":reference", objet.getReference());
+    query.bindValue(":nom", objet.getNom());
+    query.bindValue(":marque", objet.getMarque());
+    query.bindValue(":modele", objet.getModele());
+    query.bindValue(":couleur", objet.getCouleur());
+    query.bindValue(":numero_serie", objet.getNumeroSerie());
+    query.bindValue(":type", objet.getType());
+    query.bindValue(":etat", objet.getEtat());
+    query.bindValue(":technicien", objet.getTechnicien());
+    query.bindValue(":prix", objet.getPrix());
+    
+    if (!query.exec()) {
+        m_lastError = query.lastError().text();
+        return false;
+    }
+    
+    return true;
+}
+
+bool DatabaseManager::deleteObjet(const QString& reference)
+{
+    if (!m_db.isOpen()) {
+        return false;
+    }
+    
+    QSqlQuery query(m_db);
+    query.prepare("DELETE FROM objets WHERE reference = :reference");
+    query.bindValue(":reference", reference);
+    
+    if (!query.exec()) {
+        m_lastError = query.lastError().text();
+        return false;
+    }
+    
+    return true;
+}
+
+QList<ObjetElectronique> DatabaseManager::getAllObjets()
+{
+    QList<ObjetElectronique> objets;
+    
+    if (!m_db.isOpen()) {
+        return objets;
+    }
+    
+    QSqlQuery query(m_db);
+    query.prepare("SELECT reference, nom, marque, modele, couleur, numero_serie, type, etat, technicien, prix FROM objets ORDER BY reference");
+    
+    if (!query.exec()) {
+        m_lastError = query.lastError().text();
+        return objets;
+    }
+    
+    while (query.next()) {
+        ObjetElectronique objet(
+            query.value(0).toString(),
+            query.value(1).toString(),
+            query.value(2).toString(),
+            query.value(3).toString(),
+            query.value(4).toString(),
+            query.value(5).toString(),
+            query.value(6).toString(),
+            query.value(7).toString(),
+            query.value(8).toString(),
+            query.value(9).toInt()
+        );
+        objets.append(objet);
+    }
+    
+    return objets;
+}
+
+ObjetElectronique DatabaseManager::getObjetByReference(const QString& reference)
+{
+    ObjetElectronique objet;
+    
+    if (!m_db.isOpen()) {
+        return objet;
+    }
+    
+    QSqlQuery query(m_db);
+    query.prepare("SELECT reference, nom, marque, modele, couleur, numero_serie, type, etat, technicien, prix FROM objets WHERE reference = :reference");
+    query.bindValue(":reference", reference);
+    
+    if (!query.exec()) {
+        m_lastError = query.lastError().text();
+        return objet;
+    }
+    
+    if (query.next()) {
+        objet = ObjetElectronique(
+            query.value(0).toString(),
+            query.value(1).toString(),
+            query.value(2).toString(),
+            query.value(3).toString(),
+            query.value(4).toString(),
+            query.value(5).toString(),
+            query.value(6).toString(),
+            query.value(7).toString(),
+            query.value(8).toString(),
+            query.value(9).toInt()
+        );
+    }
+    
+    return objet;
+}
+
+bool DatabaseManager::objetExists(const QString& reference) const
+{
+    if (!m_db.isOpen()) {
+        return false;
+    }
+    
+    QSqlQuery query(m_db);
+    query.prepare("SELECT COUNT(*) FROM objets WHERE reference = :reference");
+    query.bindValue(":reference", reference);
     
     if (!query.exec() || !query.next()) {
         return false;

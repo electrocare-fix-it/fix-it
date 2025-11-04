@@ -15,6 +15,7 @@ SOURCES += \
     gestionobjetelectronique.cpp \
     gestionclient.cpp \
     client.cpp \
+    objetelectronique.cpp \
     database.cpp
 
 HEADERS += \
@@ -23,6 +24,7 @@ HEADERS += \
     gestionobjetelectronique.h \
     gestionclient.h \
     client.h \
+    objetelectronique.h \
     database.h
 
 FORMS += \

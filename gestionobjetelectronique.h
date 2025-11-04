@@ -2,6 +2,13 @@
 #define GESTIONOBJETELECTRONIQUE_H
 
 #include <QWidget>
+#include <QList>
+#include <QRegularExpressionValidator>
+#include <QAbstractItemView>
+#include <QTableWidget>
+#include <QTableWidgetItem>
+#include "objetelectronique.h"
+#include "database.h"
 
 namespace Ui {
 class gestionobjetelectronique;
@@ -20,9 +27,27 @@ signals:
 
 private slots:
     void on_pushButton_clicked();
+    void on_btnAjouter_6_clicked();
+    void on_btnModifier_6_clicked();
+    void on_btnSupprimer_6_clicked();
+    void on_btnRechercher_6_clicked();
+    void on_btnReinitialiser_6_clicked();
+    void on_tableWidget_itemSelectionChanged();
+    void on_tableWidget_cellChanged(int row, int column);
 
 private:
     Ui::gestionobjetelectronique *ui;
+    QString m_currentReference;
+    bool m_isTableEditMode;
+
+    void actualiserTableau();
+    void viderFormulaire();
+    void remplirFormulaire(const ObjetElectronique& objet);
+    bool validerFormulaire();
+    bool lireFormulaire(ObjetElectronique& objet);
+    void configurerValidateurs();
+    void afficherMessageErreur(const QString& titre, const QString& message);
+    void afficherMessageSucces(const QString& titre, const QString& message);
 };
 
 #endif // GESTIONOBJETELECTRONIQUE_H
