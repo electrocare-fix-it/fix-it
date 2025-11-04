@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,13 +13,17 @@ SOURCES += \
     mainwindow.cpp \
     menuprincipale.cpp \
     gestionobjetelectronique.cpp \
-    gestionclient.cpp
+    gestionclient.cpp \
+    client.cpp \
+    database.cpp
 
 HEADERS += \
     mainwindow.h \
     menuprincipale.h \
     gestionobjetelectronique.h \
-    gestionclient.h
+    gestionclient.h \
+    client.h \
+    database.h
 
 FORMS += \
     mainwindow.ui \
