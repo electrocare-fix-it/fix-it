@@ -8,6 +8,7 @@
 #include <QList>
 #include "client.h"
 #include "objetelectronique.h"
+#include "connection.h"
 
 class DatabaseManager
 {
@@ -20,6 +21,7 @@ public:
     
     bool createTables();
     bool tableExists(const QString& tableName) const;
+    bool createSequenceIfNotExists();
     
     bool insertClient(const Client& client);
     bool updateClient(const Client& client);
@@ -43,10 +45,8 @@ private:
     DatabaseManager(const DatabaseManager&) = delete;
     DatabaseManager& operator=(const DatabaseManager&) = delete;
     
-    QSqlDatabase m_db;
+    Connection& m_connection;
     QString m_lastError;
-    
-    QString getDatabasePath() const;
 };
 
 #endif // DATABASE_H

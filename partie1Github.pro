@@ -16,7 +16,8 @@ SOURCES += \
     gestionclient.cpp \
     client.cpp \
     objetelectronique.cpp \
-    database.cpp
+    database.cpp \
+    connection.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -25,7 +26,8 @@ HEADERS += \
     gestionclient.h \
     client.h \
     objetelectronique.h \
-    database.h
+    database.h \
+    connection.h
 
 FORMS += \
     mainwindow.ui \

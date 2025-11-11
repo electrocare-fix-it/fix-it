@@ -1,16 +1,13 @@
 #include "database.h"
-#include <QStandardPaths>
-#include <QDir>
 #include <QDebug>
 
 DatabaseManager::DatabaseManager()
+    : m_connection(Connection::createInstance())
 {
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
 }
 
 DatabaseManager::~DatabaseManager()
 {
-    disconnect();
 }
 
 DatabaseManager& DatabaseManager::getInstance()
@@ -19,101 +16,98 @@ DatabaseManager& DatabaseManager::getInstance()
     return instance;
 }
 
-QString DatabaseManager::getDatabasePath() const
-{
-    QString dataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QDir dir;
-    if (!dir.exists(dataPath)) {
-        dir.mkpath(dataPath);
-    }
-    return dataPath + "/clients.db";
-}
-
 bool DatabaseManager::connect()
 {
-    if (m_db.isOpen()) {
-        return true;
-    }
-    
-    QString dbPath = getDatabasePath();
-    m_db.setDatabaseName(dbPath);
-    
-    if (!m_db.open()) {
-        m_lastError = m_db.lastError().text();
-        return false;
-    }
-    
-    return createTables();
+    return m_connection.createConnection();
 }
 
 void DatabaseManager::disconnect()
 {
-    if (m_db.isOpen()) {
-        m_db.close();
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (db.isOpen()) {
+        db.close();
     }
 }
 
 bool DatabaseManager::isConnected() const
 {
-    return m_db.isOpen();
+    QSqlDatabase& db = m_connection.getDatabase();
+    return db.isOpen();
 }
 
 bool DatabaseManager::tableExists(const QString& tableName) const
 {
-    if (!m_db.isOpen()) {
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return false;
     }
     
-    QSqlQuery query(m_db);
-    query.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=:tableName");
+    QSqlQuery query(db);
+    query.prepare("SELECT COUNT(*) FROM user_tables WHERE UPPER(table_name) = UPPER(:tableName)");
     query.bindValue(":tableName", tableName);
     
-    if (!query.exec()) {
+    if (!query.exec() || !query.next()) {
         return false;
     }
     
-    return query.next();
+    return query.value(0).toInt() > 0;
 }
 
 bool DatabaseManager::createTables()
 {
-    if (!m_db.isOpen()) {
+    return true;
+}
+
+bool DatabaseManager::createSequenceIfNotExists()
+{
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return false;
     }
     
-    QSqlQuery query(m_db);
+    QSqlQuery query(db);
     
-    QString createTableQuery = "CREATE TABLE IF NOT EXISTS clients ("
-                                "cin TEXT PRIMARY KEY NOT NULL,"
-                                "nom TEXT NOT NULL,"
-                                "prenom TEXT NOT NULL,"
-                                "telephone TEXT NOT NULL,"
-                                "email TEXT NOT NULL,"
-                                "adresse TEXT NOT NULL,"
-                                "date_naissance DATE NOT NULL"
-                                ")";
+    QStringList sequences = {"SEQ_CLIENT", "SEQ_CLIENT_ID", "CLIENT_SEQ"};
+    bool sequenceFound = false;
     
-    if (!query.exec(createTableQuery)) {
-        m_lastError = query.lastError().text();
-        return false;
+    for (const QString& seqName : sequences) {
+        query.prepare("SELECT COUNT(*) FROM user_sequences WHERE sequence_name = :seqName");
+        query.bindValue(":seqName", seqName);
+        
+        if (query.exec() && query.next() && query.value(0).toInt() > 0) {
+            sequenceFound = true;
+            break;
+        }
     }
     
-    QString createObjetsTableQuery = "CREATE TABLE IF NOT EXISTS objets ("
-                                     "reference TEXT PRIMARY KEY NOT NULL,"
-                                     "nom TEXT NOT NULL,"
-                                     "marque TEXT NOT NULL,"
-                                     "modele TEXT,"
-                                     "couleur TEXT,"
-                                     "numero_serie TEXT,"
-                                     "type TEXT NOT NULL,"
-                                     "etat TEXT NOT NULL,"
-                                     "technicien TEXT,"
-                                     "prix INTEGER NOT NULL DEFAULT 0"
-                                     ")";
+    if (!sequenceFound) {
+        qDebug() << "Creation de la sequence SEQ_CLIENT...";
+        QString createSeq = "CREATE SEQUENCE SEQ_CLIENT START WITH 1 INCREMENT BY 1 NOCACHE";
+        if (!query.exec(createSeq)) {
+            qDebug() << "Erreur lors de la creation de la sequence:" << query.lastError().text();
+            return false;
+        }
+    }
     
-    if (!query.exec(createObjetsTableQuery)) {
-        m_lastError = query.lastError().text();
-        return false;
+    QStringList objSequences = {"SEQ_OBJET", "SEQ_OBJETS_ID", "SEQ_OBJET_ELECTRONIQUE"};
+    bool objSequenceFound = false;
+    
+    for (const QString& seqName : objSequences) {
+        query.prepare("SELECT COUNT(*) FROM user_sequences WHERE sequence_name = :seqName");
+        query.bindValue(":seqName", seqName);
+        
+        if (query.exec() && query.next() && query.value(0).toInt() > 0) {
+            objSequenceFound = true;
+            break;
+        }
+    }
+    
+    if (!objSequenceFound) {
+        qDebug() << "Creation de la sequence SEQ_OBJET...";
+        QString createSeq = "CREATE SEQUENCE SEQ_OBJET START WITH 1 INCREMENT BY 1 NOCACHE";
+        if (!query.exec(createSeq)) {
+            qDebug() << "Erreur lors de la creation de la sequence SEQ_OBJET:" << query.lastError().text();
+        }
     }
     
     return true;
@@ -121,13 +115,25 @@ bool DatabaseManager::createTables()
 
 bool DatabaseManager::insertClient(const Client& client)
 {
-    if (!m_db.isOpen()) {
-        return false;
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
+        if (!m_connection.createConnection()) {
+            m_lastError = "Impossible de se connecter à la base de données: " + db.lastError().text();
+            return false;
+        }
     }
     
-    QSqlQuery query(m_db);
-    query.prepare("INSERT INTO clients (cin, nom, prenom, telephone, email, adresse, date_naissance) "
-                  "VALUES (:cin, :nom, :prenom, :telephone, :email, :adresse, :date_naissance)");
+    qDebug() << "Driver utilise pour INSERT:" << db.driverName();
+    qDebug() << "Database name:" << db.databaseName();
+    
+    createSequenceIfNotExists();
+    
+    QSqlQuery query(db);
+    
+    QString insertQuery = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
+                          "VALUES (SEQ_CLIENT.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, TO_DATE(:date_naissance, 'YYYY-MM-DD'))";
+    
+    query.prepare(insertQuery);
     
     query.bindValue(":cin", client.getCin());
     query.bindValue(":nom", client.getNom());
@@ -138,8 +144,55 @@ bool DatabaseManager::insertClient(const Client& client)
     query.bindValue(":date_naissance", client.getDateNaissance().toString("yyyy-MM-dd"));
     
     if (!query.exec()) {
-        m_lastError = query.lastError().text();
-        return false;
+        QString seqError = query.lastError().text();
+        qDebug() << "Erreur initiale:" << seqError;
+        
+        if (seqError.contains("SEQ_CLIENT", Qt::CaseInsensitive) || 
+            seqError.contains("sequence", Qt::CaseInsensitive) ||
+            seqError.contains("ORA-02289", Qt::CaseInsensitive)) {
+            
+            qDebug() << "Sequence SEQ_CLIENT non trouvee, essai avec SEQ_CLIENT_ID...";
+            
+            QString insertQuery2 = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
+                                  "VALUES (SEQ_CLIENT_ID.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, TO_DATE(:date_naissance, 'YYYY-MM-DD'))";
+            
+            query.prepare(insertQuery2);
+            query.bindValue(":cin", client.getCin());
+            query.bindValue(":nom", client.getNom());
+            query.bindValue(":prenom", client.getPrenom());
+            query.bindValue(":telephone", client.getTelephone());
+            query.bindValue(":email", client.getEmail());
+            query.bindValue(":adresse", client.getAdresse());
+            query.bindValue(":date_naissance", client.getDateNaissance().toString("yyyy-MM-dd"));
+            
+            if (!query.exec()) {
+                qDebug() << "Sequence SEQ_CLIENT_ID non trouvee, essai avec CLIENT_SEQ...";
+                
+                QString insertQuery3 = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
+                                      "VALUES (CLIENT_SEQ.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, TO_DATE(:date_naissance, 'YYYY-MM-DD'))";
+                
+                query.prepare(insertQuery3);
+                query.bindValue(":cin", client.getCin());
+                query.bindValue(":nom", client.getNom());
+                query.bindValue(":prenom", client.getPrenom());
+                query.bindValue(":telephone", client.getTelephone());
+                query.bindValue(":email", client.getEmail());
+                query.bindValue(":adresse", client.getAdresse());
+                query.bindValue(":date_naissance", client.getDateNaissance().toString("yyyy-MM-dd"));
+                
+                if (!query.exec()) {
+                    m_lastError = query.lastError().text();
+                    qDebug() << "Erreur SQL:" << query.lastQuery();
+                    qDebug() << "Erreur Oracle:" << m_lastError;
+                    return false;
+                }
+            }
+        } else {
+            m_lastError = seqError;
+            qDebug() << "Erreur SQL:" << query.lastQuery();
+            qDebug() << "Erreur Oracle:" << m_lastError;
+            return false;
+        }
     }
     
     return true;
@@ -147,19 +200,20 @@ bool DatabaseManager::insertClient(const Client& client)
 
 bool DatabaseManager::updateClient(const Client& client)
 {
-    if (!m_db.isOpen()) {
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return false;
     }
     
-    QSqlQuery query(m_db);
-    query.prepare("UPDATE clients SET "
-                  "nom = :nom, "
-                  "prenom = :prenom, "
-                  "telephone = :telephone, "
-                  "email = :email, "
-                  "adresse = :adresse, "
-                  "date_naissance = :date_naissance "
-                  "WHERE cin = :cin");
+    QSqlQuery query(db);
+    query.prepare("UPDATE CLIENT SET "
+                  "NOM = :nom, "
+                  "PRENOM = :prenom, "
+                  "TELEPHONE = :telephone, "
+                  "EMAIL = :email, "
+                  "ADRESSE = :adresse, "
+                  "DATE_NAISSANCE = TO_DATE(:date_naissance, 'YYYY-MM-DD') "
+                  "WHERE CIN = :cin");
     
     query.bindValue(":cin", client.getCin());
     query.bindValue(":nom", client.getNom());
@@ -179,12 +233,13 @@ bool DatabaseManager::updateClient(const Client& client)
 
 bool DatabaseManager::deleteClient(const QString& cin)
 {
-    if (!m_db.isOpen()) {
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return false;
     }
     
-    QSqlQuery query(m_db);
-    query.prepare("DELETE FROM clients WHERE cin = :cin");
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM CLIENT WHERE CIN = :cin");
     query.bindValue(":cin", cin);
     
     if (!query.exec()) {
@@ -199,12 +254,13 @@ QList<Client> DatabaseManager::getAllClients()
 {
     QList<Client> clients;
     
-    if (!m_db.isOpen()) {
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return clients;
     }
     
-    QSqlQuery query(m_db);
-    query.prepare("SELECT cin, nom, prenom, telephone, email, adresse, date_naissance FROM clients ORDER BY nom, prenom");
+    QSqlQuery query(db);
+    query.prepare("SELECT CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE FROM CLIENT ORDER BY NOM, PRENOM");
     
     if (!query.exec()) {
         m_lastError = query.lastError().text();
@@ -212,6 +268,13 @@ QList<Client> DatabaseManager::getAllClients()
     }
     
     while (query.next()) {
+        QDate dateNaissance;
+        if (query.value(6).type() == QVariant::Date) {
+            dateNaissance = query.value(6).toDate();
+        } else {
+            dateNaissance = QDate::fromString(query.value(6).toString(), "yyyy-MM-dd");
+        }
+        
         Client client(
             query.value(0).toString(),
             query.value(1).toString(),
@@ -219,7 +282,7 @@ QList<Client> DatabaseManager::getAllClients()
             query.value(3).toString(),
             query.value(4).toString(),
             query.value(5).toString(),
-            QDate::fromString(query.value(6).toString(), "yyyy-MM-dd")
+            dateNaissance
         );
         clients.append(client);
     }
@@ -231,12 +294,13 @@ Client DatabaseManager::getClientByCin(const QString& cin)
 {
     Client client;
     
-    if (!m_db.isOpen()) {
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return client;
     }
     
-    QSqlQuery query(m_db);
-    query.prepare("SELECT cin, nom, prenom, telephone, email, adresse, date_naissance FROM clients WHERE cin = :cin");
+    QSqlQuery query(db);
+    query.prepare("SELECT CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE FROM CLIENT WHERE CIN = :cin");
     query.bindValue(":cin", cin);
     
     if (!query.exec()) {
@@ -245,6 +309,13 @@ Client DatabaseManager::getClientByCin(const QString& cin)
     }
     
     if (query.next()) {
+        QDate dateNaissance;
+        if (query.value(6).type() == QVariant::Date) {
+            dateNaissance = query.value(6).toDate();
+        } else {
+            dateNaissance = QDate::fromString(query.value(6).toString(), "yyyy-MM-dd");
+        }
+        
         client = Client(
             query.value(0).toString(),
             query.value(1).toString(),
@@ -252,7 +323,7 @@ Client DatabaseManager::getClientByCin(const QString& cin)
             query.value(3).toString(),
             query.value(4).toString(),
             query.value(5).toString(),
-            QDate::fromString(query.value(6).toString(), "yyyy-MM-dd")
+            dateNaissance
         );
     }
     
@@ -261,12 +332,13 @@ Client DatabaseManager::getClientByCin(const QString& cin)
 
 bool DatabaseManager::clientExists(const QString& cin) const
 {
-    if (!m_db.isOpen()) {
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return false;
     }
     
-    QSqlQuery query(m_db);
-    query.prepare("SELECT COUNT(*) FROM clients WHERE cin = :cin");
+    QSqlQuery query(db);
+    query.prepare("SELECT COUNT(*) FROM CLIENT WHERE CIN = :cin");
     query.bindValue(":cin", cin);
     
     if (!query.exec() || !query.next()) {
@@ -278,40 +350,90 @@ bool DatabaseManager::clientExists(const QString& cin) const
 
 bool DatabaseManager::insertObjet(const ObjetElectronique& objet)
 {
-    if (!m_db.isOpen()) {
-        return false;
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
+        if (!m_connection.createConnection()) {
+            m_lastError = "Impossible de se connecter à la base de données: " + db.lastError().text();
+            return false;
+        }
+        db = m_connection.getDatabase();
     }
     
-    QSqlQuery query(m_db);
-    query.prepare("INSERT INTO objets (reference, nom, marque, modele, couleur, numero_serie, type, etat, technicien, prix) "
-                  "VALUES (:reference, :nom, :marque, :modele, :couleur, :numero_serie, :type, :etat, :technicien, :prix)");
+    createSequenceIfNotExists();
     
-    query.bindValue(":reference", objet.getReference());
-    query.bindValue(":nom", objet.getNom());
-    query.bindValue(":marque", objet.getMarque());
-    query.bindValue(":modele", objet.getModele());
-    query.bindValue(":couleur", objet.getCouleur());
-    query.bindValue(":numero_serie", objet.getNumeroSerie());
-    query.bindValue(":type", objet.getType());
-    query.bindValue(":etat", objet.getEtat());
-    query.bindValue(":technicien", objet.getTechnicien());
-    query.bindValue(":prix", objet.getPrix());
+    QSqlError lastError;
+    QString lastQuery;
     
-    if (!query.exec()) {
-        m_lastError = query.lastError().text();
-        return false;
+    QStringList tableSchemas;
+    tableSchemas << "objets|reference, nom, marque, modele, couleur, numero_serie, type, etat, technicien, prix|:reference, :nom, :marque, :modele, :couleur, :numero_serie, :type, :etat, :technicien, :prix";
+    tableSchemas << "OBJETS|reference, nom, marque, modele, couleur, numero_serie, type, etat, technicien, prix|:reference, :nom, :marque, :modele, :couleur, :numero_serie, :type, :etat, :technicien, :prix";
+    tableSchemas << "OBJET_ELECTRONIQUE|ID_OBJET, NOM_OBJET, MARQUE, MODELE, COULEUR, NUM_SERIE, TYPE_OBJET, ETAT, ID_EMPLOYE_COURANT|SEQ_OBJET.NEXTVAL, :nom, :marque, :modele, :couleur, :numero_serie, :type, :etat, NULL";
+    
+    for (const QString& schema : tableSchemas) {
+        QStringList parts = schema.split("|");
+        if (parts.size() != 3) continue;
+        
+        QString tableName = parts[0];
+        QString columns = parts[1];
+        QString values = parts[2];
+        
+        QSqlQuery query(db);
+        QString insertQuery = QString("INSERT INTO %1 (%2) VALUES (%3)")
+                              .arg(tableName)
+                              .arg(columns)
+                              .arg(values);
+        
+        if (!query.prepare(insertQuery)) {
+            lastError = query.lastError();
+            lastQuery = insertQuery;
+            qDebug() << "Erreur de préparation avec table" << tableName << ":" << lastError.text();
+            continue;
+        }
+        
+        if (tableName.toUpper() == "OBJET_ELECTRONIQUE") {
+            query.bindValue(":nom", objet.getNom());
+            query.bindValue(":marque", objet.getMarque());
+            query.bindValue(":modele", objet.getModele());
+            query.bindValue(":couleur", objet.getCouleur());
+            query.bindValue(":numero_serie", objet.getNumeroSerie());
+            query.bindValue(":type", objet.getType());
+            query.bindValue(":etat", objet.getEtat());
+        } else {
+            query.bindValue(":reference", objet.getReference());
+            query.bindValue(":nom", objet.getNom());
+            query.bindValue(":marque", objet.getMarque());
+            query.bindValue(":modele", objet.getModele());
+            query.bindValue(":couleur", objet.getCouleur());
+            query.bindValue(":numero_serie", objet.getNumeroSerie());
+            query.bindValue(":type", objet.getType());
+            query.bindValue(":etat", objet.getEtat());
+            query.bindValue(":technicien", objet.getTechnicien());
+            query.bindValue(":prix", objet.getPrix());
+        }
+        
+        if (query.exec()) {
+            return true;
+        } else {
+            lastError = query.lastError();
+            lastQuery = insertQuery;
+            qDebug() << "Tentative avec table" << tableName << "échouée:" << lastError.text();
+        }
     }
     
-    return true;
+    m_lastError = lastError.text();
+    qDebug() << "Erreur SQL insertObjet:" << m_lastError;
+    qDebug() << "Dernière requête:" << lastQuery;
+    return false;
 }
 
 bool DatabaseManager::updateObjet(const ObjetElectronique& objet)
 {
-    if (!m_db.isOpen()) {
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return false;
     }
     
-    QSqlQuery query(m_db);
+    QSqlQuery query(db);
     query.prepare("UPDATE objets SET "
                   "nom = :nom, "
                   "marque = :marque, "
@@ -345,11 +467,12 @@ bool DatabaseManager::updateObjet(const ObjetElectronique& objet)
 
 bool DatabaseManager::deleteObjet(const QString& reference)
 {
-    if (!m_db.isOpen()) {
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return false;
     }
     
-    QSqlQuery query(m_db);
+    QSqlQuery query(db);
     query.prepare("DELETE FROM objets WHERE reference = :reference");
     query.bindValue(":reference", reference);
     
@@ -365,11 +488,12 @@ QList<ObjetElectronique> DatabaseManager::getAllObjets()
 {
     QList<ObjetElectronique> objets;
     
-    if (!m_db.isOpen()) {
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return objets;
     }
     
-    QSqlQuery query(m_db);
+    QSqlQuery query(db);
     query.prepare("SELECT reference, nom, marque, modele, couleur, numero_serie, type, etat, technicien, prix FROM objets ORDER BY reference");
     
     if (!query.exec()) {
@@ -400,11 +524,12 @@ ObjetElectronique DatabaseManager::getObjetByReference(const QString& reference)
 {
     ObjetElectronique objet;
     
-    if (!m_db.isOpen()) {
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return objet;
     }
     
-    QSqlQuery query(m_db);
+    QSqlQuery query(db);
     query.prepare("SELECT reference, nom, marque, modele, couleur, numero_serie, type, etat, technicien, prix FROM objets WHERE reference = :reference");
     query.bindValue(":reference", reference);
     
@@ -433,11 +558,12 @@ ObjetElectronique DatabaseManager::getObjetByReference(const QString& reference)
 
 bool DatabaseManager::objetExists(const QString& reference) const
 {
-    if (!m_db.isOpen()) {
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
         return false;
     }
     
-    QSqlQuery query(m_db);
+    QSqlQuery query(db);
     query.prepare("SELECT COUNT(*) FROM objets WHERE reference = :reference");
     query.bindValue(":reference", reference);
     
