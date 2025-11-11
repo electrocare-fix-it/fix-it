@@ -1,0 +1,82 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev11g class="oracle.dbtools.crest.model.design.storage.oracle.v11g.TableProxyOraclev11g" name="CLIENT" directorySegmentName="seg_0" id="7570D81D-E821-4EAC-A7A8-B1364242F13D">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>E1D5D17F-08BA-3033-E094-AD969669C68D</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="ADRESSE" id="08230384-2616-CCEC-1A1D-AB2A14BAB86A">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="DATE_NAISSANCE" id="0B967984-892C-9CF7-6A50-3670B74EFDD9">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="TELEPHONE" id="446FD2CC-5253-8A3A-F2DE-9FBF7EC0344B">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="ID_CLIENT" id="6BA0AAC7-2ABD-E914-35E5-65AFD504024E">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="CIN" id="8EFDC293-1461-1ACD-9F96-920785959707">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="EMAIL" id="92D84BB8-980C-2E6F-F57B-F4A83349CC4F">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="NOM" id="C015E649-0F3A-B6EB-3FA0-F3111EB4F7E3">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="PRENOM" id="C0FAF3EE-1D86-EEC6-43D8-3CF9754EC3CC">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="CLIENT_PK" id="48E386AB-166F-9644-6F8E-569891B52BC0">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<segment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+<indexSegment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+<uniqueKeys>
+<UniqueKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.UniqueOraclev10g" name="CLIENT_CIN_UN" id="F2C01C2A-CF8B-A14A-FEC8-1BAD19E16DD0">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<segment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+<indexSegment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</UniqueKey>
+</uniqueKeys>
+</TableProxyOraclev11g>

@@ -1,0 +1,82 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TableProxyOraclev11g class="oracle.dbtools.crest.model.design.storage.oracle.v11g.TableProxyOraclev11g" name="POSSEDER" directorySegmentName="seg_0" id="AC720517-B872-3F94-79F8-C9140B1EFB7A">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<logging>YES</logging>
+<partitionedRowMovement>DISABLE</partitionedRowMovement>
+<segment>E1D5D17F-08BA-3033-E094-AD969669C68D</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+<temporaryChanged>false</temporaryChanged>
+<accessDriverType>oracle_loader</accessDriverType>
+<rejectLimit></rejectLimit>
+<columnProxies itemClass="oracle.dbtools.crest.model.design.storage.oracle.v12c.ColumnProxyOraclev12c">
+<ColumnProxy name="COMMENTAIRE" id="1FD94733-0BA5-F185-8E98-6808B00B9747">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="DATE_DEBUT" id="5787A491-ADFF-6918-7F4D-A9C51BF4B904">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<defaultValue>SYSDATE</defaultValue>
+</ColumnProxy>
+<ColumnProxy name="ID_POSSESSION" id="78CBD17F-B5CB-27B0-BC76-7370092450DB">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="ID_OBJET" id="E3E77039-1B16-40E9-5D85-597CA632BFEB">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="DATE_FIN" id="E96C2358-A81D-C078-9150-1E6EEDD93BD1">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+<ColumnProxy name="ID_CLIENT" id="F7A7C4F3-CB76-C604-0DFD-F47C4BDE36FC">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ColumnProxy>
+</columnProxies>
+<indexProxies>
+<IndexProxy class="oracle.dbtools.crest.model.design.storage.oracle.v10g.IndexProxyOraclev10g" name="IDX_POSS_CLIENT" id="8F02451B-840A-2B3E-89B1-764B75FA789A">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<segment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+</IndexProxy>
+</indexProxies>
+<foreignKeys>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="FK_POSS_CLIENT" id="6780ABA2-53CB-A086-1375-ADC993A9E893">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ForeignKey>
+<ForeignKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.FKProxyOraclev10g" name="FK_POSS_OBJET" id="CF396F05-6656-5DAA-9AF9-8EECB83EEEF6">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+</ForeignKey>
+</foreignKeys>
+<primaryKeys>
+<PrimaryKey class="oracle.dbtools.crest.model.design.storage.oracle.v10g.PKProxyOraclev10g" name="POSSEDER_PK" id="51E09FE3-EB02-0C99-529C-B7EDE3E5F4C1">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<schemaObject>B4788B91-DB49-5588-54A5-CB1338726547</schemaObject>
+<segment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</segment>
+<tableSpace>A29F3ED6-E001-797B-177A-E304C76E9721</tableSpace>
+<indexSegment>FB29D167-B415-1BA1-C9D5-43ED3F9D9D78</indexSegment>
+<indexSort>SORTED</indexSort>
+<usingIndex>BY INDEX NAME</usingIndex>
+</PrimaryKey>
+</primaryKeys>
+</TableProxyOraclev11g>

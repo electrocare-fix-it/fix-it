@@ -1,0 +1,220 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="F1BBC428-8156-4B23-43FA-3ED8DF8A398A" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="OBJET_ELECTRONIQUE">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>OBJET_ELECTRONIQUE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID_OBJET" id="604F1DEE-C7A4-708E-7142-CEF326AEF63A">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>OBJET_ELECTRONIQUE</sourceObjSchema>
+<sourceObjName>ID_OBJET</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NOM_OBJET" id="38458CC3-F178-F292-FCA3-19CC907E1C2F">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>OBJET_ELECTRONIQUE</sourceObjSchema>
+<sourceObjName>NOM_OBJET</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="MARQUE" id="79880B73-8BA7-1187-2AF5-A119D3DE0B37">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>OBJET_ELECTRONIQUE</sourceObjSchema>
+<sourceObjName>MARQUE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="MODELE" id="E0DD50C0-52A5-1443-15DE-B29BD5CC34CF">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>OBJET_ELECTRONIQUE</sourceObjSchema>
+<sourceObjName>MODELE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COULEUR" id="E325679A-9C6E-A7DC-7D2F-4D2488012DC8">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>OBJET_ELECTRONIQUE</sourceObjSchema>
+<sourceObjName>COULEUR</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>30 BYTE</dataTypeSize>
+<ownDataTypeParameters>30 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NUM_SERIE" id="56D277CD-6728-F1C6-BB98-58201B153BA1">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>OBJET_ELECTRONIQUE</sourceObjSchema>
+<sourceObjName>NUM_SERIE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="TYPE_OBJET" id="ECD2FDAD-8DE9-970E-C9BC-EB7B628CBD15">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>OBJET_ELECTRONIQUE</sourceObjSchema>
+<sourceObjName>TYPE_OBJET</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>40 BYTE</dataTypeSize>
+<ownDataTypeParameters>40 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ETAT" id="00DEC49A-B00C-6191-FBA6-81BCB723AA3C">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>OBJET_ELECTRONIQUE</sourceObjSchema>
+<sourceObjName>ETAT</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>30 BYTE</dataTypeSize>
+<ownDataTypeParameters>30 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ID_CLIENT_COURANT" id="C93886D8-DE43-7EC4-0634-B1D081EFD37B">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>OBJET_ELECTRONIQUE</sourceObjSchema>
+<sourceObjName>ID_CLIENT_COURANT</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="B02F15C0-2AA1-A742-E000-F7582A6118C0" referredColumn="6BA0AAC7-2ABD-E914-35E5-65AFD504024E"/>
+</associations>
+</Column>
+<Column name="ID_EMPLOYE_COURANT" id="B04128E1-8742-C9D6-1F21-5B621E13B0DA">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>OBJET_ELECTRONIQUE</sourceObjSchema>
+<sourceObjName>ID_EMPLOYE_COURANT</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="FA484DE3-E8D8-9973-4632-6763AD37CA31" referredColumn="CA9BA876-D6C7-77F9-1A34-442E3FE38B78"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="F2576CF8-272C-A1F4-13F6-9DDDE6A59CBC" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="OBJET_ELECTRONIQUE_PK">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>SYS_C007025</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="604F1DEE-C7A4-708E-7142-CEF326AEF63A"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="6948EDDD-9F2F-0AE1-DB03-56E64F4210C4" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="IDX_OBJET_NUMSERIE">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>IDX_OBJET_NUMSERIE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="56D277CD-6728-F1C6-BB98-58201B153BA1"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="F2FD6C78-94B7-445C-16B4-CF879E044425" name="FK_OBJET_CLIENTCOURANT">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="C93886D8-DE43-7EC4-0634-B1D081EFD37B"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="51539414-CF8A-952A-63BD-BB9513A17E20" name="FK_OBJET_EMPLOYECOURANT">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="B04128E1-8742-C9D6-1F21-5B621E13B0DA"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

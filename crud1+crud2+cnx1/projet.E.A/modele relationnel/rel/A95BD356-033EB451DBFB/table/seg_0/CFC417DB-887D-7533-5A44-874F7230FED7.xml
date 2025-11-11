@@ -1,0 +1,150 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="CFC417DB-887D-7533-5A44-874F7230FED7" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="EMPLOYE">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>EMPLOYE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID_EMPLOYE" id="CA9BA876-D6C7-77F9-1A34-442E3FE38B78">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>EMPLOYE</sourceObjSchema>
+<sourceObjName>ID_EMPLOYE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NOM" id="5695BE42-B2AC-A10A-EB81-3ADD6E15D449">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>EMPLOYE</sourceObjSchema>
+<sourceObjName>NOM</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="PRENOM" id="547BCAE7-E2E4-F53B-9C99-BC11628D31B4">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>EMPLOYE</sourceObjSchema>
+<sourceObjName>PRENOM</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>50 BYTE</dataTypeSize>
+<ownDataTypeParameters>50 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DATE_NAISSANCE" id="F6804F74-1C93-38C3-50D6-B33D0396CD0A">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>EMPLOYE</sourceObjSchema>
+<sourceObjName>DATE_NAISSANCE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ADRESSE" id="75631F19-7F83-E5BD-D811-394F5B2436E7">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>EMPLOYE</sourceObjSchema>
+<sourceObjName>ADRESSE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="NUM_TEL" id="82201767-1197-92CC-C5D2-D00658D2DF42">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>EMPLOYE</sourceObjSchema>
+<sourceObjName>NUM_TEL</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>20 BYTE</dataTypeSize>
+<ownDataTypeParameters>20 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="EMAIL" id="5809D61E-6EE2-B498-ACFF-8C28D2BBB1B7">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>EMPLOYE</sourceObjSchema>
+<sourceObjName>EMAIL</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>100 BYTE</dataTypeSize>
+<ownDataTypeParameters>100 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="STATUT" id="26633993-BF75-3BA4-1E62-A7DD5ECA9044">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>EMPLOYE</sourceObjSchema>
+<sourceObjName>STATUT</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>30 BYTE</dataTypeSize>
+<ownDataTypeParameters>30 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="15161A25-AF21-1053-6CC7-A86AB35D4FA3" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="EMPLOYE_PK">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>SYS_C007022</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="CA9BA876-D6C7-77F9-1A34-442E3FE38B78"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

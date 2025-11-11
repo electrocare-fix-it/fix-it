@@ -1,0 +1,159 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="AC720517-B872-3F94-79F8-C9140B1EFB7A" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="POSSEDER">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>POSSEDER</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID_POSSESSION" id="78CBD17F-B5CB-27B0-BC76-7370092450DB">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>POSSEDER</sourceObjSchema>
+<sourceObjName>ID_POSSESSION</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="ID_CLIENT" id="F7A7C4F3-CB76-C604-0DFD-F47C4BDE36FC">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>POSSEDER</sourceObjSchema>
+<sourceObjName>ID_CLIENT</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="6F7AE9D7-D7A0-FD15-27E7-BAA1914D5D71" referredColumn="6BA0AAC7-2ABD-E914-35E5-65AFD504024E"/>
+</associations>
+</Column>
+<Column name="ID_OBJET" id="E3E77039-1B16-40E9-5D85-597CA632BFEB">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>POSSEDER</sourceObjSchema>
+<sourceObjName>ID_OBJET</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="3A2B4E3C-E38B-8946-68E2-C88AF9A17CF8" referredColumn="604F1DEE-C7A4-708E-7142-CEF326AEF63A"/>
+</associations>
+</Column>
+<Column name="DATE_DEBUT" id="5787A491-ADFF-6918-7F4D-A9C51BF4B904">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>POSSEDER</sourceObjSchema>
+<sourceObjName>DATE_DEBUT</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<defaultValue>SYSDATE</defaultValue>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="DATE_FIN" id="E96C2358-A81D-C078-9150-1E6EEDD93BD1">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>POSSEDER</sourceObjSchema>
+<sourceObjName>DATE_FIN</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="COMMENTAIRE" id="1FD94733-0BA5-F185-8E98-6808B00B9747">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>POSSEDER</sourceObjSchema>
+<sourceObjName>COMMENTAIRE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>200 BYTE</dataTypeSize>
+<ownDataTypeParameters>200 BYTE,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="51E09FE3-EB02-0C99-529C-B7EDE3E5F4C1" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="POSSEDER_PK">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>SYS_C007034</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="78CBD17F-B5CB-27B0-BC76-7370092450DB"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="8F02451B-840A-2B3E-89B1-764B75FA789A" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="IDX_POSS_CLIENT">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>IDX_POSS_CLIENT</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="F7A7C4F3-CB76-C604-0DFD-F47C4BDE36FC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="6780ABA2-53CB-A086-1375-ADC993A9E893" name="FK_POSS_CLIENT">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="F7A7C4F3-CB76-C604-0DFD-F47C4BDE36FC"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="CF396F05-6656-5DAA-9AF9-8EECB83EEEF6" name="FK_POSS_OBJET">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="E3E77039-1B16-40E9-5D85-597CA632BFEB"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

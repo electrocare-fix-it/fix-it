@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="AC0F008D-2A4C-7D98-3980-D20F6479143C" containerWithKeyObject="44EEAB7A-6101-FF4B-B4CD-55EEB30039C0" localFKIndex="52ED8A3D-F1A8-3658-2368-7CD3BA2CEBE8" name="FK_REPAR_EMPLOYE">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>FK_REPAR_EMPLOYE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<referredTableLongName>JACEM.EMPLOYE</referredTableLongName>
+<deleteRule>NO ACTION</deleteRule>
+<referredTableID>CFC417DB-887D-7533-5A44-874F7230FED7</referredTableID>
+<keyObject>15161A25-AF21-1053-6CC7-A86AB35D4FA3</keyObject>
+<referredKeyID>15161A25-AF21-1053-6CC7-A86AB35D4FA3</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>ID_EMPLOYE</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>

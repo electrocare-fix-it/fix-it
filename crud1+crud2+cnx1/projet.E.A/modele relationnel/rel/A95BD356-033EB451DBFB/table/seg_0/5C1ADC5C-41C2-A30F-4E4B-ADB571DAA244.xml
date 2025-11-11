@@ -1,0 +1,119 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="5C1ADC5C-41C2-A30F-4E4B-ADB571DAA244" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="UTILISER">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>UTILISER</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="ID_OBJET" id="BFF4F81E-5C69-C724-67AC-362B16A9F9F8">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>UTILISER</sourceObjSchema>
+<sourceObjName>ID_OBJET</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="CFA87088-0925-A3D9-840E-FCA2F73D144B" referredColumn="604F1DEE-C7A4-708E-7142-CEF326AEF63A"/>
+</associations>
+</Column>
+<Column name="ID_PIECE" id="0E1F1E6B-455E-FDDF-428A-B399FD3B6319">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>UTILISER</sourceObjSchema>
+<sourceObjName>ID_PIECE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="1C65F0EF-3B31-8AE9-453B-E0F412452231" referredColumn="80148B8A-D1FC-7C1B-CE6E-F40F5BEAA4E3"/>
+</associations>
+</Column>
+<Column name="DATE_UTILISATION" id="44EA130F-0D3C-E978-1021-3BD5E49E6194">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>UTILISER</sourceObjSchema>
+<sourceObjName>DATE_UTILISATION</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<dataTypeSize>7</dataTypeSize>
+<ownDataTypeParameters>7,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="QUANTITE_UTILISEE" id="508932B1-2932-5E6E-43B9-EF8F8082BA8C">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>UTILISER</sourceObjSchema>
+<sourceObjName>QUANTITE_UTILISEE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT019</logicalDatatype>
+<dataTypePrecision>*</dataTypePrecision>
+<dataTypeScale>0</dataTypeScale>
+<defaultValue>1</defaultValue>
+<ownDataTypeParameters>,*,0</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="31D4EE17-DC71-266C-06C8-38717EBB011C" schemaObject="B4788B91-DB49-5588-54A5-CB1338726547" name="UTILISER_PK">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>SYS_C007029</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BFF4F81E-5C69-C724-67AC-362B16A9F9F8"/>
+<colUsage columnID="0E1F1E6B-455E-FDDF-428A-B399FD3B6319"/>
+<colUsage columnID="44EA130F-0D3C-E978-1021-3BD5E49E6194"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="EA487400-C380-2B67-92EA-F7883852425C" name="FK_UTILISER_OBJET">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="BFF4F81E-5C69-C724-67AC-362B16A9F9F8"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="85EA6798-E352-A751-CA8A-29BE739B3337" name="FK_UTILISER_PIECE">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="0E1F1E6B-455E-FDDF-428A-B399FD3B6319"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
