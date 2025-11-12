@@ -45,6 +45,9 @@ private:
     DatabaseManager(const DatabaseManager&) = delete;
     DatabaseManager& operator=(const DatabaseManager&) = delete;
     
+    QString detectTableName() const;
+    QStringList getTableColumns(const QString& tableName) const;
+    
     Connection& m_connection;
     QString m_lastError;
 };
