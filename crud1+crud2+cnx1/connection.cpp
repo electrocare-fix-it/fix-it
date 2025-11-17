@@ -8,7 +8,7 @@ Connection::Connection()
 bool Connection::createconnect()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QODBC");
-    db.setDatabaseName("Driver={Oracle in XE};Dbq=XE;Uid=jacem;Pwd=esprit18;");
+    db.setDatabaseName("Driver={Oracle in XE};Dbq=Source_Projet2A;Uid=hiba;Pwd=0000;");
 
 
     if (!db.open()) {

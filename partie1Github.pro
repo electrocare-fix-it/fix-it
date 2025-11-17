@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -11,29 +11,36 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    gestionemploye.cpp \
     menuprincipale.cpp \
     gestionobjetelectronique.cpp \
     gestionclient.cpp \
     client.cpp \
     objetelectronique.cpp \
     database.cpp \
-    connection.cpp
+    connection.cpp \
+    login.cpp \
+    chatbotemploye.cpp
 
 HEADERS += \
     mainwindow.h \
+    gestionemploye.h \
     menuprincipale.h \
     gestionobjetelectronique.h \
     gestionclient.h \
     client.h \
     objetelectronique.h \
     database.h \
-    connection.h
+    connection.h \
+    login.h \
+    chatbotemploye.h
 
 FORMS += \
-    mainwindow.ui \
+    gestionemploye.ui \
     menuprincipale.ui \
     gestionobjetelectronique.ui \
-    gestionclient.ui
+    gestionclient.ui \
+    login.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

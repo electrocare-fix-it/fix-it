@@ -14,11 +14,13 @@ class menuprincipale : public QWidget
 public:
     explicit menuprincipale(QWidget *parent = nullptr);
     ~menuprincipale();
+    void setButtonVisible(const QString& buttonName, bool visible);
 
 private slots:
     void on_homeButton_clicked();
     void on_gestionObjectsButton_clicked();
     void on_gestionClientsButton_clicked();
+    void on_gestionEmployeButton_clicked();
 
 private:
     Ui::menuprincipale *ui;
@@ -27,6 +29,7 @@ signals:
     void homeClicked();
     void openObjects();
     void openClients();
+    void openEmployes();
 };
 
 #endif // MENUPRINCIPALE_H

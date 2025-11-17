@@ -17,9 +17,9 @@ public:
     // Méthode statique pour obtenir une connexion Oracle partagée
     static QSqlDatabase getOracleConnection();
     static bool initializeOracleConnection(const QString &host = "localhost", 
-                                           const QString &sid = "XE",
-                                           const QString &username = "jacem", 
-                                           const QString &password = "esprit18",
+                                           const QString &sid = "Source_Projet2A",
+                                           const QString &username = "hiba", 
+                                           const QString &password = "0000",
                                            int port = 1521);
 };
 

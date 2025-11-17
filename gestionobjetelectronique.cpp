@@ -516,6 +516,7 @@ void gestionobjetelectronique::on_tableWidget_itemSelectionChanged()
 
 void gestionobjetelectronique::on_tableWidget_cellChanged(int row, int column)
 {
+    Q_UNUSED(column)
     if (!m_isTableEditMode || row < 0) {
         return;
     }

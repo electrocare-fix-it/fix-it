@@ -1,5 +1,6 @@
 #include "database.h"
 #include <QDebug>
+#include <QMetaType>
 
 DatabaseManager::DatabaseManager()
     : m_connection(Connection::createInstance())
@@ -277,7 +278,7 @@ QList<Client> DatabaseManager::getAllClients()
     
     while (query.next()) {
         QDate dateNaissance;
-        if (query.value(6).type() == QVariant::Date) {
+        if (query.value(6).typeId() == QMetaType::QDate) {
             dateNaissance = query.value(6).toDate();
         } else {
             dateNaissance = QDate::fromString(query.value(6).toString(), "yyyy-MM-dd");
@@ -318,7 +319,7 @@ Client DatabaseManager::getClientByCin(const QString& cin)
     
     if (query.next()) {
         QDate dateNaissance;
-        if (query.value(6).type() == QVariant::Date) {
+        if (query.value(6).typeId() == QMetaType::QDate) {
             dateNaissance = query.value(6).toDate();
         } else {
             dateNaissance = QDate::fromString(query.value(6).toString(), "yyyy-MM-dd");
