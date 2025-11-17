@@ -48,6 +48,18 @@ private slots:
     void on_btn_supprimer_clicked();
     void on_table_clients_itemSelectionChanged();
     void on_btn_search_clicked();
+    void on_btn_search_2_clicked();
+    void on_btn_modifier_2_clicked();
+    void on_btn_notifier_clicked();
+    void on_btn_showHistory_clicked();
+    void on_comboBox_selectClient_currentIndexChanged(int index);
+    
+private:
+    void exporterPDF();
+    void afficherStatistiques();
+    void afficherHistorique(const QString& cin);
+    void envoyerNotificationEmail(const Client& client, const QString& typeOperation);
+    void remplirComboHistorique();
 };
 
 #endif // GESTIONCLIENT_H

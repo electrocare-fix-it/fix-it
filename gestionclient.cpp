@@ -7,6 +7,18 @@
 #include <QRegularExpressionValidator>
 #include <QLabel>
 #include <QGroupBox>
+#include <QFileDialog>
+#include <QTextDocument>
+#include <QPrinter>
+#include <QComboBox>
+#include <QTextEdit>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QUrlQuery>
+#include <QDebug>
+#include "connection.h"
 
 gestionclient::gestionclient(QWidget *parent)
     : QWidget(parent)
@@ -58,6 +70,10 @@ gestionclient::gestionclient(QWidget *parent)
     
     connect(ui->table_clients, &QTableWidget::itemSelectionChanged,
             this, &gestionclient::on_table_clients_itemSelectionChanged);
+    
+    remplirComboHistorique();
+    connect(ui->comboBox_selectClient, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &gestionclient::on_comboBox_selectClient_currentIndexChanged);
 }
 
 gestionclient::~gestionclient()
@@ -414,7 +430,10 @@ void gestionclient::on_btn_addClient_clicked()
         return;
     }
     
+    envoyerNotificationEmail(client, "ajout");
+    
     actualiserTableau();
+    remplirComboHistorique();
     viderFormulaire();
     
     afficherMessageSucces("Succès", "Client ajouté avec succès.");
@@ -473,7 +492,10 @@ void gestionclient::on_btn_modifier_clicked()
         }
     }
     
+    envoyerNotificationEmail(client, "modification");
+    
     actualiserTableau();
+    remplirComboHistorique();
     viderFormulaire();
     
     afficherMessageSucces("Succès", "Client modifié avec succès.");
@@ -616,5 +638,330 @@ void gestionclient::on_btn_search_clicked()
         ui->table_clients->setItem(i, 5, new QTableWidgetItem(client.getAdresse()));
         ui->table_clients->setItem(i, 6, new QTableWidgetItem(client.getDateNaissance().toString("dd/MM/yyyy")));
     }
+}
+
+void gestionclient::on_btn_modifier_2_clicked()
+{
+    exporterPDF();
+}
+
+void gestionclient::exporterPDF()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Exporter en PDF", "", "Fichiers PDF (*.pdf)");
+    if (fileName.isEmpty()) {
+        return;
+    }
+    
+    if (!fileName.endsWith(".pdf", Qt::CaseInsensitive)) {
+        fileName += ".pdf";
+    }
+    
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(fileName);
+    printer.setPageSize(QPageSize::A4);
+    printer.setPageMargins(QMarginsF(20, 20, 20, 20), QPageLayout::Millimeter);
+    
+    QTextDocument document;
+    QString html = "<html><head><meta charset='UTF-8'></head><body>";
+    html += "<h1 style='text-align: center; color: #2C5F75;'>Liste des Clients</h1>";
+    html += "<p style='text-align: right;'>Date: " + QDate::currentDate().toString("dd/MM/yyyy") + "</p>";
+    html += "<table border='1' cellpadding='5' cellspacing='0' style='width: 100%; border-collapse: collapse;'>";
+    html += "<tr style='background-color: #90C9A8;'>";
+    html += "<th>CIN</th><th>Nom</th><th>Prénom</th><th>Téléphone</th><th>Email</th><th>Adresse</th><th>Date de Naissance</th>";
+    html += "</tr>";
+    
+    for (int row = 0; row < ui->table_clients->rowCount(); ++row) {
+        html += "<tr>";
+        for (int col = 0; col < ui->table_clients->columnCount(); ++col) {
+            QTableWidgetItem* item = ui->table_clients->item(row, col);
+            QString text = item ? item->text() : "";
+            html += "<td>" + text.toHtmlEscaped() + "</td>";
+        }
+        html += "</tr>";
+    }
+    
+    html += "</table>";
+    html += "<p style='margin-top: 20px;'>Total: " + QString::number(ui->table_clients->rowCount()) + " client(s)</p>";
+    html += "</body></html>";
+    
+    document.setHtml(html);
+    document.print(&printer);
+    
+    afficherMessageSucces("Succès", "Le fichier PDF a été exporté avec succès:\n" + fileName);
+}
+
+void gestionclient::on_btn_search_2_clicked()
+{
+    afficherStatistiques();
+}
+
+void gestionclient::afficherStatistiques()
+{
+    DatabaseManager& db = DatabaseManager::getInstance();
+    QList<Client> clients = db.getAllClients();
+    
+    int totalClients = clients.size();
+    int avecEmail = 0;
+    int avecTelephone = 0;
+    
+    for (const Client& client : clients) {
+        if (!client.getEmail().isEmpty()) avecEmail++;
+        if (!client.getTelephone().isEmpty()) avecTelephone++;
+    }
+    
+    QString stats = QString(
+        "<div style='color: #1a237e;'>"
+        "📊 <b style='color: #1a237e;'>STATISTIQUES DES CLIENTS</b><br><br>"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br><br>"
+        "👥 <b style='color: #1a237e;'>Total des clients:</b> <span style='color: #1a237e;'>%1</span><br><br>"
+        "📧 <b style='color: #1a237e;'>Clients avec email:</b> <span style='color: #1a237e;'>%2 (%3%)</span><br>"
+        "📱 <b style='color: #1a237e;'>Clients avec téléphone:</b> <span style='color: #1a237e;'>%4 (%5%)</span><br><br>"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        "</div>"
+    )
+    .arg(totalClients)
+    .arg(avecEmail)
+    .arg(totalClients > 0 ? QString::number((avecEmail * 100.0) / totalClients, 'f', 1) : "0")
+    .arg(avecTelephone)
+    .arg(totalClients > 0 ? QString::number((avecTelephone * 100.0) / totalClients, 'f', 1) : "0");
+    
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle("Statistiques");
+    msgBox.setText(stats);
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.exec();
+}
+
+void gestionclient::on_btn_notifier_clicked()
+{
+    if (m_currentIndex == -1) {
+        afficherMessageErreur("Attention", "Veuillez sélectionner un client à notifier.");
+        return;
+    }
+    
+    DatabaseManager& db = DatabaseManager::getInstance();
+    QList<Client> clients = db.getAllClients();
+    
+    if (m_currentIndex >= 0 && m_currentIndex < clients.size()) {
+        Client client = clients[m_currentIndex];
+        envoyerNotificationEmail(client, "notification");
+        afficherMessageSucces("Succès", "Notification envoyée à " + client.getEmail());
+    }
+}
+
+void gestionclient::envoyerNotificationEmail(const Client& client, const QString& typeOperation)
+{
+    if (client.getEmail().isEmpty() || !validerEmail(client.getEmail())) {
+        qDebug() << "Email invalide ou vide pour le client" << client.getNom();
+        return;
+    }
+    
+    QString sujet;
+    QString message;
+    
+    if (typeOperation == "ajout") {
+        sujet = "Bienvenue - Inscription confirmée";
+        message = QString(
+            "Bonjour %1 %2,\n\n"
+            "Votre inscription a été enregistrée avec succès dans notre système.\n\n"
+            "Détails de votre compte:\n"
+            "- CIN: %3\n"
+            "- Nom: %1\n"
+            "- Prénom: %2\n"
+            "- Téléphone: %4\n"
+            "- Email: %5\n"
+            "- Adresse: %6\n\n"
+            "Merci de votre confiance.\n\n"
+            "Cordialement,\n"
+            "L'équipe de gestion"
+        ).arg(client.getNom())
+         .arg(client.getPrenom())
+         .arg(client.getCin())
+         .arg(client.getTelephone())
+         .arg(client.getEmail())
+         .arg(client.getAdresse());
+    } else if (typeOperation == "modification") {
+        sujet = "Mise à jour de vos informations";
+        message = QString(
+            "Bonjour %1 %2,\n\n"
+            "Vos informations ont été mises à jour avec succès.\n\n"
+            "Nouvelles informations:\n"
+            "- CIN: %3\n"
+            "- Nom: %1\n"
+            "- Prénom: %2\n"
+            "- Téléphone: %4\n"
+            "- Email: %5\n"
+            "- Adresse: %6\n\n"
+            "Si vous n'avez pas effectué cette modification, veuillez nous contacter immédiatement.\n\n"
+            "Cordialement,\n"
+            "L'équipe de gestion"
+        ).arg(client.getNom())
+         .arg(client.getPrenom())
+         .arg(client.getCin())
+         .arg(client.getTelephone())
+         .arg(client.getEmail())
+         .arg(client.getAdresse());
+    } else {
+        sujet = "Notification importante";
+        message = QString(
+            "Bonjour %1 %2,\n\n"
+            "Ceci est une notification concernant votre compte.\n\n"
+            "Informations de votre compte:\n"
+            "- CIN: %3\n"
+            "- Nom: %1\n"
+            "- Prénom: %2\n"
+            "- Téléphone: %4\n"
+            "- Email: %5\n"
+            "- Adresse: %6\n\n"
+            "Cordialement,\n"
+            "L'équipe de gestion"
+        ).arg(client.getNom())
+         .arg(client.getPrenom())
+         .arg(client.getCin())
+         .arg(client.getTelephone())
+         .arg(client.getEmail())
+         .arg(client.getAdresse());
+    }
+    
+    QUrl mailtoUrl;
+    mailtoUrl.setScheme("mailto");
+    mailtoUrl.setPath(client.getEmail());
+    QUrlQuery query;
+    query.addQueryItem("subject", sujet);
+    query.addQueryItem("body", message);
+    mailtoUrl.setQuery(query);
+    
+    QDesktopServices::openUrl(mailtoUrl);
+    
+    qDebug() << "Notification email préparée pour:" << client.getEmail();
+}
+
+void gestionclient::remplirComboHistorique()
+{
+    ui->comboBox_selectClient->clear();
+    ui->comboBox_selectClient->addItem("-- Sélectionner un client --", "");
+    
+    DatabaseManager& db = DatabaseManager::getInstance();
+    QList<Client> clients = db.getAllClients();
+    
+    for (const Client& client : clients) {
+        QString displayText = QString("%1 %2 (%3)").arg(client.getNom()).arg(client.getPrenom()).arg(client.getCin());
+        ui->comboBox_selectClient->addItem(displayText, client.getCin());
+    }
+}
+
+void gestionclient::on_btn_showHistory_clicked()
+{
+    QString cin = ui->comboBox_selectClient->currentData().toString();
+    if (cin.isEmpty()) {
+        afficherMessageErreur("Attention", "Veuillez sélectionner un client.");
+        return;
+    }
+    
+    afficherHistorique(cin);
+}
+
+void gestionclient::on_comboBox_selectClient_currentIndexChanged(int index)
+{
+    if (index > 0) {
+        QString cin = ui->comboBox_selectClient->itemData(index).toString();
+        if (!cin.isEmpty()) {
+            afficherHistorique(cin);
+        }
+    } else {
+        ui->textEdit_history->clear();
+    }
+}
+
+void gestionclient::afficherHistorique(const QString& cin)
+{
+    DatabaseManager& db = DatabaseManager::getInstance();
+    Client client = db.getClientByCin(cin);
+    
+    if (client.getCin().isEmpty()) {
+        ui->textEdit_history->setPlainText("Client non trouvé.");
+        return;
+    }
+    
+    QString historique = QString(
+        "═══════════════════════════════════════════════════════════\n"
+        "📋 HISTORIQUE DU CLIENT\n"
+        "═══════════════════════════════════════════════════════════\n\n"
+        "👤 INFORMATIONS PERSONNELLES:\n"
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        "• CIN: %1\n"
+        "• Nom: %2\n"
+        "• Prénom: %3\n"
+        "• Date de naissance: %4\n"
+        "• Téléphone: %5\n"
+        "• Email: %6\n"
+        "• Adresse: %7\n\n"
+    ).arg(client.getCin())
+     .arg(client.getNom())
+     .arg(client.getPrenom())
+     .arg(client.getDateNaissance().toString("dd/MM/yyyy"))
+     .arg(client.getTelephone())
+     .arg(client.getEmail())
+     .arg(client.getAdresse());
+    
+    QSqlDatabase& database = Connection::createInstance().getDatabase();
+    if (database.isOpen()) {
+        QSqlQuery query(database);
+        
+        QStringList tableNames = {"POSSEDER", "REPARER"};
+        bool hasHistory = false;
+        
+        for (const QString& tableName : tableNames) {
+            QString checkQuery = QString("SELECT COUNT(*) FROM %1 WHERE ID_CLIENT = (SELECT ID_CLIENT FROM CLIENT WHERE CIN = :cin)")
+                                .arg(tableName);
+            
+            query.prepare(checkQuery);
+            query.bindValue(":cin", cin);
+            
+            if (query.exec() && query.next() && query.value(0).toInt() > 0) {
+                hasHistory = true;
+                historique += QString("📦 HISTORIQUE DES OBJETS:\n");
+                historique += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+                
+                if (tableName == "POSSEDER") {
+                    QString histQuery = "SELECT o.NOM_OBJET, o.MARQUE, p.DATE_DEBUT, p.DATE_FIN "
+                                       "FROM POSSEDER p "
+                                       "JOIN OBJET_ELECTRONIQUE o ON p.ID_OBJET = o.ID_OBJET "
+                                       "WHERE p.ID_CLIENT = (SELECT ID_CLIENT FROM CLIENT WHERE CIN = :cin) "
+                                       "ORDER BY p.DATE_DEBUT DESC";
+                    query.prepare(histQuery);
+                    query.bindValue(":cin", cin);
+                    
+                    if (query.exec()) {
+                        int count = 0;
+                        while (query.next() && count < 10) {
+                            historique += QString("• %1 - %2 (Du %3 au %4)\n")
+                                         .arg(query.value(0).toString())
+                                         .arg(query.value(1).toString())
+                                         .arg(query.value(2).toDate().toString("dd/MM/yyyy"))
+                                         .arg(query.value(3).toDate().toString("dd/MM/yyyy"));
+                            count++;
+                        }
+                    }
+                }
+                
+                historique += "\n";
+                break;
+            }
+        }
+        
+        if (!hasHistory) {
+            historique += "📦 HISTORIQUE DES OBJETS:\n";
+            historique += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+            historique += "Aucun objet enregistré pour ce client.\n\n";
+        }
+    }
+    
+    historique += "═══════════════════════════════════════════════════════════\n";
+    historique += QString("Date de consultation: %1\n").arg(QDate::currentDate().toString("dd/MM/yyyy"));
+    historique += "═══════════════════════════════════════════════════════════\n";
+    
+    ui->textEdit_history->setPlainText(historique);
 }
 
