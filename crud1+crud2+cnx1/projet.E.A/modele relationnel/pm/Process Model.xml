@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<ProcessModel class="oracle.dbtools.crest.model.design.process.ProcessModel" name="Process Model" id="A6ECCD9E-CE2B-7ADF-1D52-3EBDF9CDF077">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:44:25 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</ProcessModel>

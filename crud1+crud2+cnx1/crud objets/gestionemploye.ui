@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>gestionemploye</class>
+ <widget class="QWidget" name="gestionemploye">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1373</width>
+    <height>872</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QStackedWidget" name="stackedWidget">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>30</y>
+     <width>1178</width>
+     <height>831</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="page_3">
+    <widget class="QLabel" name="lblTitle">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>1311</width>
+       <height>62</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font-size: 24px; font-weight: bold; color: #2C5F75; padding: 15px; background-color: #90C9A8; border-radius: 10px;</string>
+     </property>
+     <property name="text">
+      <string>GESTION DES EMPLOYÉS</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBoxTableau">
+     <property name="geometry">
+      <rect>
+       <x>-10</x>
+       <y>470</y>
+       <width>1121</width>
+       <height>221</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>      Liste des Employés</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_5">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLineEdit" name="txtRecherche_2">
+          <property name="placeholderText">
+           <string>🔍 Rechercher un employé...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnExporterPDF_2">
+          <property name="styleSheet">
+           <string notr="true">background-color: #7EC8E3;</string>
+          </property>
+          <property name="text">
+           <string>📄 Exporter en PDF</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnStatistiques_2">
+          <property name="styleSheet">
+           <string notr="true">background-color: #C8A5E8;</string>
+          </property>
+          <property name="text">
+           <string>📈 Statistiques</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="tableEmployes_2">
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+        <column>
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Nom</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Prénom</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Date de naissance</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Adresse</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Téléphone</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Email</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Statut</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBoxChatbot_2">
+     <property name="geometry">
+      <rect>
+       <x>730</x>
+       <y>114</y>
+       <width>381</width>
+       <height>351</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>🤖 Assistant IA - Chatbot</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <widget class="QTextEdit" name="txtChatDisplay_2">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
+         <string>Bienvenue! Posez vos questions sur la gestion des employés...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QLineEdit" name="txtChatInput_2">
+          <property name="placeholderText">
+           <string>Tapez votre message ici...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnEnvoyer_2">
+          <property name="styleSheet">
+           <string notr="true">background-color:  #90C9A8;</string>
+          </property>
+          <property name="text">
+           <string>📤 Envoyer</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="groupBoxFormulaire_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>74</y>
+       <width>711</width>
+       <height>391</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Informations de l'Employé</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_6">
+      <item>
+       <layout class="QFormLayout" name="formLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="lblNom_2">
+          <property name="text">
+           <string>Nom:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="txtNom_2">
+          <property name="placeholderText">
+           <string>Entrez le nom</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="lblPrenom_2">
+          <property name="text">
+           <string>Prénom:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="txtPrenom_2">
+          <property name="placeholderText">
+           <string>Entrez le prénom</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="lblDateNaissance_2">
+          <property name="text">
+           <string>Date de naissance:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QDateEdit" name="dateNaissance_2">
+          <property name="displayFormat">
+           <string>dd/MM/yyyy</string>
+          </property>
+          <property name="calendarPopup">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="lblAdresse_2">
+          <property name="text">
+           <string>Adresse:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="txtAdresse_2">
+          <property name="placeholderText">
+           <string>Entrez l'adresse</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="lblTelephone_2">
+          <property name="text">
+           <string>Numéro de téléphone:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="txtTelephone_2">
+          <property name="placeholderText">
+           <string>Entrez le numéro de téléphone</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="lblEmail_2">
+          <property name="text">
+           <string>Adresse email:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="txtEmail_2">
+          <property name="placeholderText">
+           <string>exemple@email.com</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="lblStatut_2">
+          <property name="text">
+           <string>Statut:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QComboBox" name="comboStatut_2">
+          <item>
+           <property name="text">
+            <string>Actif</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Inactif</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>En congé</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QPushButton" name="btnAjouter_2">
+          <property name="styleSheet">
+           <string notr="true">background-color:  #90C9A8;</string>
+          </property>
+          <property name="text">
+           <string>➕ Créer</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnModifier_2">
+          <property name="styleSheet">
+           <string notr="true">background-color: #7EC8E3;</string>
+          </property>
+          <property name="text">
+           <string>✏️ Modifier</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnSupprimer_2">
+          <property name="styleSheet">
+           <string notr="true">background-color: #E8A5A5;</string>
+          </property>
+          <property name="text">
+           <string>🗑️ Supprimer</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnVider_2">
+          <property name="styleSheet">
+           <string notr="true">background-color: #C0C0C0;</string>
+          </property>
+          <property name="text">
+           <string>🔄 Vider</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>940</x>
+       <y>80</y>
+       <width>171</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(148, 255, 191);
+color: rgb(7, 7, 7);</string>
+     </property>
+     <property name="text">
+      <string>Home </string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

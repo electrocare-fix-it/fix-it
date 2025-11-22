@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>menuprincipale</class>
+ <widget class="QWidget" name="menuprincipale">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1325</width>
+    <height>714</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Menu Principal - Gestion</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+    QMainWindow, QWidget {
+     background-color: #DDF6FF; /* light cyan like screenshot */
+    }
+    QPushButton {
+     background-color: #8EC7E2; /* blue buttons */
+     color: #0F2A3D;
+     border: 1px solid #6FB6D6;
+     border-radius: 6px;
+     padding: 6px 12px;
+     font-weight: normal;
+    }
+    QPushButton:hover {
+     background-color: #7ABEDB;
+    }
+    QPushButton:pressed {
+     background-color: #6BB3D4;
+    }
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QFrame" name="headerFrame">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>80</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QFrame { background-color: transparent; border: none; }</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="titleLabel">
+         <property name="styleSheet">
+          <string notr="true">
+           QLabel {
+            color: #2C3E50;
+            font-size: 28px;
+            font-weight: bold;
+            padding: 10px;
+           }
+          </string>
+         </property>
+         <property name="text">
+          <string>MENU PRINCIPAL</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="homeButton">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Home</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="contentFrame">
+      <property name="styleSheet">
+       <string notr="true">
+        QFrame {
+         background-color: transparent;
+        }
+       </string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>100</number>
+       </property>
+       <property name="rightMargin">
+        <number>100</number>
+       </property>
+       <property name="spacing">
+        <number>30</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="gestionEmployeButton">
+         <property name="minimumSize">
+          <size>
+           <width>280</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>👥 Gestion Employés</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="gestionClientsButton">
+         <property name="minimumSize">
+          <size>
+           <width>280</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>👤 Gestion Clients</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="gestionObjectsButton">
+         <property name="minimumSize">
+          <size>
+           <width>280</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>📱 Gestion Objets Électroniques</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="gestionPiecesButton">
+         <property name="minimumSize">
+          <size>
+           <width>280</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>🔧 Gestion Pièces Détachées</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="footerLabel">
+      <property name="styleSheet">
+       <string notr="true">
+        QLabel {
+         color: #2C3E50;
+         font-size: 12px;
+         padding: 10px;
+        }
+       </string>
+      </property>
+      <property name="text">
+       <string>Système de Gestion - Version 1.0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

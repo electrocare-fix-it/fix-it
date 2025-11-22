@@ -1,0 +1,8 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="modele relationnel " id="579D6E21-4049-C924-B649-D4765372CCDB" version="3.5">
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:44:25 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>579D6E21-4049-C924-B649-D4765372CCDB</designId>
+</OSDM_Design>

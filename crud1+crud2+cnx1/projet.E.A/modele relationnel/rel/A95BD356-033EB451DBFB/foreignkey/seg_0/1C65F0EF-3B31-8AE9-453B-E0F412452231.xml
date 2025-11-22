@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FKIndexAssociation class="oracle.dbtools.crest.model.design.relational.FKIndexAssociation" directorySegmentName="seg_0" id="1C65F0EF-3B31-8AE9-453B-E0F412452231" containerWithKeyObject="5C1ADC5C-41C2-A30F-4E4B-ADB571DAA244" localFKIndex="85EA6798-E352-A751-CA8A-29BE739B3337" name="FK_UTILISER_PIECE">
+<sourceConnName>projet</sourceConnName>
+<sourceObjSchema>JACEM</sourceObjSchema>
+<sourceObjName>FK_UTILISER_PIECE</sourceObjName>
+<createdBy>jacem</createdBy>
+<createdTime>2025-10-21 20:45:09 UTC</createdTime>
+<ownerDesignName>modele relationnel </ownerDesignName>
+<referredTableLongName>JACEM.PIECE_DETACHEE</referredTableLongName>
+<deleteRule>CASCADE</deleteRule>
+<referredTableID>E5E0D6AB-05E3-4E2A-3191-35A7CF3FA5FB</referredTableID>
+<keyObject>47DC66BA-68F3-CA8E-F865-FB093071FED4</keyObject>
+<referredKeyID>47DC66BA-68F3-CA8E-F865-FB093071FED4</referredKeyID>
+<mandatory>true</mandatory>
+<refColNames>ID_PIECE</refColNames>
+<transferable>true</transferable>
+<rely>false</rely>
+<columnDependencyConstraintGenerateInDDL>true</columnDependencyConstraintGenerateInDDL>
+</FKIndexAssociation>
