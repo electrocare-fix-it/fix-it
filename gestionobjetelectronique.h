@@ -9,7 +9,7 @@
 #include <QTableWidgetItem>
 #include "objetelectronique.h"
 #include "database.h"
-#include "twiliosms.h"
+#include "callmebot.h"
 
 namespace Ui {
 class gestionobjetelectronique;
@@ -45,7 +45,7 @@ private:
     Ui::gestionobjetelectronique *ui;
     QString m_currentReference;
     bool m_isTableEditMode;
-    TwilioSMS* m_twilioSMS;
+    CallMeBot* m_callMeBot;
 
     void actualiserTableau();
     void viderFormulaire();
@@ -59,7 +59,7 @@ private:
     void exporterPDF();
     void remplirComboClient();
     void remplirComboObjets();
-    QString genererSMS(const ObjetElectronique& objet);
+    QString genererWhatsApp(const ObjetElectronique& objet);
     void afficherStatistiques();
 };
 

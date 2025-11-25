@@ -372,7 +372,7 @@
            <string notr="true">font-weight: bold; color: #1A3A4A;</string>
           </property>
           <property name="title">
-           <string> SMS Rendez-vous </string>
+           <string> WhatsApp Rendez-vous </string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_18">
            <property name="spacing">
@@ -393,7 +393,7 @@
               <string notr="true">font-size: 11px; color: #1A3A4A; font-weight: bold;</string>
              </property>
              <property name="text">
-              <string>Le SMS sera généré automatiquement selon l'appareil et le problème</string>
+              <string>Le message WhatsApp sera généré automatiquement selon l'appareil et le problème</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -403,7 +403,7 @@
            <item>
             <widget class="QTextEdit" name="textEditSMS_6">
              <property name="placeholderText">
-              <string>Le message SMS apparaîtra ici...</string>
+              <string>Le message WhatsApp apparaîtra ici...</string>
              </property>
             </widget>
            </item>
@@ -413,7 +413,7 @@
               <string notr="true">background-color: #87CEEB; color: #1A3A4A; font-weight: bold;</string>
              </property>
              <property name="text">
-              <string>Générer SMS</string>
+              <string>Générer WhatsApp</string>
              </property>
             </widget>
            </item>
@@ -423,7 +423,7 @@
               <string notr="true">color: #1A3A4A; font-weight: bold;</string>
              </property>
              <property name="text">
-              <string>Envoyer SMS</string>
+              <string>Envoyer WhatsApp</string>
              </property>
             </widget>
            </item>

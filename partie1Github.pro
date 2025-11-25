@@ -21,7 +21,7 @@ SOURCES += \
     connection.cpp \
     login.cpp \
     chatbotemploye.cpp \
-    twiliosms.cpp
+    callmebot.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -35,7 +35,7 @@ HEADERS += \
     connection.h \
     login.h \
     chatbotemploye.h \
-    twiliosms.h
+    callmebot.h
 
 FORMS += \
     gestionemploye.ui \

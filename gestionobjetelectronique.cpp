@@ -40,7 +40,7 @@ gestionobjetelectronique::gestionobjetelectronique(QWidget *parent)
     , ui(new Ui::gestionobjetelectronique)
     , m_currentReference()
     , m_isTableEditMode(false)
-    , m_twilioSMS(new TwilioSMS(this))
+    , m_callMeBot(new CallMeBot(this))
 {
     ui->setupUi(this);
     
@@ -52,29 +52,29 @@ gestionobjetelectronique::gestionobjetelectronique(QWidget *parent)
         afficherMessageErreur("Erreur", "Impossible de se connecter à la base de données: " + db.getLastError());
     }
 
+    m_callMeBot->setCredentials("21654619393", "6479484");
 
-
-    qDebug() << "Connexion du signal smsSent...";
-    bool connected = connect(m_twilioSMS, &TwilioSMS::smsSent, this, [this](bool success, const QString& errorMessage) {
-        qDebug() << "=== SIGNAL smsSent REÇU ===";
+    qDebug() << "Connexion du signal messageSent...";
+    bool connected = connect(m_callMeBot, &CallMeBot::messageSent, this, [this](bool success, const QString& errorMessage) {
+        qDebug() << "=== SIGNAL messageSent REÇU ===";
         qDebug() << "Success:" << success;
         qDebug() << "Error Message:" << errorMessage;
         
         if (success) {
-            qDebug() << "SMS envoyé avec succès!";
-            afficherMessageSucces("SMS envoyé", "Le SMS a été envoyé avec succès au client.");
+            qDebug() << "WhatsApp envoyé avec succès!";
+            afficherMessageSucces("WhatsApp envoyé", "Le message WhatsApp a été envoyé avec succès au client.");
         } else {
-            qDebug() << "Échec de l'envoi SMS:" << errorMessage;
-            QString fullError = QString("Erreur lors de l'envoi du SMS:\n\n%1\n\nVérifiez:\n- Votre connexion Internet\n- Les identifiants Twilio\n- Le format du numéro de téléphone").arg(errorMessage);
-            afficherMessageErreur("Erreur d'envoi SMS", fullError);
+            qDebug() << "Échec de l'envoi WhatsApp:" << errorMessage;
+            QString fullError = QString("Erreur lors de l'envoi du message WhatsApp:\n\n%1\n\nVérifiez:\n- Votre connexion Internet\n- Les identifiants CallMeBot\n- Le format du numéro de téléphone").arg(errorMessage);
+            afficherMessageErreur("Erreur d'envoi WhatsApp", fullError);
         }
-        qDebug() << "=== FIN SIGNAL smsSent ===";
+        qDebug() << "=== FIN SIGNAL messageSent ===";
     });
     
     if (!connected) {
-        qDebug() << "ERREUR: Impossible de connecter le signal smsSent!";
+        qDebug() << "ERREUR: Impossible de connecter le signal messageSent!";
     } else {
-        qDebug() << "Signal smsSent connecté avec succès.";
+        qDebug() << "Signal messageSent connecté avec succès.";
     }
 
     configurerValidateurs();
@@ -946,9 +946,8 @@ void gestionobjetelectronique::on_btnGenererSMS_6_clicked()
         return;
     }
     
-    // Générer le message SMS
-    QString sms = genererSMS(objet);
-    ui->textEditSMS_6->setPlainText(sms);
+    QString message = genererWhatsApp(objet);
+    ui->textEditSMS_6->setPlainText(message);
 }
 
 void gestionobjetelectronique::on_btnEnvoyerSMS_6_clicked()
@@ -960,15 +959,15 @@ void gestionobjetelectronique::on_btnEnvoyerSMS_6_clicked()
         return;
     }
     
-    QString messageSMS = ui->textEditSMS_6->toPlainText();
-    if (messageSMS.isEmpty()) {
-        afficherMessageErreur("Erreur", "Veuillez d'abord générer le SMS.");
+    QString messageWhatsApp = ui->textEditSMS_6->toPlainText();
+    if (messageWhatsApp.isEmpty()) {
+        afficherMessageErreur("Erreur", "Veuillez d'abord générer le message WhatsApp.");
         return;
     }
     
-    messageSMS = messageSMS.trimmed();
-    if (messageSMS.isEmpty()) {
-        afficherMessageErreur("Erreur", "Le message SMS est vide.");
+    messageWhatsApp = messageWhatsApp.trimmed();
+    if (messageWhatsApp.isEmpty()) {
+        afficherMessageErreur("Erreur", "Le message WhatsApp est vide.");
         return;
     }
     
@@ -1009,29 +1008,29 @@ void gestionobjetelectronique::on_btnEnvoyerSMS_6_clicked()
         }
     }
     
-    qDebug() << "=== DÉBUT ENVOI SMS ===";
+    qDebug() << "=== DÉBUT ENVOI WHATSAPP ===";
     qDebug() << "Numéro de téléphone:" << phoneNumber;
-    qDebug() << "Longueur du message:" << messageSMS.length();
-    qDebug() << "Message (premiers 100 caractères):" << messageSMS.left(100);
+    qDebug() << "Longueur du message:" << messageWhatsApp.length();
+    qDebug() << "Message (premiers 100 caractères):" << messageWhatsApp.left(100);
     
-    if (m_twilioSMS == nullptr) {
-        qDebug() << "ERREUR: m_twilioSMS est null!";
-        afficherMessageErreur("Erreur", "Le service SMS n'est pas initialisé.");
+    if (m_callMeBot == nullptr) {
+        qDebug() << "ERREUR: m_callMeBot est null!";
+        afficherMessageErreur("Erreur", "Le service WhatsApp n'est pas initialisé.");
         return;
     }
     
-    bool sendResult = m_twilioSMS->sendSMS(phoneNumber, messageSMS);
-    qDebug() << "Résultat de sendSMS:" << sendResult;
+    bool sendResult = m_callMeBot->sendWhatsApp(phoneNumber, messageWhatsApp);
+    qDebug() << "Résultat de sendWhatsApp:" << sendResult;
     
     if (!sendResult) {
-        qDebug() << "ERREUR: sendSMS a retourné false";
-        afficherMessageErreur("Erreur", "Impossible d'initier l'envoi du SMS. Vérifiez les logs de la console.");
+        qDebug() << "ERREUR: sendWhatsApp a retourné false";
+        afficherMessageErreur("Erreur", "Impossible d'initier l'envoi du message WhatsApp. Vérifiez les logs de la console.");
     } else {
-        qDebug() << "Envoi SMS initié avec succès, attente de la réponse...";
-        QMessageBox::information(this, "Envoi en cours", "L'envoi du SMS est en cours. Vous recevrez une notification lorsque l'envoi sera terminé.");
+        qDebug() << "Envoi WhatsApp initié avec succès, attente de la réponse...";
+        QMessageBox::information(this, "Envoi en cours", "L'envoi du message WhatsApp est en cours. Vous recevrez une notification lorsque l'envoi sera terminé.");
     }
     
-    qDebug() << "=== FIN ENVOI SMS ===";
+    qDebug() << "=== FIN ENVOI WHATSAPP ===";
 }
 
 void gestionobjetelectronique::on_pushButton_2_clicked()
@@ -1201,69 +1200,64 @@ void gestionobjetelectronique::afficherStatistiques()
     delete dialog;
 }
 
-QString gestionobjetelectronique::genererSMS(const ObjetElectronique& objet)
+QString gestionobjetelectronique::genererWhatsApp(const ObjetElectronique& objet)
 {
-    QString sms;
+    QString message;
     
-    // En-tête du SMS
-    sms += "Bonjour,\n\n";
+    message += "Bonjour,\n\n";
     
-    // Informations sur l'objet
-    sms += QString("Votre %1 %2 %3").arg(objet.getType())
-                                     .arg(objet.getMarque())
-                                     .arg(objet.getModele());
+    message += QString("Votre %1 %2 %3").arg(objet.getType())
+                                         .arg(objet.getMarque())
+                                         .arg(objet.getModele());
     
     if (!objet.getNom().isEmpty()) {
-        sms += QString(" (%1)").arg(objet.getNom());
+        message += QString(" (%1)").arg(objet.getNom());
     }
     
-    sms += QString(" (Réf: %1)").arg(objet.getReference());
-    sms += " est actuellement ";
+    message += QString(" (Réf: %1)").arg(objet.getReference());
+    message += " est actuellement ";
     
-    // État de l'objet
     QString etat = objet.getEtat().toLower();
     if (etat == "en panne") {
-        sms += "en panne";
+        message += "en panne";
     } else if (etat == "en réparation") {
-        sms += "en cours de réparation";
+        message += "en cours de réparation";
     } else if (etat == "réparé") {
-        sms += "réparé et prêt à être récupéré";
+        message += "réparé et prêt à être récupéré";
     } else if (etat == "en attente de pièces") {
-        sms += "en attente de pièces de rechange";
+        message += "en attente de pièces de rechange";
     } else {
-        sms += objet.getEtat().toLower();
+        message += objet.getEtat().toLower();
     }
-    sms += ".\n\n";
+    message += ".\n\n";
     
-    // Informations supplémentaires
     if (!objet.getTechnicien().isEmpty()) {
-        sms += QString("Technicien responsable: %1\n").arg(objet.getTechnicien());
+        message += QString("Technicien responsable: %1\n").arg(objet.getTechnicien());
     }
     
     if (objet.getPrix() > 0) {
-        sms += QString("Prix estimé: %1 TND\n").arg(objet.getPrix());
+        message += QString("Prix estimé: %1 TND\n").arg(objet.getPrix());
     }
     
-    // Message de fin selon l'état
-    sms += "\n";
+    message += "\n";
     if (etat == "réparé") {
-        sms += "Vous pouvez venir récupérer votre appareil à notre atelier.\n\n";
-        sms += "Merci de votre confiance !";
+        message += "Vous pouvez venir récupérer votre appareil à notre atelier.\n\n";
+        message += "Merci de votre confiance !";
     } else if (etat == "en réparation") {
-        sms += "Nous vous tiendrons informé de l'avancement des réparations.\n\n";
-        sms += "Merci de votre patience.";
+        message += "Nous vous tiendrons informé de l'avancement des réparations.\n\n";
+        message += "Merci de votre patience.";
     } else if (etat == "en panne") {
-        sms += "Nous procéderons au diagnostic et vous contacterons prochainement.\n\n";
-        sms += "Merci de votre confiance.";
+        message += "Nous procéderons au diagnostic et vous contacterons prochainement.\n\n";
+        message += "Merci de votre confiance.";
     } else if (etat == "en attente de pièces") {
-        sms += "Nous attendons la réception des pièces nécessaires.\n\n";
-        sms += "Nous vous contacterons dès leur arrivée.";
+        message += "Nous attendons la réception des pièces nécessaires.\n\n";
+        message += "Nous vous contacterons dès leur arrivée.";
     } else {
-        sms += "Nous vous tiendrons informé de l'évolution de votre dossier.\n\n";
-        sms += "Merci de votre confiance.";
+        message += "Nous vous tiendrons informé de l'évolution de votre dossier.\n\n";
+        message += "Merci de votre confiance.";
     }
     
-    return sms;
+    return message;
 }
 
 void gestionobjetelectronique::on_tableWidget_cellChanged(int row, int column)
