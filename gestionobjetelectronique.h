@@ -59,6 +59,7 @@ private:
     void exporterPDF();
     void remplirComboClient();
     void remplirComboObjets();
+    void remplirComboPiecesDetachees();
     QString genererWhatsApp(const ObjetElectronique& objet);
     void afficherStatistiques();
 };

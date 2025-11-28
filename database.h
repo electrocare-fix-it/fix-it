@@ -32,13 +32,24 @@ public:
     bool clientExists(const QString& cin) const;
     int getClientIdByCin(const QString& cin) const;
     
-    bool insertObjet(const ObjetElectronique& objet, int idClient = -1);
-    bool updateObjet(const ObjetElectronique& objet, int idClient = -1);
+    bool insertObjet(const ObjetElectronique& objet, int idClient = -1, int idPiece = -1);
+    bool updateObjet(const ObjetElectronique& objet, int idClient = -1, int idPiece = -1);
     bool deleteObjet(const QString& reference);
     QList<ObjetElectronique> getAllObjets();
     ObjetElectronique getObjetByReference(const QString& reference);
     bool objetExists(const QString& reference) const;
     int getClientIdByObjetReference(const QString& reference) const;
+    int getIdPieceByObjetReference(const QString& reference) const;
+    
+    struct PieceDetachee {
+        int id;
+        QString nom;
+        QString categorie;
+        double prix;
+    };
+    QList<PieceDetachee> getAllPiecesDetachees();
+    PieceDetachee getPieceDetacheeById(int id);
+    double getPrixPieceDetachee(int idPiece);
     
     QString getLastError() const;
 

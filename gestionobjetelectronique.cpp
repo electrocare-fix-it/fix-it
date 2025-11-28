@@ -1,5 +1,12 @@
 #include "gestionobjetelectronique.h"
 #include "ui_gestionobjetelectronique.h"
+#include <QPainter>
+#include <QWidget>
+#include <QPaintEvent>
+#include <QMouseEvent>
+#include <QHBoxLayout>
+#include <QScrollArea>
+#include <QGridLayout>
 #include "client.h"
 #include <QMessageBox>
 #include <QTableWidgetItem>
@@ -26,6 +33,88 @@
 #include <QMap>
 #include <QGroupBox>
 
+class PieChartWidget : public QWidget
+{
+public:
+    PieChartWidget(const QMap<QString, int>& data, const QString& title, int total, QWidget* parent = nullptr)
+        : QWidget(parent), m_data(data), m_title(title), m_total(total)
+    {
+        setMinimumSize(400, 350);
+        setStyleSheet("background-color: white; border: 1px solid #87CEEB; border-radius: 5px;");
+    }
+
+protected:
+    void paintEvent(QPaintEvent* event) override
+    {
+        Q_UNUSED(event)
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+        
+        QRect rect = this->rect();
+        int margin = 20;
+        int titleHeight = 30;
+        int legendWidth = 150;
+        int chartSize = qMin(rect.width() - legendWidth - 3 * margin, rect.height() - titleHeight - 2 * margin);
+        
+        QRect chartRect(margin, margin + titleHeight, chartSize, chartSize);
+        QRect legendRect(rect.width() - legendWidth - margin, margin + titleHeight, legendWidth, chartSize);
+        
+        painter.setFont(QFont("Arial", 12, QFont::Bold));
+        painter.drawText(QRect(margin, margin, rect.width() - 2 * margin, titleHeight), Qt::AlignCenter, m_title);
+        
+        if (m_total == 0) {
+            painter.drawText(chartRect, Qt::AlignCenter, "Aucune donnée");
+            return;
+        }
+        
+        QList<QColor> colors = {
+            QColor("#87CEEB"), QColor("#4682B4"), QColor("#5F9EA0"), 
+            QColor("#20B2AA"), QColor("#00CED1"), QColor("#1E90FF"),
+            QColor("#6495ED"), QColor("#7B68EE"), QColor("#9370DB"), QColor("#BA55D3")
+        };
+        
+        double startAngle = 0;
+        int colorIndex = 0;
+        int yPos = legendRect.top();
+        
+        QList<QString> keys = m_data.keys();
+        std::sort(keys.begin(), keys.end());
+        
+        for (const QString& key : keys) {
+            int value = m_data[key];
+            double angle = (value * 360.0) / m_total;
+            double percentage = (value * 100.0) / m_total;
+            
+            QColor color = colors[colorIndex % colors.size()];
+            painter.setBrush(color);
+            painter.setPen(QPen(Qt::black, 2));
+            
+            painter.drawPie(chartRect, startAngle * 16, angle * 16);
+            
+            painter.setPen(Qt::black);
+            painter.setFont(QFont("Arial", 9));
+            QString legendText = QString("%1: %2 (%3%)").arg(key).arg(value).arg(percentage, 0, 'f', 1);
+            QRect legendItemRect(legendRect.left(), yPos, legendRect.width() - 20, 20);
+            painter.fillRect(legendItemRect.adjusted(0, 2, -legendRect.width() + 15, -2), color);
+            painter.drawText(legendItemRect.adjusted(20, 0, 0, 0), Qt::AlignLeft | Qt::AlignVCenter, legendText);
+            
+            startAngle += angle;
+            colorIndex++;
+            yPos += 25;
+        }
+    }
+
+private:
+    QMap<QString, int> m_data;
+    QString m_title;
+    int m_total;
+};
+
+static QWidget* createPieChart(const QMap<QString, int>& data, const QString& title, int total)
+{
+    return new PieChartWidget(data, title, total);
+}
+
 static int getEtatOrder(const QString& etat)
 {
     QString etatLower = etat.toLower().trimmed();
@@ -33,6 +122,26 @@ static int getEtatOrder(const QString& etat)
     if (etatLower == "en réparation") return 2;
     if (etatLower == "réparé") return 3;
     return 4;
+}
+
+static int getTypeOrder(const QString& type)
+{
+    QString typeLower = type.toLower().trimmed();
+    if (typeLower.contains("téléphone") || typeLower.contains("telephone") || typeLower.contains("smartphone")) return 1;
+    if (typeLower.contains("pc") || typeLower.contains("ordinateur") || typeLower.contains("laptop")) return 2;
+    if (typeLower.contains("imprimante") || typeLower.contains("printer")) return 3;
+    return 4;
+}
+
+static int getMarqueOrder(const QString& marque)
+{
+    QString marqueLower = marque.toLower().trimmed();
+    if (marqueLower.contains("apple")) return 1;
+    if (marqueLower.contains("samsung")) return 2;
+    if (marqueLower.contains("hp")) return 3;
+    if (marqueLower.contains("asus")) return 4;
+    if (marqueLower.contains("lenovo")) return 5;
+    return 6;
 }
 
 gestionobjetelectronique::gestionobjetelectronique(QWidget *parent)
@@ -79,6 +188,28 @@ gestionobjetelectronique::gestionobjetelectronique(QWidget *parent)
 
     configurerValidateurs();
     actualiserTableau();
+    
+    remplirComboClient();
+    remplirComboObjets();
+    remplirComboPiecesDetachees();
+    
+    connect(ui->comboBoxProbleme_6, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index) {
+        if (index > 0) {
+            int idPiece = ui->comboBoxProbleme_6->itemData(index).toInt();
+            if (idPiece > 0) {
+                DatabaseManager& db = DatabaseManager::getInstance();
+                double prix = db.getPrixPieceDetachee(idPiece);
+                ui->spinBoxPrix_6->setValue(static_cast<int>(prix));
+            }
+        }
+    });
+    
+    connect(ui->comboBoxProbleme_6, &QComboBox::activated, this, [this](int index) {
+        if (index == 0 && ui->comboBoxProbleme_6->count() == 1) {
+            qDebug() << "ComboBox vide détecté, rafraîchissement des pièces détachées...";
+            remplirComboPiecesDetachees();
+        }
+    });
 
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget->setVisible(true);
@@ -173,11 +304,24 @@ void gestionobjetelectronique::actualiserTableau()
 
     std::sort(objets.begin(), objets.end(),
               [](const ObjetElectronique& a, const ObjetElectronique& b) {
-                  int orderA = getEtatOrder(a.getEtat());
-                  int orderB = getEtatOrder(b.getEtat());
-                  if (orderA != orderB) {
-                      return orderA < orderB;
+                  int etatA = getEtatOrder(a.getEtat());
+                  int etatB = getEtatOrder(b.getEtat());
+                  if (etatA != etatB) {
+                      return etatA < etatB;
                   }
+                  
+                  int typeA = getTypeOrder(a.getType());
+                  int typeB = getTypeOrder(b.getType());
+                  if (typeA != typeB) {
+                      return typeA < typeB;
+                  }
+                  
+                  int marqueA = getMarqueOrder(a.getMarque());
+                  int marqueB = getMarqueOrder(b.getMarque());
+                  if (marqueA != marqueB) {
+                      return marqueA < marqueB;
+                  }
+                  
                   return a.getReference() < b.getReference();
               });
 
@@ -229,6 +373,7 @@ void gestionobjetelectronique::viderFormulaire()
     ui->comboBoxEtat_6->setCurrentIndex(0);
     ui->lineEditTechnicien_6->clear();
     ui->spinBoxPrix_6->setValue(0);
+    ui->comboBoxProbleme_6->setCurrentIndex(0);
     m_currentReference.clear();
 }
 
@@ -256,7 +401,19 @@ void gestionobjetelectronique::remplirFormulaire(const ObjetElectronique& objet)
             }
         }
     } else {
-        ui->comboBoxType_7->setCurrentIndex(0); // "-- Sélectionner --"
+        ui->comboBoxType_7->setCurrentIndex(0);
+    }
+    
+    int idPiece = db.getIdPieceByObjetReference(objet.getReference());
+    if (idPiece > 0) {
+        for (int i = 0; i < ui->comboBoxProbleme_6->count(); ++i) {
+            if (ui->comboBoxProbleme_6->itemData(i).toInt() == idPiece) {
+                ui->comboBoxProbleme_6->setCurrentIndex(i);
+                break;
+            }
+        }
+    } else {
+        ui->comboBoxProbleme_6->setCurrentIndex(0);
     }
 }
 
@@ -502,12 +659,17 @@ void gestionobjetelectronique::on_btnAjouter_6_clicked()
 
     int idClient = ui->comboBoxType_7->currentData().toInt();
     if (idClient <= 0) {
-        idClient = -1; // NULL
+        idClient = -1;
     }
     
-    qDebug() << "Ajout objet - Référence:" << objet.getReference() << "ID Client:" << idClient;
+    int idPiece = ui->comboBoxProbleme_6->currentData().toInt();
+    if (idPiece <= 0) {
+        idPiece = -1;
+    }
+    
+    qDebug() << "Ajout objet - Référence:" << objet.getReference() << "ID Client:" << idClient << "ID Piece:" << idPiece;
 
-    if (!db.insertObjet(objet, idClient)) {
+    if (!db.insertObjet(objet, idClient, idPiece)) {
         afficherMessageErreur("Erreur", "Erreur lors de l'ajout de l'objet: " + db.getLastError());
         return;
     }
@@ -520,6 +682,7 @@ void gestionobjetelectronique::on_btnAjouter_6_clicked()
     viderFormulaire();
     remplirComboClient();
     remplirComboObjets();
+    remplirComboPiecesDetachees();
     
     afficherMessageSucces("Succès", "Objet ajouté avec succès.");
 }
@@ -542,7 +705,12 @@ void gestionobjetelectronique::on_btnModifier_6_clicked()
         idClient = -1; // NULL
     }
 
-    if (!db.updateObjet(objet, idClient)) {
+    int idPiece = ui->comboBoxProbleme_6->currentData().toInt();
+    if (idPiece <= 0) {
+        idPiece = -1;
+    }
+    
+    if (!db.updateObjet(objet, idClient, idPiece)) {
         afficherMessageErreur("Erreur", "Erreur lors de la modification: " + db.getLastError());
         return;
     }
@@ -551,6 +719,7 @@ void gestionobjetelectronique::on_btnModifier_6_clicked()
     viderFormulaire();
     remplirComboClient();
     remplirComboObjets();
+    remplirComboPiecesDetachees();
     
     afficherMessageSucces("Succès", "Objet modifié avec succès.");
 }
@@ -676,11 +845,24 @@ void gestionobjetelectronique::on_btnRechercher_6_clicked()
 
     std::sort(filteredObjets.begin(), filteredObjets.end(),
               [](const ObjetElectronique& a, const ObjetElectronique& b) {
-                  int orderA = getEtatOrder(a.getEtat());
-                  int orderB = getEtatOrder(b.getEtat());
-                  if (orderA != orderB) {
-                      return orderA < orderB;
+                  int etatA = getEtatOrder(a.getEtat());
+                  int etatB = getEtatOrder(b.getEtat());
+                  if (etatA != etatB) {
+                      return etatA < etatB;
                   }
+                  
+                  int typeA = getTypeOrder(a.getType());
+                  int typeB = getTypeOrder(b.getType());
+                  if (typeA != typeB) {
+                      return typeA < typeB;
+                  }
+                  
+                  int marqueA = getMarqueOrder(a.getMarque());
+                  int marqueB = getMarqueOrder(b.getMarque());
+                  if (marqueA != marqueB) {
+                      return marqueA < marqueB;
+                  }
+                  
                   return a.getReference() < b.getReference();
               });
 
@@ -759,41 +941,43 @@ int gestionobjetelectronique::calculerPrixEstime(const QString& probleme)
         return 0;
     }
     
-    if (probleme == "Écran cassé") return 150;
-    if (probleme == "Batterie défectueuse") return 80;
-    if (probleme == "Problème logiciel") return 50;
-    if (probleme == "Ne s'allume pas") return 120;
-    if (probleme == "Problème de charge") return 60;
-    if (probleme == "Micro défectueux") return 40;
-    if (probleme == "Haut-parleur cassé") return 45;
-    if (probleme == "Bouton d'alimentation défectueux") return 35;
-    if (probleme == "Caméra cassée") return 100;
-    if (probleme == "Port USB défectueux") return 55;
-    if (probleme == "Clavier défectueux") return 70;
-    if (probleme == "Trackpad défectueux") return 90;
-    if (probleme == "Ventilateur défectueux") return 65;
-    if (probleme == "Carte mère défectueuse") return 200;
-    if (probleme == "Disque dur défectueux") return 110;
-    if (probleme == "Tête d'impression bouchée") return 30;
-    if (probleme == "Cartouche vide") return 25;
-    if (probleme == "Problème de papier") return 20;
-    if (probleme == "Rouleau défectueux") return 40;
-    if (probleme == "Autre") return 75;
+    int currentIndex = ui->comboBoxProbleme_6->currentIndex();
+    if (currentIndex > 0) {
+        int idPiece = ui->comboBoxProbleme_6->itemData(currentIndex).toInt();
+        if (idPiece > 0) {
+            DatabaseManager& db = DatabaseManager::getInstance();
+            double prix = db.getPrixPieceDetachee(idPiece);
+            return static_cast<int>(prix);
+        }
+    }
     
     return 0;
 }
 
 void gestionobjetelectronique::on_btnCalculerPrix_6_clicked()
 {
-    QString probleme = ui->comboBoxProbleme_6->currentText();
-    int prix = calculerPrixEstime(probleme);
-    ui->spinBoxPrix_6->setValue(prix);
+    int currentIndex = ui->comboBoxProbleme_6->currentIndex();
+    if (currentIndex <= 0) {
+        afficherMessageErreur("Erreur", "Veuillez sélectionner une pièce détachée.");
+        return;
+    }
+    
+    int idPiece = ui->comboBoxProbleme_6->itemData(currentIndex).toInt();
+    if (idPiece <= 0) {
+        afficherMessageErreur("Erreur", "Pièce détachée invalide.");
+        return;
+    }
+    
+    DatabaseManager& db = DatabaseManager::getInstance();
+    double prix = db.getPrixPieceDetachee(idPiece);
     
     if (prix > 0) {
-        afficherMessageSucces("Prix estimé", QString("Le prix estimé pour '%1' est de %2 TND.")
-                              .arg(probleme).arg(prix));
+        ui->spinBoxPrix_6->setValue(static_cast<int>(prix));
+        QString nomPiece = ui->comboBoxProbleme_6->currentText();
+        afficherMessageSucces("Prix estimé", QString("Le prix pour '%1' est de %2 TND.")
+                              .arg(nomPiece).arg(prix, 0, 'f', 2));
     } else {
-        afficherMessageErreur("Erreur", "Veuillez sélectionner un problème.");
+        afficherMessageErreur("Erreur", "Impossible de récupérer le prix de la pièce détachée.");
     }
 }
 
@@ -820,11 +1004,24 @@ void gestionobjetelectronique::exporterPDF()
     
     std::sort(objets.begin(), objets.end(),
         [](const ObjetElectronique& a, const ObjetElectronique& b) {
-            int orderA = getEtatOrder(a.getEtat());
-            int orderB = getEtatOrder(b.getEtat());
-            if (orderA != orderB) {
-                return orderA < orderB;
+            int etatA = getEtatOrder(a.getEtat());
+            int etatB = getEtatOrder(b.getEtat());
+            if (etatA != etatB) {
+                return etatA < etatB;
             }
+            
+            int typeA = getTypeOrder(a.getType());
+            int typeB = getTypeOrder(b.getType());
+            if (typeA != typeB) {
+                return typeA < typeB;
+            }
+            
+            int marqueA = getMarqueOrder(a.getMarque());
+            int marqueB = getMarqueOrder(b.getMarque());
+            if (marqueA != marqueB) {
+                return marqueA < marqueB;
+            }
+            
             return a.getReference() < b.getReference();
         });
     
@@ -924,6 +1121,49 @@ void gestionobjetelectronique::remplirComboObjets()
                                                       .arg(objet.getNom())
                                                       .arg(objet.getMarque());
         ui->comboBoxType_9->addItem(displayText, objet.getReference());
+    }
+}
+
+void gestionobjetelectronique::remplirComboPiecesDetachees()
+{
+    ui->comboBoxProbleme_6->clear();
+    ui->comboBoxProbleme_6->addItem("-- Sélectionner --", -1);
+    
+    DatabaseManager& db = DatabaseManager::getInstance();
+    
+    if (!db.isConnected()) {
+        qDebug() << "remplirComboPiecesDetachees: Base de données non connectée, tentative de connexion...";
+        if (!db.connect()) {
+            qDebug() << "remplirComboPiecesDetachees: Impossible de se connecter à la base de données";
+            QMessageBox::warning(this, "Erreur", "Impossible de se connecter à la base de données pour charger les pièces détachées.");
+            return;
+        }
+    }
+    
+    QList<DatabaseManager::PieceDetachee> pieces = db.getAllPiecesDetachees();
+    
+    qDebug() << "remplirComboPiecesDetachees: Nombre de pièces trouvées:" << pieces.size();
+    
+    if (pieces.isEmpty()) {
+        qDebug() << "remplirComboPiecesDetachees: Aucune pièce détachée trouvée!";
+        QString errorMsg = db.getLastError();
+        if (!errorMsg.isEmpty()) {
+            qDebug() << "remplirComboPiecesDetachees: Erreur de la base de données:" << errorMsg;
+        }
+    }
+    
+    for (const DatabaseManager::PieceDetachee& piece : pieces) {
+        if (piece.id > 0 && !piece.nom.isEmpty()) {
+            QString displayText = QString("%1 (%2 TND)").arg(piece.nom).arg(piece.prix, 0, 'f', 2);
+            ui->comboBoxProbleme_6->addItem(displayText, piece.id);
+            qDebug() << "remplirComboPiecesDetachees: Ajout de" << displayText << "avec ID" << piece.id;
+        }
+    }
+    
+    qDebug() << "remplirComboPiecesDetachees: ComboBox rempli avec" << ui->comboBoxProbleme_6->count() << "éléments";
+    
+    if (ui->comboBoxProbleme_6->count() == 1) {
+        qDebug() << "remplirComboPiecesDetachees: ATTENTION - Seul l'élément '-- Sélectionner --' est présent!";
     }
 }
 
@@ -1045,7 +1285,7 @@ void gestionobjetelectronique::afficherStatistiques()
     
     QDialog* dialog = new QDialog(this);
     dialog->setWindowTitle("Statistiques des Objets Électroniques");
-    dialog->setMinimumSize(800, 600);
+    dialog->setMinimumSize(1200, 800);
     dialog->setStyleSheet("QDialog { background-color: #F5F5F5; }");
     
     QVBoxLayout* mainLayout = new QVBoxLayout(dialog);
@@ -1055,20 +1295,23 @@ void gestionobjetelectronique::afficherStatistiques()
     titreLabel->setAlignment(Qt::AlignCenter);
     mainLayout->addWidget(titreLabel);
     
-    QTextEdit* statsText = new QTextEdit(dialog);
-    statsText->setReadOnly(true);
-    statsText->setStyleSheet("QTextEdit { background-color: white; border: 2px solid #87CEEB; border-radius: 5px; padding: 10px; font-size: 12px; }");
+    QScrollArea* scrollArea = new QScrollArea(dialog);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setStyleSheet("QScrollArea { border: none; background-color: #F5F5F5; }");
     
-    QString stats;
+    QWidget* scrollContent = new QWidget();
+    QVBoxLayout* contentLayout = new QVBoxLayout(scrollContent);
     
     int totalObjets = objets.size();
-    stats += QString("<h2 style='color: #2C5F75;'>📊 Vue d'ensemble</h2>");
-    stats += QString("<p><b>Nombre total d'objets :</b> %1</p>").arg(totalObjets);
     
     if (totalObjets == 0) {
-        stats += "<p style='color: #888;'>Aucun objet électronique enregistré.</p>";
-        statsText->setHtml(stats);
-        mainLayout->addWidget(statsText);
+        QLabel* emptyLabel = new QLabel("Aucun objet électronique enregistré.", scrollContent);
+        emptyLabel->setStyleSheet("font-size: 14px; color: #888; padding: 20px;");
+        emptyLabel->setAlignment(Qt::AlignCenter);
+        contentLayout->addWidget(emptyLabel);
+        
+        scrollArea->setWidget(scrollContent);
+        mainLayout->addWidget(scrollArea);
         
         QPushButton* closeBtn = new QPushButton("Fermer", dialog);
         closeBtn->setStyleSheet("QPushButton { background-color: #87CEEB; color: #1A3A4A; font-weight: bold; padding: 8px; border-radius: 5px; }");
@@ -1112,84 +1355,75 @@ void gestionobjetelectronique::afficherStatistiques()
         }
     }
     
-    stats += QString("<p><b>Prix total estimé :</b> %1 TND</p>").arg(prixTotal, 0, 'f', 2);
-    if (objetsAvecPrix > 0) {
-        stats += QString("<p><b>Prix moyen :</b> %1 TND</p>").arg(prixTotal / objetsAvecPrix, 0, 'f', 2);
-    }
+    QGroupBox* overviewBox = new QGroupBox("📊 Vue d'ensemble", scrollContent);
+    overviewBox->setStyleSheet("QGroupBox { font-weight: bold; color: #2C5F75; border: 2px solid #87CEEB; border-radius: 5px; margin-top: 10px; padding-top: 10px; }");
+    QVBoxLayout* overviewLayout = new QVBoxLayout(overviewBox);
+    QLabel* overviewLabel = new QLabel(QString("Nombre total d'objets : <b>%1</b><br>Prix total estimé : <b>%2 TND</b><br>Prix moyen : <b>%3 TND</b>")
+                                       .arg(totalObjets)
+                                       .arg(prixTotal, 0, 'f', 2)
+                                       .arg(objetsAvecPrix > 0 ? prixTotal / objetsAvecPrix : 0.0, 0, 'f', 2), overviewBox);
+    overviewLabel->setStyleSheet("font-size: 14px; padding: 10px;");
+    overviewLayout->addWidget(overviewLabel);
+    contentLayout->addWidget(overviewBox);
     
-    stats += "<hr>";
-    stats += QString("<h2 style='color: #2C5F75;'>📈 Répartition par État</h2>");
-    stats += "<table style='width: 100%; border-collapse: collapse;'>";
-    stats += "<tr style='background-color: #87CEEB;'><th style='padding: 8px; text-align: left;'>État</th><th style='padding: 8px; text-align: right;'>Nombre</th><th style='padding: 8px; text-align: right;'>Pourcentage</th></tr>";
-    
-    QList<QString> etats = statsParEtat.keys();
-    std::sort(etats.begin(), etats.end(), [](const QString& a, const QString& b) {
-        return getEtatOrder(a) < getEtatOrder(b);
-    });
-    
-    for (const QString& etat : etats) {
-        int count = statsParEtat[etat];
-        double pourcentage = (count * 100.0) / totalObjets;
-        stats += QString("<tr><td style='padding: 8px;'>%1</td><td style='padding: 8px; text-align: right;'>%2</td><td style='padding: 8px; text-align: right;'>%3%</td></tr>")
-                    .arg(etat).arg(count).arg(pourcentage, 0, 'f', 1);
-    }
-    stats += "</table>";
-    
-    if (!statsParType.isEmpty()) {
-        stats += "<hr>";
-        stats += QString("<h2 style='color: #2C5F75;'>🔧 Répartition par Type</h2>");
-        stats += "<table style='width: 100%; border-collapse: collapse;'>";
-        stats += "<tr style='background-color: #87CEEB;'><th style='padding: 8px; text-align: left;'>Type</th><th style='padding: 8px; text-align: right;'>Nombre</th><th style='padding: 8px; text-align: right;'>Pourcentage</th></tr>";
+    auto addStatSection = [&](const QMap<QString, int>& data, const QString& title, const QString& icon) {
+        if (data.isEmpty()) return;
         
-        QList<QString> types = statsParType.keys();
-        std::sort(types.begin(), types.end());
+        QGroupBox* sectionBox = new QGroupBox(QString("%1 %2").arg(icon).arg(title), scrollContent);
+        sectionBox->setStyleSheet("QGroupBox { font-weight: bold; color: #2C5F75; border: 2px solid #87CEEB; border-radius: 5px; margin-top: 10px; padding-top: 10px; }");
+        QHBoxLayout* sectionLayout = new QHBoxLayout(sectionBox);
         
-        for (const QString& type : types) {
-            int count = statsParType[type];
-            double pourcentage = (count * 100.0) / totalObjets;
-            stats += QString("<tr><td style='padding: 8px;'>%1</td><td style='padding: 8px; text-align: right;'>%2</td><td style='padding: 8px; text-align: right;'>%3%</td></tr>")
-                        .arg(type).arg(count).arg(pourcentage, 0, 'f', 1);
+        QTextEdit* tableText = new QTextEdit(sectionBox);
+        tableText->setReadOnly(true);
+        tableText->setMaximumWidth(400);
+        tableText->setStyleSheet("QTextEdit { background-color: white; border: 1px solid #87CEEB; border-radius: 5px; padding: 10px; font-size: 12px; }");
+        
+        QString tableHtml = "<table style='width: 100%; border-collapse: collapse;'>";
+        tableHtml += "<tr style='background-color: #87CEEB;'><th style='padding: 8px; text-align: left;'>" + 
+                     (title.contains("Technicien") ? "Technicien" : title.split(" ").last()) + 
+                     "</th><th style='padding: 8px; text-align: right;'>Nombre</th>";
+        if (!title.contains("Technicien")) {
+            tableHtml += "<th style='padding: 8px; text-align: right;'>Pourcentage</th>";
         }
-        stats += "</table>";
-    }
-    
-    if (!statsParMarque.isEmpty()) {
-        stats += "<hr>";
-        stats += QString("<h2 style='color: #2C5F75;'>🏷️ Répartition par Marque</h2>");
-        stats += "<table style='width: 100%; border-collapse: collapse;'>";
-        stats += "<tr style='background-color: #87CEEB;'><th style='padding: 8px; text-align: left;'>Marque</th><th style='padding: 8px; text-align: right;'>Nombre</th><th style='padding: 8px; text-align: right;'>Pourcentage</th></tr>";
+        tableHtml += "</tr>";
         
-        QList<QString> marques = statsParMarque.keys();
-        std::sort(marques.begin(), marques.end());
-        
-        for (const QString& marque : marques) {
-            int count = statsParMarque[marque];
-            double pourcentage = (count * 100.0) / totalObjets;
-            stats += QString("<tr><td style='padding: 8px;'>%1</td><td style='padding: 8px; text-align: right;'>%2</td><td style='padding: 8px; text-align: right;'>%3%</td></tr>")
-                        .arg(marque).arg(count).arg(pourcentage, 0, 'f', 1);
+        QList<QString> keys = data.keys();
+        if (title.contains("État")) {
+            std::sort(keys.begin(), keys.end(), [](const QString& a, const QString& b) {
+                return getEtatOrder(a) < getEtatOrder(b);
+            });
+        } else {
+            std::sort(keys.begin(), keys.end());
         }
-        stats += "</table>";
-    }
-    
-    if (!statsParTechnicien.isEmpty()) {
-        stats += "<hr>";
-        stats += QString("<h2 style='color: #2C5F75;'>👨‍🔧 Répartition par Technicien</h2>");
-        stats += "<table style='width: 100%; border-collapse: collapse;'>";
-        stats += "<tr style='background-color: #87CEEB;'><th style='padding: 8px; text-align: left;'>Technicien</th><th style='padding: 8px; text-align: right;'>Nombre d'objets</th></tr>";
         
-        QList<QString> techniciens = statsParTechnicien.keys();
-        std::sort(techniciens.begin(), techniciens.end());
-        
-        for (const QString& technicien : techniciens) {
-            int count = statsParTechnicien[technicien];
-            stats += QString("<tr><td style='padding: 8px;'>%1</td><td style='padding: 8px; text-align: right;'>%2</td></tr>")
-                        .arg(technicien).arg(count);
+        for (const QString& key : keys) {
+            int count = data[key];
+            tableHtml += QString("<tr><td style='padding: 8px;'>%1</td><td style='padding: 8px; text-align: right;'>%2</td>")
+                        .arg(key).arg(count);
+            if (!title.contains("Technicien")) {
+                double pourcentage = (count * 100.0) / totalObjets;
+                tableHtml += QString("<td style='padding: 8px; text-align: right;'>%1%</td>")
+                            .arg(pourcentage, 0, 'f', 1);
+            }
+            tableHtml += "</tr>";
         }
-        stats += "</table>";
-    }
+        tableHtml += "</table>";
+        tableText->setHtml(tableHtml);
+        
+        QWidget* chartView = createPieChart(data, title, totalObjets);
+        
+        sectionLayout->addWidget(tableText);
+        sectionLayout->addWidget(chartView);
+        contentLayout->addWidget(sectionBox);
+    };
     
-    statsText->setHtml(stats);
-    mainLayout->addWidget(statsText);
+    addStatSection(statsParEtat, "Répartition par État", "📈");
+    addStatSection(statsParType, "Répartition par Type", "🔧");
+    addStatSection(statsParMarque, "Répartition par Marque", "🏷️");
+    addStatSection(statsParTechnicien, "Répartition par Technicien", "👨‍🔧");
+    
+    scrollArea->setWidget(scrollContent);
+    mainLayout->addWidget(scrollArea);
     
     QPushButton* closeBtn = new QPushButton("Fermer", dialog);
     closeBtn->setStyleSheet("QPushButton { background-color: #87CEEB; color: #1A3A4A; font-weight: bold; padding: 8px; border-radius: 5px; }");

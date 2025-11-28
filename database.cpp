@@ -478,7 +478,49 @@ int DatabaseManager::getClientIdByObjetReference(const QString& reference) const
     return idClient;
 }
 
-bool DatabaseManager::insertObjet(const ObjetElectronique& objet, int idClient)
+int DatabaseManager::getIdPieceByObjetReference(const QString& reference) const
+{
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
+        return -1;
+    }
+    
+    QString tableName = detectTableName();
+    QString upperName = tableName.toUpper();
+    
+    if (!upperName.contains("OBJET_ELECTRONIQUE")) {
+        return -1;
+    }
+    
+    QSqlQuery checkCol(db);
+    QString checkColQuery = QString("SELECT COUNT(*) FROM user_tab_columns WHERE UPPER(table_name) = UPPER(:tableName) AND UPPER(column_name) = 'ID_PIECE'");
+    checkCol.prepare(checkColQuery);
+    checkCol.bindValue(":tableName", tableName);
+    if (!checkCol.exec() || !checkCol.next() || checkCol.value(0).toInt() == 0) {
+        return -1;
+    }
+    
+    QStringList columns = getTableColumns(tableName);
+    QSqlQuery query(db);
+    QString selectQuery = QString("SELECT ID_PIECE FROM %1 WHERE %2 = :reference")
+                          .arg(tableName).arg(columns[0]);
+    
+    query.prepare(selectQuery);
+    query.bindValue(":reference", reference);
+    
+    if (!query.exec() || !query.next()) {
+        return -1;
+    }
+    
+    QVariant value = query.value(0);
+    if (value.isNull() || !value.isValid()) {
+        return -1;
+    }
+    
+    return value.toInt();
+}
+
+bool DatabaseManager::insertObjet(const ObjetElectronique& objet, int idClient, int idPiece)
 {
     try {
         QSqlDatabase& db = m_connection.getDatabase();
@@ -566,6 +608,7 @@ bool DatabaseManager::insertObjet(const ObjetElectronique& objet, int idClient)
         tableSchemas << "OBJETS|reference, nom, marque, modele, couleur, numero_serie, type, etat, technicien, prix|:reference, :nom, :marque, :modele, :couleur, :numero_serie, :type, :etat, :technicien, :prix";
         
         bool hasIdClient = false;
+        bool hasIdPiece = false;
         if (upperName.contains("OBJET_ELECTRONIQUE")) {
             QSqlQuery checkIdClient(db);
             QString checkColsQuery = QString("SELECT COUNT(*) FROM user_tab_columns WHERE UPPER(table_name) = UPPER(:tableName) AND UPPER(column_name) = 'ID_CLIENT_COURANT'");
@@ -574,16 +617,47 @@ bool DatabaseManager::insertObjet(const ObjetElectronique& objet, int idClient)
             if (checkIdClient.exec() && checkIdClient.next()) {
                 hasIdClient = (checkIdClient.value(0).toInt() > 0);
             }
+            
+            QSqlQuery checkIdPiece(db);
+            QString checkPieceQuery = QString("SELECT COUNT(*) FROM user_tab_columns WHERE UPPER(table_name) = UPPER(:tableName) AND UPPER(column_name) = 'ID_PIECE'");
+            checkIdPiece.prepare(checkPieceQuery);
+            checkIdPiece.bindValue(":tableName", tableName);
+            if (checkIdPiece.exec() && checkIdPiece.next()) {
+                hasIdPiece = (checkIdPiece.value(0).toInt() > 0);
+            }
         }
         
-        if (upperName.contains("OBJET_ELECTRONIQUE") && hasTechnicienPrix && hasIdClient) {
-            tableSchemas << "OBJET_ELECTRONIQUE|ID_OBJET, NOM_OBJET, MARQUE, MODELE, COULEUR, NUM_SERIE, TYPE_OBJET, ETAT, TECHNICIEN, PRIX, ID_CLIENT_COURANT|SEQ_OBJET.NEXTVAL, :nom, :marque, :modele, :couleur, :numero_serie, :type, :etat, :technicien, :prix, :id_client";
-        } else if (upperName.contains("OBJET_ELECTRONIQUE") && hasTechnicienPrix) {
-            tableSchemas << "OBJET_ELECTRONIQUE|ID_OBJET, NOM_OBJET, MARQUE, MODELE, COULEUR, NUM_SERIE, TYPE_OBJET, ETAT, TECHNICIEN, PRIX|SEQ_OBJET.NEXTVAL, :nom, :marque, :modele, :couleur, :numero_serie, :type, :etat, :technicien, :prix";
-        } else if (upperName.contains("OBJET_ELECTRONIQUE") && hasIdClient) {
-            tableSchemas << "OBJET_ELECTRONIQUE|ID_OBJET, NOM_OBJET, MARQUE, MODELE, COULEUR, NUM_SERIE, TYPE_OBJET, ETAT, ID_CLIENT_COURANT|SEQ_OBJET.NEXTVAL, :nom, :marque, :modele, :couleur, :numero_serie, :type, :etat, :id_client";
-        } else {
-            tableSchemas << "OBJET_ELECTRONIQUE|ID_OBJET, NOM_OBJET, MARQUE, MODELE, COULEUR, NUM_SERIE, TYPE_OBJET, ETAT, ID_EMPLOYE_COURANT|SEQ_OBJET.NEXTVAL, :nom, :marque, :modele, :couleur, :numero_serie, :type, :etat, NULL";
+        QString columnsList;
+        QString valuesList;
+        
+        columnsList = "ID_OBJET, NOM_OBJET, MARQUE, MODELE, COULEUR, NUM_SERIE, TYPE_OBJET, ETAT";
+        valuesList = "SEQ_OBJET.NEXTVAL, :nom, :marque, :modele, :couleur, :numero_serie, :type, :etat";
+        
+        if (hasTechnicienPrix) {
+            columnsList += ", TECHNICIEN, PRIX";
+            valuesList += ", :technicien, :prix";
+        }
+        
+        if (hasIdClient) {
+            columnsList += ", ID_CLIENT_COURANT";
+            if (idClient > 0) {
+                valuesList += ", :id_client";
+            } else {
+                valuesList += ", NULL";
+            }
+        }
+        
+        if (hasIdPiece) {
+            columnsList += ", ID_PIECE";
+            if (idPiece > 0) {
+                valuesList += ", :id_piece";
+            } else {
+                valuesList += ", NULL";
+            }
+        }
+        
+        if (upperName.contains("OBJET_ELECTRONIQUE")) {
+            tableSchemas << QString("OBJET_ELECTRONIQUE|%1|%2").arg(columnsList).arg(valuesList);
         }
         
         for (const QString& schema : tableSchemas) {
@@ -622,12 +696,11 @@ bool DatabaseManager::insertObjet(const ObjetElectronique& objet, int idClient)
                     query.bindValue(":technicien", technicien.isEmpty() ? QString() : technicien);
                     query.bindValue(":prix", prix);
                 }
-                if (hasIdClient) {
-                    if (idClient > 0) {
-                        query.bindValue(":id_client", idClient);
-                    } else {
-                        query.bindValue(":id_client", QVariant(QVariant::Int));
-                    }
+                if (hasIdClient && idClient > 0) {
+                    query.bindValue(":id_client", idClient);
+                }
+                if (hasIdPiece && idPiece > 0) {
+                    query.bindValue(":id_piece", idPiece);
                 }
             } else {
                 query.bindValue(":reference", objet.getReference());
@@ -667,7 +740,7 @@ bool DatabaseManager::insertObjet(const ObjetElectronique& objet, int idClient)
     }
 }
 
-bool DatabaseManager::updateObjet(const ObjetElectronique& objet, int idClient)
+bool DatabaseManager::updateObjet(const ObjetElectronique& objet, int idClient, int idPiece)
 {
     QSqlDatabase& db = m_connection.getDatabase();
     if (!db.isOpen()) {
@@ -684,6 +757,7 @@ bool DatabaseManager::updateObjet(const ObjetElectronique& objet, int idClient)
     
     bool hasTechnicienPrix = false;
     bool hasIdClient = false;
+    bool hasIdPiece = false;
     if (upperName.contains("OBJET_ELECTRONIQUE")) {
         QSqlQuery checkTechPrix(db);
         QString checkColsQuery = QString("SELECT COUNT(*) FROM user_tab_columns WHERE UPPER(table_name) = UPPER(:tableName) AND (UPPER(column_name) = 'TECHNICIEN' OR UPPER(column_name) = 'PRIX')");
@@ -701,10 +775,36 @@ bool DatabaseManager::updateObjet(const ObjetElectronique& objet, int idClient)
         if (checkIdClient.exec() && checkIdClient.next()) {
             hasIdClient = (checkIdClient.value(0).toInt() > 0);
         }
+        
+        QSqlQuery checkIdPiece(db);
+        QString checkIdPieceQuery = QString("SELECT COUNT(*) FROM user_tab_columns WHERE UPPER(table_name) = UPPER(:tableName) AND UPPER(column_name) = 'ID_PIECE'");
+        checkIdPiece.prepare(checkIdPieceQuery);
+        checkIdPiece.bindValue(":tableName", tableName);
+        if (checkIdPiece.exec() && checkIdPiece.next()) {
+            hasIdPiece = (checkIdPiece.value(0).toInt() > 0);
+        }
     }
     
     QString updateQuery;
-    if (upperName.contains("OBJET_ELECTRONIQUE") && hasTechnicienPrix && hasIdClient) {
+    if (upperName.contains("OBJET_ELECTRONIQUE") && hasTechnicienPrix && hasIdClient && hasIdPiece) {
+        updateQuery = QString("UPDATE %1 SET "
+                              "%2 = :nom, "
+                              "%3 = :marque, "
+                              "%4 = :modele, "
+                              "%5 = :couleur, "
+                              "%6 = :numero_serie, "
+                              "%7 = :type, "
+                              "%8 = :etat, "
+                              "TECHNICIEN = :technicien, "
+                              "PRIX = :prix, "
+                              "ID_CLIENT_COURANT = :id_client, "
+                              "ID_PIECE = :id_piece "
+                              "WHERE %9 = :reference")
+                      .arg(tableName)
+                      .arg(columns[1]).arg(columns[2]).arg(columns[3])
+                      .arg(columns[4]).arg(columns[5]).arg(columns[6])
+                      .arg(columns[7]).arg(columns[0]);
+    } else if (upperName.contains("OBJET_ELECTRONIQUE") && hasTechnicienPrix && hasIdClient) {
         updateQuery = QString("UPDATE %1 SET "
                               "%2 = :nom, "
                               "%3 = :marque, "
@@ -716,6 +816,23 @@ bool DatabaseManager::updateObjet(const ObjetElectronique& objet, int idClient)
                               "TECHNICIEN = :technicien, "
                               "PRIX = :prix, "
                               "ID_CLIENT_COURANT = :id_client "
+                              "WHERE %9 = :reference")
+                      .arg(tableName)
+                      .arg(columns[1]).arg(columns[2]).arg(columns[3])
+                      .arg(columns[4]).arg(columns[5]).arg(columns[6])
+                      .arg(columns[7]).arg(columns[0]);
+    } else if (upperName.contains("OBJET_ELECTRONIQUE") && hasTechnicienPrix && hasIdPiece) {
+        updateQuery = QString("UPDATE %1 SET "
+                              "%2 = :nom, "
+                              "%3 = :marque, "
+                              "%4 = :modele, "
+                              "%5 = :couleur, "
+                              "%6 = :numero_serie, "
+                              "%7 = :type, "
+                              "%8 = :etat, "
+                              "TECHNICIEN = :technicien, "
+                              "PRIX = :prix, "
+                              "ID_PIECE = :id_piece "
                               "WHERE %9 = :reference")
                       .arg(tableName)
                       .arg(columns[1]).arg(columns[2]).arg(columns[3])
@@ -825,6 +942,14 @@ bool DatabaseManager::updateObjet(const ObjetElectronique& objet, int idClient)
             query.bindValue(":id_client", idClient);
         } else {
             query.bindValue(":id_client", QVariant());
+        }
+    }
+    
+    if (upperName.contains("OBJET_ELECTRONIQUE") && hasIdPiece) {
+        if (idPiece > 0) {
+            query.bindValue(":id_piece", idPiece);
+        } else {
+            query.bindValue(":id_piece", QVariant());
         }
     }
     
@@ -1108,6 +1233,128 @@ bool DatabaseManager::objetExists(const QString& reference) const
     }
     
     return query.value(0).toInt() > 0;
+}
+
+QList<DatabaseManager::PieceDetachee> DatabaseManager::getAllPiecesDetachees()
+{
+    QList<PieceDetachee> pieces;
+    
+    try {
+        QSqlDatabase& db = m_connection.getDatabase();
+        if (!db.isOpen()) {
+            qDebug() << "getAllPiecesDetachees: Base de données non ouverte, tentative de connexion...";
+            if (!m_connection.createConnection()) {
+                qDebug() << "getAllPiecesDetachees: Impossible de se connecter";
+                return pieces;
+            }
+            db = m_connection.getDatabase();
+        }
+        
+        QSqlQuery checkTable(db);
+        QString checkQuery = "SELECT COUNT(*) FROM user_tables WHERE UPPER(table_name) = 'PIECE_DETACHEE'";
+        if (checkTable.exec(checkQuery) && checkTable.next()) {
+            int tableExists = checkTable.value(0).toInt();
+            qDebug() << "getAllPiecesDetachees: Table PIECE_DETACHEE existe:" << (tableExists > 0);
+            if (tableExists == 0) {
+                qDebug() << "getAllPiecesDetachees: La table PIECE_DETACHEE n'existe pas!";
+                m_lastError = "La table PIECE_DETACHEE n'existe pas dans la base de données";
+                return pieces;
+            }
+        }
+        
+        QSqlQuery query(db);
+        QString selectQuery = "SELECT ID_PIECE, NOM_PIECE, CATEGORIE, PRIX_UNITAIRE FROM PIECE_DETACHEE ORDER BY NOM_PIECE";
+        
+        qDebug() << "getAllPiecesDetachees: Exécution de la requête:" << selectQuery;
+        
+        if (!query.exec(selectQuery)) {
+            m_lastError = query.lastError().text();
+            qDebug() << "getAllPiecesDetachees: Erreur SQL:" << m_lastError;
+            qDebug() << "getAllPiecesDetachees: Détails de l'erreur:" << query.lastError().databaseText();
+            return pieces;
+        }
+        
+        int count = 0;
+        while (query.next()) {
+            PieceDetachee piece;
+            piece.id = query.value(0).toInt();
+            piece.nom = query.value(1).toString();
+            piece.categorie = query.value(2).toString();
+            piece.prix = query.value(3).toDouble();
+            
+            if (piece.id > 0 && !piece.nom.isEmpty()) {
+                pieces.append(piece);
+                count++;
+                qDebug() << "getAllPiecesDetachees: Pièce trouvée - ID:" << piece.id << "Nom:" << piece.nom << "Prix:" << piece.prix;
+            } else {
+                qDebug() << "getAllPiecesDetachees: Pièce invalide ignorée - ID:" << piece.id << "Nom:" << piece.nom;
+            }
+        }
+        
+        qDebug() << "getAllPiecesDetachees: Total de" << count << "pièces détachées chargées";
+        
+        if (count == 0) {
+            qDebug() << "getAllPiecesDetachees: ATTENTION - Aucune pièce détachée trouvée dans la table!";
+        }
+    } catch (const std::exception& e) {
+        m_lastError = QString("Exception lors de la récupération des pièces détachées: %1").arg(e.what());
+        qDebug() << "getAllPiecesDetachees: Exception capturée:" << e.what();
+    } catch (...) {
+        m_lastError = "Exception inconnue lors de la récupération des pièces détachées";
+        qDebug() << "getAllPiecesDetachees: Exception inconnue capturée";
+    }
+    
+    return pieces;
+}
+
+DatabaseManager::PieceDetachee DatabaseManager::getPieceDetacheeById(int id)
+{
+    PieceDetachee piece;
+    piece.id = -1;
+    
+    try {
+        QSqlDatabase& db = m_connection.getDatabase();
+        if (!db.isOpen()) {
+            return piece;
+        }
+        
+        QSqlQuery query(db);
+        query.prepare("SELECT ID_PIECE, NOM_PIECE, CATEGORIE, PRIX_UNITAIRE FROM PIECE_DETACHEE WHERE ID_PIECE = :id");
+        query.bindValue(":id", id);
+        
+        if (query.exec() && query.next()) {
+            piece.id = query.value(0).toInt();
+            piece.nom = query.value(1).toString();
+            piece.categorie = query.value(2).toString();
+            piece.prix = query.value(3).toDouble();
+        }
+    } catch (...) {
+        m_lastError = "Exception lors de la récupération de la pièce détachée";
+    }
+    
+    return piece;
+}
+
+double DatabaseManager::getPrixPieceDetachee(int idPiece)
+{
+    try {
+        QSqlDatabase& db = m_connection.getDatabase();
+        if (!db.isOpen()) {
+            return 0.0;
+        }
+        
+        QSqlQuery query(db);
+        query.prepare("SELECT PRIX_UNITAIRE FROM PIECE_DETACHEE WHERE ID_PIECE = :id");
+        query.bindValue(":id", idPiece);
+        
+        if (query.exec() && query.next()) {
+            return query.value(0).toDouble();
+        }
+    } catch (...) {
+        m_lastError = "Exception lors de la récupération du prix";
+    }
+    
+    return 0.0;
 }
 
 QString DatabaseManager::getLastError() const
