@@ -14,7 +14,7 @@ class menuprincipale : public QWidget
 public:
     explicit menuprincipale(QWidget *parent = nullptr);
     ~menuprincipale();
-    void setButtonVisible(const QString& buttonName, bool visible);
+    void setButtonAccessible(const QString& buttonName, bool enabled);
 
 private slots:
     void on_homeButton_clicked();

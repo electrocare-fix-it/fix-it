@@ -19,6 +19,7 @@ public:
 
 private slots:
     void moveHome();
+    void showMainMenu();
     void openObjectsPage();
     void openClientsPage();
     void openEmployesPage();

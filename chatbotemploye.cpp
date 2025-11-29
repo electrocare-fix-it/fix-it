@@ -17,6 +17,9 @@
 #include <QTimer>
 #include <QTextCursor>
 #include "connection.h"
+#include "database.h"
+#include "client.h"
+#include "objetelectronique.h"
 
 // ==================== EmployeeResult ====================
 
@@ -41,12 +44,12 @@ ChatbotEmploye::ChatbotEmploye(QWidget *parent)
     applyStyles();
     
     // Message de bienvenue
-    addMessage("👋 Bonjour ! Je suis votre assistant intelligent pour la gestion des employés.\n\n"
+    addMessage("👋 Bonjour ! Je suis votre assistant intelligent pour la gestion des employés, des clients et des objets électroniques.\n\n"
                "Je peux vous aider à :\n"
-               "• Rechercher un employé par son nom\n"
-               "• Obtenir des informations spécifiques (adresse, téléphone, email, statut)\n"
-               "• Générer une synthèse complète d'un employé\n\n"
-               "Essayez : \"Quelle est l'adresse de Marie ?\" ou \"Informations sur Jean Dupont\"", 
+               "• Rechercher un employé par son nom et afficher ses informations (adresse, téléphone, email, statut, âge...)\n"
+               "• Rechercher un client (par nom ou CIN) et consulter ses coordonnées\n"
+               "• Rechercher un objet électronique (par nom, référence, marque, modèle...) et afficher ses détails (type, état, technicien, prix...)\n\n"
+               "Essayez : \"Adresse du client Hiba\", \"Statut de Mohamed Omar\" ou \"Détails de l'objet iPhone 12\".", 
                false);
 }
 
@@ -59,6 +62,7 @@ void ChatbotEmploye::setupUI()
     m_mainLayout = new QVBoxLayout(this);
     m_mainLayout->setSpacing(14);
     m_mainLayout->setContentsMargins(10, 10, 10, 10);
+    m_inputVisible = true;
     
     // Carte principale
     QFrame *card = new QFrame(this);
@@ -73,8 +77,8 @@ void ChatbotEmploye::setupUI()
         "}"
     );
     QVBoxLayout *cardLayout = new QVBoxLayout(card);
-    cardLayout->setSpacing(16);
-    cardLayout->setContentsMargins(20, 20, 20, 20);
+    cardLayout->setSpacing(12);
+    cardLayout->setContentsMargins(16, 10, 16, 10);
     
     // Entête
     QLabel* titleLabel = new QLabel("💬 Assistant Intelligent - Recherche d'Employés", card);
@@ -87,9 +91,10 @@ void ChatbotEmploye::setupUI()
     // Zone de chat
     m_chatDisplay = new QTextEdit(card);
     m_chatDisplay->setReadOnly(true);
-    m_chatDisplay->setMinimumHeight(250);
-    m_chatDisplay->setMaximumHeight(400);
-    m_chatDisplay->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    // Hauteur réduite pour laisser un espace bien visible pour la barre de choix et la saisie
+    m_chatDisplay->setMinimumHeight(180);
+    m_chatDisplay->setMaximumHeight(220);
+    m_chatDisplay->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     m_chatDisplay->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     m_chatDisplay->setStyleSheet(
         "QTextEdit {"
@@ -119,6 +124,8 @@ void ChatbotEmploye::setupUI()
     
     // Zone de suggestions (cachée par défaut)
     m_suggestionsWidget = new QFrame(card);
+    m_suggestionsWidget->setMinimumHeight(110);
+    m_suggestionsWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     m_suggestionsWidget->setStyleSheet(
         "QFrame {"
         "background-color: #f3f8fc;"
@@ -141,12 +148,28 @@ void ChatbotEmploye::setupUI()
     m_suggestionsLayout->setContentsMargins(6, 6, 6, 6);
     m_suggestionsWidget->hide();
     cardLayout->addWidget(m_suggestionsWidget);
+    cardLayout->addSpacing(12);
     
     // Zone de saisie
+    m_toggleInputButton = new QPushButton("❯", card);
+    m_toggleInputButton->setFixedSize(32, 32);
+    m_toggleInputButton->setStyleSheet(
+        "QPushButton {"
+        "background-color: #1f84bd;"
+        "color: white;"
+        "border: none;"
+        "border-radius: 16px;"
+        "font-weight: bold;"
+        "}"
+        "QPushButton:hover { background-color: #166a95; }"
+    );
+
+    cardLayout->addWidget(m_toggleInputButton, 0, Qt::AlignRight);
+
     m_inputLayout = new QHBoxLayout();
     m_inputLayout->setSpacing(10);
-    m_inputLayout->setContentsMargins(0, 0, 0, 0);
-    
+    m_inputLayout->setContentsMargins(0, 4, 0, 0);
+
     m_inputField = new QLineEdit(card);
     m_inputField->setPlaceholderText("Posez votre question (ex : \"Adresse de Hiba Riahi\")");
     m_inputField->setMinimumWidth(210);
@@ -167,14 +190,15 @@ void ChatbotEmploye::setupUI()
     
     m_sendButton = new QPushButton("Envoyer", card);
     m_sendButton->setCursor(Qt::PointingHandCursor);
-    m_sendButton->setMinimumWidth(120);
+    m_sendButton->setMinimumWidth(110);
+    m_sendButton->setMaximumWidth(130);
     m_sendButton->setStyleSheet(
         "QPushButton {"
         "background-color: #1f84bd;"
         "color: #ffffff;"
         "border: none;"
         "border-radius: 10px;"
-        "padding: 12px 22px;"
+        "padding: 10px 18px;"
         "font-weight: 600;"
         "}"
         "QPushButton:hover { background-color: #1a6f9f; }"
@@ -183,14 +207,15 @@ void ChatbotEmploye::setupUI()
     
     m_clearButton = new QPushButton("Effacer", card);
     m_clearButton->setCursor(Qt::PointingHandCursor);
-    m_clearButton->setMinimumWidth(120);
+    m_clearButton->setMinimumWidth(110);
+    m_clearButton->setMaximumWidth(130);
     m_clearButton->setStyleSheet(
         "QPushButton {"
         "background-color: #d0d9e0;"
         "color: #405566;"
         "border: none;"
         "border-radius: 10px;"
-        "padding: 12px 22px;"
+        "padding: 10px 18px;"
         "font-weight: 600;"
         "}"
         "QPushButton:hover { background-color: #c0cbd4; }"
@@ -209,11 +234,31 @@ void ChatbotEmploye::setupUI()
     connect(m_sendButton, &QPushButton::clicked, this, &ChatbotEmploye::onSendButtonClicked);
     connect(m_clearButton, &QPushButton::clicked, this, &ChatbotEmploye::onClearButtonClicked);
     connect(m_inputField, &QLineEdit::returnPressed, this, &ChatbotEmploye::onSendButtonClicked);
+    connect(m_toggleInputButton, &QPushButton::clicked, this, &ChatbotEmploye::onToggleInputClicked);
+    updateInputVisibility();
 }
 
 void ChatbotEmploye::applyStyles()
 {
     setStyleSheet("QWidget { background-color: transparent; }");
+}
+
+void ChatbotEmploye::updateInputVisibility()
+{
+    bool show = m_inputVisible;
+    for (int i = 0; i < m_inputLayout->count(); ++i) {
+        QWidget *widget = m_inputLayout->itemAt(i)->widget();
+        if (widget) {
+            widget->setVisible(show);
+        }
+    }
+    if (show) {
+        m_toggleInputButton->setText("❯");
+        m_toggleInputButton->setToolTip("Masquer la saisie");
+    } else {
+        m_toggleInputButton->setText("❮");
+        m_toggleInputButton->setToolTip("Afficher la saisie");
+    }
 }
 
 void ChatbotEmploye::addMessage(const QString& message, bool isUser)
@@ -268,23 +313,25 @@ void ChatbotEmploye::onSendButtonClicked()
         bool ok;
         int choice = query.toInt(&ok);
         if (ok && choice > 0 && choice <= m_pendingCandidates.size()) {
-            EmployeeResult selected = m_pendingCandidates[choice - 1];
+            ChatResult selected = m_pendingCandidates[choice - 1];
             m_waitingForClarification = false;
             m_pendingCandidates.clear();
             
-            // Générer la réponse pour l'employé sélectionné
-            ParsedQuery newQuery;
-            newQuery.employeeName = selected.getFullName();
-            newQuery.intent = m_currentQuery.intent;
-            newQuery.originalQuery = query;
-            newQuery.isAmbiguous = false;
-            newQuery.candidates = {selected};
+            QString response;
+            switch (selected.type) {
+            case EntityType::EMPLOYEE:
+                response = generateInfoResponse(selected.employee, m_currentQuery.intent);
+                emit employeeSelected(selected.employee.id);
+                break;
+            case EntityType::CLIENT:
+                response = generateClientInfoResponse(selected.client, m_currentQuery.intent);
+                break;
+            case EntityType::OBJECT:
+                response = generateObjetInfoResponse(selected.objet, m_currentQuery.intent);
+                break;
+            }
             
-            QString response = generateInfoResponse(selected, m_currentQuery.intent);
             addMessage(response, false);
-            
-            // Émettre le signal pour sélectionner l'employé dans le tableau
-            emit employeeSelected(selected.id);
             return;
         }
     }
@@ -297,6 +344,12 @@ void ChatbotEmploye::onClearButtonClicked()
     clearChat();
 }
 
+void ChatbotEmploye::onToggleInputClicked()
+{
+    m_inputVisible = !m_inputVisible;
+    updateInputVisibility();
+}
+
 void ChatbotEmploye::clearChat()
 {
     m_chatDisplay->clear();
@@ -304,12 +357,12 @@ void ChatbotEmploye::clearChat()
     m_pendingCandidates.clear();
     hideSuggestions();
     
-    addMessage("👋 Bonjour ! Je suis votre assistant intelligent pour la gestion des employés.\n\n"
+    addMessage("👋 Bonjour ! Je suis votre assistant intelligent pour la gestion des employés, des clients et des objets électroniques.\n\n"
                "Je peux vous aider à :\n"
-               "• Rechercher un employé par son nom\n"
-               "• Obtenir des informations spécifiques (adresse, téléphone, email, statut)\n"
-               "• Générer une synthèse complète d'un employé\n\n"
-               "Essayez : \"Quelle est l'adresse de Marie ?\" ou \"Informations sur Jean Dupont\"", 
+               "• Rechercher un employé par son nom et afficher ses informations (adresse, téléphone, email, statut, âge...)\n"
+               "• Rechercher un client (par nom ou CIN) et consulter ses coordonnées\n"
+               "• Rechercher un objet électronique (par nom, référence, marque, modèle...) et afficher ses détails (type, état, technicien, prix...)\n\n"
+               "Essayez : \"Adresse du client Hiba\", \"Statut de Mohamed Omar\" ou \"Détails de l'objet iPhone 12\".", 
                false);
 }
 
@@ -321,7 +374,7 @@ void ChatbotEmploye::processQuery(const QString& query)
     ParsedQuery parsed = parseQuery(query);
     m_currentQuery = parsed;
     
-    qDebug() << "Nom extrait:" << parsed.employeeName;
+    qDebug() << "Terme extrait:" << parsed.searchTerm;
     qDebug() << "Intention:" << static_cast<int>(parsed.intent);
     qDebug() << "Nombre de candidats:" << parsed.candidates.size();
     
@@ -337,7 +390,7 @@ QString ChatbotEmploye::processQueryText(const QString& query)
     ParsedQuery parsed = parseQuery(query);
     m_currentQuery = parsed;
     
-    qDebug() << "Nom extrait:" << parsed.employeeName;
+    qDebug() << "Terme extrait:" << parsed.searchTerm;
     qDebug() << "Intention:" << static_cast<int>(parsed.intent);
     qDebug() << "Nombre de candidats:" << parsed.candidates.size();
     
@@ -349,16 +402,25 @@ ParsedQuery ChatbotEmploye::parseQuery(const QString& query)
     ParsedQuery result;
     result.originalQuery = query;
     result.intent = detectIntent(query);
-    result.employeeName = extractEmployeeName(query);
+    result.entityType = detectEntityType(query);
+    result.searchTerm = extractNameFromQuery(query);
     result.isAmbiguous = false;
     
-    // Rechercher les employés
-    if (!result.employeeName.isEmpty()) {
-        result.candidates = searchEmployees(result.employeeName);
+    if (!result.searchTerm.isEmpty()) {
+        result.candidates = buildChatResults(result.entityType, result.searchTerm);
         
-        // Si recherche floue nécessaire
-        if (result.candidates.isEmpty()) {
-            result.candidates = searchEmployeesFuzzy(result.employeeName);
+        if (result.candidates.isEmpty() && result.entityType == EntityType::EMPLOYEE) {
+            auto clientCandidates = buildChatResults(EntityType::CLIENT, result.searchTerm);
+            if (!clientCandidates.isEmpty()) {
+                result.candidates = clientCandidates;
+                result.entityType = EntityType::CLIENT;
+            } else {
+                auto objetCandidates = buildChatResults(EntityType::OBJECT, result.searchTerm);
+                if (!objetCandidates.isEmpty()) {
+                    result.candidates = objetCandidates;
+                    result.entityType = EntityType::OBJECT;
+                }
+            }
         }
         
         result.isAmbiguous = (result.candidates.size() > 1);
@@ -423,64 +485,95 @@ IntentType ChatbotEmploye::detectIntent(const QString& query)
     return IntentType::SEARCH_INFO;
 }
 
-QString ChatbotEmploye::extractEmployeeName(const QString& query)
+EntityType ChatbotEmploye::detectEntityType(const QString& query) const
+{
+    QString lowerQuery = query.toLower();
+    if (lowerQuery.contains("client") || lowerQuery.contains("cliente")) {
+        return EntityType::CLIENT;
+    }
+    if (lowerQuery.contains("objet") || lowerQuery.contains("appareil") ||
+        lowerQuery.contains("machine") || lowerQuery.contains("électronique") ||
+        lowerQuery.contains("electronique")) {
+        return EntityType::OBJECT;
+    }
+    return EntityType::EMPLOYEE;
+}
+
+QString ChatbotEmploye::extractNameFromQuery(const QString& query)
 {
     QString lowerQuery = query.toLower();
     
-    // Patterns pour extraire les noms (améliorés pour gérer les minuscules)
-    QRegularExpression patterns[] = {
-        // Pattern 1: "quelle est l'adresse de hiba riahi"
+    // Patterns spécifiques pour client/objet
+    QRegularExpression customPatterns[] = {
+        QRegularExpression(R"(client(?:e)?\s+(?:nomm[eé]?\s+)?([a-z0-9\s'\-]+))", QRegularExpression::CaseInsensitiveOption),
+        QRegularExpression(R"(objet(?:\sélectronique)?\s+(?:nomm[eé]?\s+)?([a-z0-9\s'\-]+))", QRegularExpression::CaseInsensitiveOption),
+        QRegularExpression(R"((?:réf(?:erence)?|reference)\s+([a-z0-9\-]+))", QRegularExpression::CaseInsensitiveOption)
+    };
+    
+    for (const auto& pattern : customPatterns) {
+        QRegularExpressionMatch match = pattern.match(query);
+        if (match.hasMatch()) {
+            QString captured = match.captured(1).trimmed();
+            captured.replace(QRegularExpression("\\s+"), " ");
+            if (!captured.isEmpty()) {
+                return captured;
+            }
+        }
+    }
+    
+    // Patterns génériques pour personnes
+    QRegularExpression personPatterns[] = {
         QRegularExpression(R"((?:quelle|quel|qui|où|ou)\s+(?:est|sont|a|ont)\s+(?:l'|la|le|les)?\s*(?:adresse|téléphone|telephone|email|statut|âge|age)\s+(?:de|du|des|d')\s+([a-z]+(?:\s+[a-z]+)?))", QRegularExpression::CaseInsensitiveOption),
-        // Pattern 2: "informations sur hiba riahi"
         QRegularExpression(R"((?:informations|info|détails|details|données|donnees)\s+(?:sur|de|du|des|pour)\s+([a-z]+(?:\s+[a-z]+)?))", QRegularExpression::CaseInsensitiveOption),
-        // Pattern 3: "nom/prénom est hiba riahi"
         QRegularExpression(R"((?:nom|prénom|prenom|appelle|s'appelle)\s+(?:est|d'|de|du|des|le|la|les)?\s*([a-z]+(?:\s+[a-z]+)?))", QRegularExpression::CaseInsensitiveOption),
-        // Pattern 4: Nom complet avec majuscules "Hiba Riahi"
         QRegularExpression(R"(([A-Z][a-z]+\s+[A-Z][a-z]+))"),
-        // Pattern 5: Prénom ou nom seul avec majuscule "Hiba"
         QRegularExpression(R"(([A-Z][a-z]+))")
     };
     
-    for (const auto& pattern : patterns) {
+    for (const auto& pattern : personPatterns) {
         QRegularExpressionMatch match = pattern.match(query);
         if (match.hasMatch()) {
             QString name = match.captured(1).trimmed();
             if (!name.isEmpty() && name.length() > 2) {
-                // Capitaliser la première lettre de chaque mot
                 QStringList words = name.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
                 QStringList capitalizedWords;
                 for (const QString& word : words) {
-                    if (word.length() > 0) {
-                        capitalizedWords.append(word[0].toUpper() + word.mid(1).toLower());
-                    }
+                    capitalizedWords.append(word[0].toUpper() + word.mid(1).toLower());
                 }
                 return capitalizedWords.join(" ");
             }
         }
     }
     
-    // Si aucun pattern ne correspond, chercher des mots (même en minuscules)
+    // Fallback : extraire les mots significatifs
     QStringList words = query.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
     QStringList names;
     
-    // Mots à ignorer
-    QStringList ignoreWords = {"quelle", "quel", "qui", "où", "ou", "est", "sont", "a", "ont", 
-                               "l'", "la", "le", "les", "de", "du", "des", "d'", "sur", "pour",
-                               "adresse", "téléphone", "telephone", "email", "statut", "âge", "age",
-                               "informations", "info", "détails", "details", "données", "donnees"};
+    QStringList ignoreWords = {
+        "quelle","quel","qui","où","ou","est","sont","a","ont","donner","donne","donnez","moi",
+        "l'","la","le","les","de","du","des","d'","sur","pour","avec","montrer","montre",
+        "adresse","téléphone","telephone","email","statut","âge","age","informations","info","détails","details","données","donnees",
+        "client","clients","objet","objets","electronique","électronique","appareil","appareils","machine","machines",
+        "marque","modele","modèle","reference","référence","statistique","synthese","résumé","resume"
+    };
     
     for (const QString& word : words) {
-        QString lowerWord = word.toLower();
-        if (word.length() > 2 && !ignoreWords.contains(lowerWord)) {
-            // Accepter les mots qui ne sont pas des mots-clés
-            names.append(word[0].toUpper() + word.mid(1).toLower());
+        QString cleaned = word;
+        cleaned.remove(QRegularExpression("^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$"));
+        QString lowerWord = cleaned.toLower();
+        if (cleaned.length() > 1 && !ignoreWords.contains(lowerWord)) {
+            if (lowerWord.size() == cleaned.size()) {
+                names.append(cleaned[0].toUpper() + cleaned.mid(1).toLower());
+            } else {
+                names.append(cleaned);
+            }
         }
     }
     
     if (names.size() >= 2) {
-        return names[0] + " " + names[1];
+        return names.join(" ");
     } else if (names.size() == 1) {
-        return names[0];
+        return names.first();
     }
     
     return "";
@@ -622,6 +715,142 @@ QList<EmployeeResult> ChatbotEmploye::searchEmployeesFuzzy(const QString& name)
     return results;
 }
 
+QList<ClientResult> ChatbotEmploye::searchClients(const QString& nameOrCin)
+{
+    QList<ClientResult> results;
+    QString term = nameOrCin.trimmed();
+    if (term.isEmpty()) {
+        return results;
+    }
+
+    DatabaseManager& db = DatabaseManager::getInstance();
+    if (!db.isConnected() && !db.connect()) {
+        qDebug() << "Impossible de se connecter pour rechercher des clients";
+        return results;
+    }
+
+    QList<Client> clients = db.getAllClients();
+    QString lowerTerm = term.toLower();
+
+    for (const Client& client : clients) {
+        QString fullName = (client.getPrenom() + " " + client.getNom()).toLower();
+        QString invertedName = (client.getNom() + " " + client.getPrenom()).toLower();
+
+        if (fullName.contains(lowerTerm) ||
+            invertedName.contains(lowerTerm) ||
+            client.getCin().toLower().contains(lowerTerm)) {
+            ClientResult result;
+            result.cin = client.getCin();
+            result.nom = client.getNom();
+            result.prenom = client.getPrenom();
+            result.telephone = client.getTelephone();
+            result.email = client.getEmail();
+            result.adresse = client.getAdresse();
+            result.dateNaissance = client.getDateNaissance();
+            results.append(result);
+        }
+    }
+
+    return results;
+}
+
+QList<ObjetResult> ChatbotEmploye::searchObjets(const QString& term)
+{
+    QList<ObjetResult> results;
+    QString searchTerm = term.trimmed();
+    if (searchTerm.isEmpty()) {
+        return results;
+    }
+
+    DatabaseManager& db = DatabaseManager::getInstance();
+    if (!db.isConnected() && !db.connect()) {
+        qDebug() << "Impossible de se connecter pour rechercher des objets";
+        return results;
+    }
+
+    QList<ObjetElectronique> objets = db.getAllObjets();
+    QString lowerTerm = searchTerm.toLower();
+
+    for (const ObjetElectronique& objet : objets) {
+        QStringList fields = {
+            objet.getReference(),
+            objet.getNom(),
+            objet.getMarque(),
+            objet.getModele(),
+            objet.getCouleur(),
+            objet.getNumeroSerie(),
+            objet.getType(),
+            objet.getTechnicien()
+        };
+
+        bool match = false;
+        for (const QString& field : fields) {
+            if (field.toLower().contains(lowerTerm)) {
+                match = true;
+                break;
+            }
+        }
+
+        if (match) {
+            ObjetResult result;
+            result.reference = objet.getReference();
+            result.nom = objet.getNom();
+            result.marque = objet.getMarque();
+            result.modele = objet.getModele();
+            result.couleur = objet.getCouleur();
+            result.numeroSerie = objet.getNumeroSerie();
+            result.type = objet.getType();
+            result.etat = objet.getEtat();
+            result.technicien = objet.getTechnicien();
+            result.prix = objet.getPrix();
+            results.append(result);
+        }
+    }
+
+    return results;
+}
+
+QList<ChatResult> ChatbotEmploye::buildChatResults(EntityType type, const QString& term)
+{
+    QList<ChatResult> chatResults;
+    switch (type) {
+    case EntityType::EMPLOYEE: {
+        QList<EmployeeResult> employees = searchEmployees(term);
+        if (employees.isEmpty()) {
+            employees = searchEmployeesFuzzy(term);
+        }
+        for (const EmployeeResult& emp : employees) {
+            ChatResult result;
+            result.type = EntityType::EMPLOYEE;
+            result.employee = emp;
+            chatResults.append(result);
+        }
+        break;
+    }
+    case EntityType::CLIENT: {
+        QList<ClientResult> clients = searchClients(term);
+        for (const ClientResult& client : clients) {
+            ChatResult result;
+            result.type = EntityType::CLIENT;
+            result.client = client;
+            chatResults.append(result);
+        }
+        break;
+    }
+    case EntityType::OBJECT: {
+        QList<ObjetResult> objets = searchObjets(term);
+        for (const ObjetResult& objet : objets) {
+            ChatResult result;
+            result.type = EntityType::OBJECT;
+            result.objet = objet;
+            chatResults.append(result);
+        }
+        break;
+    }
+    }
+    return chatResults;
+}
+
 EmployeeResult ChatbotEmploye::getEmployeeById(int id)
 {
     EmployeeResult emp;
@@ -688,30 +917,25 @@ EmployeeResult ChatbotEmploye::getEmployeeByFullName(const QString& nom, const Q
 QString ChatbotEmploye::generateResponse(const ParsedQuery& parsedQuery)
 {
     qDebug() << "=== Génération de la réponse ===";
-    qDebug() << "Nom recherché:" << parsedQuery.employeeName;
+    qDebug() << "Terme recherché:" << parsedQuery.searchTerm;
     qDebug() << "Candidats trouvés:" << parsedQuery.candidates.size();
     
-    // Si aucun nom n'a été trouvé
-    if (parsedQuery.employeeName.isEmpty()) {
-        qDebug() << "Aucun nom extrait de la requête";
-        return "❌ Je n'ai pas pu identifier le nom de l'employé dans votre question.\n\n"
-               "💡 Exemples de questions valides :\n"
-               "• \"Quelle est l'adresse de Marie ?\"\n"
-               "• \"Informations sur Jean Dupont\"\n"
-               "• \"Téléphone de Paul Martin\"\n"
-               "• \"Quelle est l'adresse de hiba riahi\"";
+    if (parsedQuery.searchTerm.isEmpty()) {
+        qDebug() << "Aucun terme exploitable";
+        return "❌ Je n'ai pas pu identifier la personne ou l'objet mentionné dans votre question.\n\n"
+               "💡 Exemples :\n"
+               "• \"Adresse du client Hiba\"\n"
+               "• \"Statut de Mohamed Omar\"\n"
+               "• \"Détails de l'objet PC-001\"";
     }
     
-    // Si aucun employé trouvé
     if (parsedQuery.candidates.isEmpty()) {
-        qDebug() << "Aucun employé trouvé pour:" << parsedQuery.employeeName;
-        return QString("❌ Je n'ai trouvé aucun employé correspondant à \"%1\".\n\n"
-                      "💡 Vérifiez l'orthographe ou essayez avec le prénom ou le nom seul.\n\n"
-                      "💬 Essayez aussi : \"Informations sur %1\"")
-                      .arg(parsedQuery.employeeName);
+        qDebug() << "Aucun résultat trouvé pour:" << parsedQuery.searchTerm;
+        return QString("❌ Je n'ai trouvé aucun résultat correspondant à « %1 ».\n\n"
+                       "💡 Vérifiez l'orthographe ou précisez s'il s'agit d'un client, d'un employé ou d'un objet.")
+            .arg(parsedQuery.searchTerm);
     }
     
-    // Si ambiguïté (plusieurs résultats)
     if (parsedQuery.isAmbiguous) {
         m_waitingForClarification = true;
         m_pendingCandidates = parsedQuery.candidates;
@@ -719,36 +943,59 @@ QString ChatbotEmploye::generateResponse(const ParsedQuery& parsedQuery)
         return generateAmbiguityResponse(parsedQuery.candidates);
     }
     
-    // Un seul résultat trouvé
-    EmployeeResult employee = parsedQuery.candidates.first();
+    const ChatResult& target = parsedQuery.candidates.first();
     
-    // Si intention de filtrer le tableau
-    if (parsedQuery.intent == IntentType::FILTER_TABLE) {
-        emit filterTableRequested(employee.getFullName());
+    if (parsedQuery.intent == IntentType::FILTER_TABLE && target.type == EntityType::EMPLOYEE) {
+        emit filterTableRequested(target.employee.getFullName());
         return QString("✅ J'ai trouvé %1 (ID: %2).\n\n"
-                      "📋 Le tableau a été filtré pour afficher cet employé.")
-                      .arg(employee.getFullName(), QString::number(employee.id));
+                       "📋 Le tableau a été filtré pour afficher cet employé.")
+            .arg(target.employee.getFullName(), QString::number(target.employee.id));
     }
     
-    // Générer la réponse selon l'intention
-    emit employeeSelected(employee.id);
-    return generateInfoResponse(employee, parsedQuery.intent);
+    switch (target.type) {
+    case EntityType::EMPLOYEE:
+        emit employeeSelected(target.employee.id);
+        return generateInfoResponse(target.employee, parsedQuery.intent);
+    case EntityType::CLIENT:
+        return generateClientInfoResponse(target.client, parsedQuery.intent);
+    case EntityType::OBJECT:
+        return generateObjetInfoResponse(target.objet, parsedQuery.intent);
+    }
+    
+    return "❌ Je n'ai pas réussi à formuler une réponse pour cette requête.";
 }
 
-QString ChatbotEmploye::generateAmbiguityResponse(const QList<EmployeeResult>& candidates)
+QString ChatbotEmploye::generateAmbiguityResponse(const QList<ChatResult>& candidates)
 {
-    QString response = QString("🔍 J'ai trouvé %1 employé(s) portant ce nom :\n\n").arg(candidates.size());
+    QString response = QString("🔍 J'ai trouvé %1 résultat(s) correspondant(s) :\n\n").arg(candidates.size());
     
     for (int i = 0; i < candidates.size(); ++i) {
-        const EmployeeResult& emp = candidates[i];
-        response += QString("%1. **%2** (ID: %3, Statut: %4)\n")
-                   .arg(i + 1)
-                   .arg(emp.getFullName())
-                   .arg(emp.id)
-                   .arg(emp.statut);
+        const ChatResult& candidate = candidates[i];
+        switch (candidate.type) {
+        case EntityType::EMPLOYEE:
+            response += QString("%1. 👔 **%2** (Employé · ID %3 · Statut %4)\n")
+                        .arg(i + 1)
+                        .arg(candidate.employee.getFullName())
+                        .arg(candidate.employee.id)
+                        .arg(candidate.employee.statut);
+            break;
+        case EntityType::CLIENT:
+            response += QString("%1. 🧾 **%2** (Client · CIN %3)\n")
+                        .arg(i + 1)
+                        .arg(candidate.client.getFullName())
+                        .arg(candidate.client.cin);
+            break;
+        case EntityType::OBJECT:
+            response += QString("%1. 🛠️ **%2** (Objet · Réf %3 · %4)\n")
+                        .arg(i + 1)
+                        .arg(candidate.objet.getDisplayName())
+                        .arg(candidate.objet.reference)
+                        .arg(candidate.objet.etat);
+            break;
+        }
     }
     
-    response += "\n💡 **Tapez le numéro (1, 2, etc.)** pour sélectionner l'employé souhaité.";
+    response += "\n💡 **Tapez le numéro (1, 2, etc.)** pour sélectionner l'entrée souhaitée.";
     
     return response;
 }
@@ -795,6 +1042,61 @@ QString ChatbotEmploye::generateInfoResponse(const EmployeeResult& employee, Int
     }
 }
 
+QString ChatbotEmploye::generateClientInfoResponse(const ClientResult& client, IntentType intent)
+{
+    switch (intent) {
+    case IntentType::GET_ADDRESS:
+        return QString("📍 L'adresse du client **%1** (CIN: %2) est :\n\n%3")
+                .arg(client.getFullName(), client.cin, client.adresse);
+    case IntentType::GET_PHONE:
+        return QString("📞 Le numéro de téléphone de **%1** est : **%2**")
+                .arg(client.getFullName(), client.telephone);
+    case IntentType::GET_EMAIL:
+        return QString("📧 L'adresse email de **%1** est : **%2**")
+                .arg(client.getFullName(), client.email);
+    case IntentType::GET_AGE: {
+        int age = calculateAge(client.dateNaissance);
+        if (age > 0) {
+            return QString("🎂 **%1** a **%2 ans**.\n\n📅 Date de naissance : %3")
+                    .arg(client.getFullName())
+                    .arg(age)
+                    .arg(client.dateNaissance.toString("dd/MM/yyyy"));
+        }
+        break;
+    }
+    case IntentType::GET_STATUS:
+        return QString("ℹ️ Les clients n'ont pas de statut particulier.\n\nVoici les informations disponibles :\n\n%1")
+                .arg(formatClientInfo(client, true));
+    case IntentType::GET_SUMMARY:
+    case IntentType::FILTER_TABLE:
+    case IntentType::SEARCH_INFO:
+    default:
+        return formatClientInfo(client, true);
+    }
+
+    return formatClientInfo(client, true);
+}
+
+QString ChatbotEmploye::generateObjetInfoResponse(const ObjetResult& objet, IntentType intent)
+{
+    switch (intent) {
+    case IntentType::GET_STATUS:
+        return QString("🛠️ L'état actuel de l'objet **%1** (réf. %2) est : **%3**")
+                .arg(objet.getDisplayName(), objet.reference, objet.etat);
+    case IntentType::GET_ADDRESS:
+    case IntentType::GET_PHONE:
+    case IntentType::GET_EMAIL:
+    case IntentType::GET_AGE:
+        return QString("ℹ️ Les objets électroniques ne possèdent pas cette information spécifique.\n\n%1")
+                .arg(formatObjetInfo(objet, true));
+    case IntentType::GET_SUMMARY:
+    case IntentType::FILTER_TABLE:
+    case IntentType::SEARCH_INFO:
+    default:
+        return formatObjetInfo(objet, true);
+    }
+}
+
 QString ChatbotEmploye::generateSummaryResponse(const EmployeeResult& employee)
 {
     QString summary = QString("📋 **SYNTHÈSE - %1** (ID: %2)\n\n").arg(employee.getFullName(), QString::number(employee.id));
@@ -827,7 +1129,7 @@ QString ChatbotEmploye::generateSummaryResponse(const EmployeeResult& employee)
     return summary;
 }
 
-void ChatbotEmploye::showSuggestions(const QList<EmployeeResult>& candidates)
+void ChatbotEmploye::showSuggestions(const QList<ChatResult>& candidates)
 {
     // Nettoyer les suggestions précédentes
     QLayoutItem* item;
@@ -837,31 +1139,49 @@ void ChatbotEmploye::showSuggestions(const QList<EmployeeResult>& candidates)
     }
     
     // Ajouter un titre
-    QLabel* titleLabel = new QLabel("💡 Sélectionnez un employé :", m_suggestionsWidget);
+    QLabel* titleLabel = new QLabel("💡 Sélectionnez l'entrée souhaitée :", m_suggestionsWidget);
     titleLabel->setStyleSheet("font-weight: bold; color: #495057; margin-bottom: 5px;");
     m_suggestionsLayout->addWidget(titleLabel);
     
     // Créer un bouton pour chaque candidat
     for (int i = 0; i < candidates.size(); ++i) {
-        const EmployeeResult& emp = candidates[i];
-        QPushButton* btn = new QPushButton(
-            QString("%1. %2 (ID: %3) - %4")
-            .arg(i + 1)
-            .arg(emp.getFullName())
-            .arg(emp.id)
-            .arg(emp.statut),
-            m_suggestionsWidget
-        );
+        const ChatResult& candidate = candidates[i];
+        QString text;
+        switch (candidate.type) {
+        case EntityType::EMPLOYEE:
+            text = QString("%1. 👔 %2 (ID %3) - %4")
+                    .arg(i + 1)
+                    .arg(candidate.employee.getFullName())
+                    .arg(candidate.employee.id)
+                    .arg(candidate.employee.statut);
+            break;
+        case EntityType::CLIENT:
+            text = QString("%1. 🧾 %2 (CIN %3)")
+                    .arg(i + 1)
+                    .arg(candidate.client.getFullName())
+                    .arg(candidate.client.cin);
+            break;
+        case EntityType::OBJECT:
+            text = QString("%1. 🛠️ %2 (Réf %3 - %4)")
+                    .arg(i + 1)
+                    .arg(candidate.objet.getDisplayName())
+                    .arg(candidate.objet.reference)
+                    .arg(candidate.objet.etat);
+            break;
+        }
+
+        QPushButton* btn = new QPushButton(text, m_suggestionsWidget);
         
         btn->setStyleSheet(
             "QPushButton {"
             "text-align: left;"
-            "padding: 10px;"
+            "padding: 6px 10px;"
+            "min-height: 30px;"
             "background-color: #e9ecef;"
             "border: 2px solid #8EC7E2;"
             "border-radius: 6px;"
             "color: #212529;"
-            "font-size: 12px;"
+            "font-size: 13px;"
             "}"
             "QPushButton:hover {"
             "background-color: #8EC7E2;"
@@ -897,17 +1217,26 @@ void ChatbotEmploye::onSuggestionClicked(int employeeIndex)
         return;
     }
     
-    EmployeeResult selected = m_pendingCandidates[employeeIndex];
+    ChatResult selected = m_pendingCandidates[employeeIndex];
     m_waitingForClarification = false;
     m_pendingCandidates.clear();
     hideSuggestions();
     
-    // Générer la réponse
-    QString response = generateInfoResponse(selected, m_currentQuery.intent);
+    QString response;
+    switch (selected.type) {
+    case EntityType::EMPLOYEE:
+        response = generateInfoResponse(selected.employee, m_currentQuery.intent);
+        emit employeeSelected(selected.employee.id);
+        break;
+    case EntityType::CLIENT:
+        response = generateClientInfoResponse(selected.client, m_currentQuery.intent);
+        break;
+    case EntityType::OBJECT:
+        response = generateObjetInfoResponse(selected.objet, m_currentQuery.intent);
+        break;
+    }
+
     addMessage(response, false);
-    
-    // Émettre le signal
-    emit employeeSelected(selected.id);
 }
 
 QString ChatbotEmploye::formatEmployeeInfo(const EmployeeResult& employee, bool detailed)
@@ -927,6 +1256,43 @@ QString ChatbotEmploye::formatEmployeeInfo(const EmployeeResult& employee, bool 
         }
     }
     
+    return info;
+}
+
+QString ChatbotEmploye::formatClientInfo(const ClientResult& client, bool detailed)
+{
+    QString info = QString("🧾 **Client : %1** (CIN: %2)\n\n")
+                   .arg(client.getFullName(), client.cin);
+    info += "📞 **Téléphone** : " + client.telephone + "\n";
+    info += "📧 **Email** : " + client.email + "\n";
+    info += "📍 **Adresse** : " + client.adresse + "\n";
+    if (client.dateNaissance.isValid()) {
+        info += "🎂 **Date de naissance** : " + client.dateNaissance.toString("dd/MM/yyyy") + "\n";
+    }
+    if (detailed) {
+        info += "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    }
+    return info;
+}
+
+QString ChatbotEmploye::formatObjetInfo(const ObjetResult& objet, bool detailed)
+{
+    QString info = QString("🛠️ **Objet : %1** (Réf: %2)\n\n")
+                   .arg(objet.getDisplayName(), objet.reference);
+    info += "🏷️ **Marque / Modèle** : " + objet.marque + " / " + objet.modele + "\n";
+    info += "🎨 **Couleur** : " + objet.couleur + "\n";
+    info += "🔢 **N° de série** : " + objet.numeroSerie + "\n";
+    info += "📚 **Type** : " + objet.type + "\n";
+    info += "📊 **État** : " + objet.etat + "\n";
+    if (!objet.technicien.isEmpty()) {
+        info += "👷 **Technicien assigné** : " + objet.technicien + "\n";
+    }
+    if (objet.prix > 0) {
+        info += "💰 **Prix estimé** : " + QString::number(objet.prix) + " DT\n";
+    }
+    if (detailed) {
+        info += "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    }
     return info;
 }
 

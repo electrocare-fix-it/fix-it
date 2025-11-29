@@ -16,10 +16,10 @@
   <widget class="QStackedWidget" name="stackedWidget">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>30</y>
-     <width>1178</width>
-     <height>831</height>
+     <x>10</x>
+     <y>10</y>
+     <width>1353</width>
+     <height>852</height>
     </rect>
    </property>
    <property name="currentIndex">
@@ -48,10 +48,10 @@
     <widget class="QGroupBox" name="groupBoxTableau">
      <property name="geometry">
       <rect>
-       <x>-10</x>
-       <y>470</y>
-       <width>1121</width>
-       <height>221</height>
+       <x>10</x>
+       <y>460</y>
+       <width>1313</width>
+       <height>340</height>
       </rect>
      </property>
      <property name="title">
@@ -67,6 +67,46 @@
           </property>
          </widget>
         </item>
+       <item>
+        <widget class="QComboBox" name="comboTri">
+         <property name="styleSheet">
+          <string notr="true">background-color: #FDF2CF;</string>
+         </property>
+         <property name="placeholderText">
+          <string>Sélectionner un tri</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Tri: ID (croissant)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Tri: ID (décroissant)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Tri: Nom (A-Z)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Tri: Nom (Z-A)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Tri: Prénom (A-Z)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Tri: Prénom (Z-A)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
         <item>
          <widget class="QPushButton" name="btnExporterPDF_2">
           <property name="styleSheet">
@@ -147,10 +187,10 @@
     <widget class="QGroupBox" name="groupBoxChatbot_2">
      <property name="geometry">
       <rect>
-       <x>730</x>
-       <y>114</y>
-       <width>381</width>
-       <height>400</height>
+       <x>690</x>
+       <y>90</y>
+       <width>640</width>
+       <height>360</height>
       </rect>
      </property>
      <property name="title">
@@ -183,10 +223,10 @@
     <widget class="QGroupBox" name="groupBoxFormulaire_2">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>74</y>
-       <width>711</width>
-       <height>391</height>
+       <x>20</x>
+       <y>80</y>
+       <width>640</width>
+       <height>300</height>
       </rect>
      </property>
      <property name="title">

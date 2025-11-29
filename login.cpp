@@ -49,10 +49,19 @@ void Login::createUsersTableIfNotExists()
     Connection& c = Connection::createInstance();
     QSqlDatabase& db = c.getDatabase();
     
+    // Tenter de se connecter si la base n'est pas ouverte
     if (!db.isOpen()) {
-        qDebug() << "ERREUR: Base de données non connectée pour créer la table UTILISATEUR";
-        QMessageBox::warning(this, "Attention", "La base de données n'est pas connectée. La table UTILISATEUR ne peut pas être créée.");
-        return;
+        qDebug() << "Base de données non connectée. Tentative de connexion...";
+        if (!c.createConnection()) {
+            qDebug() << "ERREUR: Impossible de se connecter à la base de données";
+            QMessageBox::warning(this, "Attention", 
+                "La base de données n'est pas connectée. La table UTILISATEUR ne peut pas être créée.\n\n"
+                "Vérifiez que:\n"
+                "- Oracle est installé et démarré\n"
+                "- La source de données ODBC est configurée\n"
+                "- Les identifiants de connexion sont corrects");
+            return;
+        }
     }
     
     qDebug() << "=== CRÉATION/VÉRIFICATION DE LA TABLE UTILISATEUR ===";
@@ -196,30 +205,57 @@ bool Login::authenticateUser(const QString& login, const QString& password, cons
     QString hashedPassword = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Md5).toHex();
     qDebug() << "Mot de passe hashé (MD5):" << hashedPassword;
     
-    // Vérifier les credentials dans la base de données
-    query.prepare("SELECT role FROM UTILISATEUR WHERE login = :login AND password = :password AND role = :role");
+    // ÉTAPE 1: Vérifier si le nom d'utilisateur existe
+    query.prepare("SELECT password, role FROM UTILISATEUR WHERE login = :login");
     query.bindValue(":login", login);
-    query.bindValue(":password", hashedPassword);
-    query.bindValue(":role", role);
     
-    qDebug() << "Exécution de la requête SQL dans la base de données...";
     if (!query.exec()) {
         qDebug() << "ERREUR SQL:" << query.lastError().text();
-        qDebug() << "Code erreur:" << query.lastError().nativeErrorCode();
         QMessageBox::critical(this, "Erreur SQL", QString("Erreur lors de la vérification:\n%1").arg(query.lastError().text()));
         return false;
     }
     
-    if (query.next()) {
-        QString foundRole = query.value(0).toString();
-        qDebug() << "Authentification RÉUSSIE! Rôle trouvé:" << foundRole;
-        qDebug() << "=== FIN AUTHENTIFICATION (SUCCÈS) ===";
-        return true;
+    if (!query.next()) {
+        // Le nom d'utilisateur n'existe pas
+        qDebug() << "Authentification ÉCHOUÉE: Nom d'utilisateur incorrect";
+        QMessageBox::warning(this, "Erreur d'authentification", 
+            QString("❌ <b>Nom d'utilisateur incorrect</b><br><br>"
+                   "Le nom d'utilisateur '<b>%1</b>' n'existe pas dans la base de données.<br><br>"
+                   "Vérifiez l'orthographe et réessayez.").arg(login));
+        return false;
     }
     
-    qDebug() << "Authentification ÉCHOUÉE: Aucun utilisateur trouvé avec ces credentials";
-    qDebug() << "=== FIN AUTHENTIFICATION (ÉCHEC) ===";
-    return false;
+    // Le nom d'utilisateur existe, récupérer le mot de passe et le rôle
+    QString storedPassword = query.value(0).toString();
+    QString storedRole = query.value(1).toString();
+    qDebug() << "Utilisateur trouvé. Rôle stocké:" << storedRole;
+    
+    // ÉTAPE 2: Vérifier le mot de passe
+    if (storedPassword != hashedPassword) {
+        qDebug() << "Authentification ÉCHOUÉE: Mot de passe incorrect";
+        QMessageBox::warning(this, "Erreur d'authentification", 
+            QString("❌ <b>Mot de passe incorrect</b><br><br>"
+                   "Le mot de passe saisi pour l'utilisateur '<b>%1</b>' est incorrect.<br><br>"
+                   "Vérifiez votre mot de passe et réessayez.").arg(login));
+        return false;
+    }
+    
+    // ÉTAPE 3: Vérifier le rôle
+    if (storedRole != role) {
+        qDebug() << "Authentification ÉCHOUÉE: Rôle incorrect";
+        qDebug() << "Rôle saisi:" << role << "Rôle stocké:" << storedRole;
+        QMessageBox::warning(this, "Erreur d'authentification", 
+            QString("❌ <b>Rôle incorrect</b><br><br>"
+                   "Le rôle sélectionné '<b>%1</b>' ne correspond pas à celui de l'utilisateur '<b>%2</b>'.<br><br>"
+                   "Le rôle correct pour cet utilisateur est: <b>%3</b><br><br>"
+                   "Veuillez sélectionner le bon rôle et réessayez.").arg(role, login, storedRole));
+        return false;
+    }
+    
+    // Toutes les vérifications sont passées
+    qDebug() << "Authentification RÉUSSIE! Rôle trouvé:" << storedRole;
+    qDebug() << "=== FIN AUTHENTIFICATION (SUCCÈS) ===";
+    return true;
 }
 
 void Login::on_btnLogin_clicked()
@@ -247,14 +283,14 @@ void Login::on_btnLogin_clicked()
     
     qDebug() << "Tentative d'authentification...";
     
-    // Authentification
+    // Authentification (les messages d'erreur spécifiques sont gérés dans authenticateUser)
     if (authenticateUser(login, password, role)) {
         qDebug() << "Authentification réussie!";
-        QMessageBox::information(this, "Succès", QString("Connexion réussie!\nBienvenue %1 (%2)").arg(login, role));
+        QMessageBox::information(this, "Succès", QString("✅ <b>Connexion réussie!</b><br><br>Bienvenue <b>%1</b> (%2)").arg(login, role));
         emit loginSuccessful(role);
     } else {
         qDebug() << "Authentification échouée!";
-        QMessageBox::critical(this, "Erreur", "Nom d'utilisateur, mot de passe ou rôle incorrect");
+        // Les messages d'erreur spécifiques sont déjà affichés dans authenticateUser
         ui->txtPassword->clear();
         ui->txtPassword->setFocus();
     }

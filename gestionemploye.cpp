@@ -64,6 +64,10 @@ gestionemploye::gestionemploye(QWidget *parent)
     
     // Charger les employés au démarrage
     chargerEmployes();
+
+    if (ui->comboTri) {
+        ui->comboTri->setCurrentIndex(0);
+    }
 }
 
 void gestionemploye::showEvent(QShowEvent *event)
@@ -787,8 +791,11 @@ void gestionemploye::actualiserTableau()
         row++;
     }
     
-    // Ajuster les colonnes
-    ui->tableEmployes_2->resizeColumnsToContents();
+    // Ajuster les colonnes pour occuper toute la largeur disponible
+    if (ui->tableEmployes_2->horizontalHeader()) {
+        ui->tableEmployes_2->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    }
+    appliquerTriDepuisSelection();
 }
 
 bool gestionemploye::creerSequenceEmploye()
@@ -996,6 +1003,11 @@ void gestionemploye::on_tableEmployes_2_itemSelectionChanged()
     }
 }
 
+void gestionemploye::on_comboTri_currentIndexChanged(int)
+{
+    appliquerTriDepuisSelection();
+}
+
 void gestionemploye::remplirFormulaire(int employeeId)
 {
     Connection& conn = Connection::createInstance();
@@ -1040,5 +1052,52 @@ void gestionemploye::remplirFormulaire(int employeeId)
         } else {
             ui->comboStatut_2->setCurrentText(statut);
         }
+    }
+}
+
+void gestionemploye::appliquerTriDepuisSelection()
+{
+    if (!ui->tableEmployes_2 || !ui->comboTri) {
+        return;
+    }
+
+    int colonne = 0;
+    Qt::SortOrder ordre = Qt::AscendingOrder;
+
+    switch (ui->comboTri->currentIndex()) {
+    case 0: // ID croissant
+        colonne = 0;
+        ordre = Qt::AscendingOrder;
+        break;
+    case 1: // ID décroissant
+        colonne = 0;
+        ordre = Qt::DescendingOrder;
+        break;
+    case 2: // Nom A-Z
+        colonne = 1;
+        ordre = Qt::AscendingOrder;
+        break;
+    case 3: // Nom Z-A
+        colonne = 1;
+        ordre = Qt::DescendingOrder;
+        break;
+    case 4: // Prénom A-Z
+        colonne = 2;
+        ordre = Qt::AscendingOrder;
+        break;
+    case 5: // Prénom Z-A
+        colonne = 2;
+        ordre = Qt::DescendingOrder;
+        break;
+    default:
+        colonne = 0;
+        ordre = Qt::AscendingOrder;
+        break;
+    }
+
+    ui->tableEmployes_2->sortItems(colonne, ordre);
+    if (ui->tableEmployes_2->horizontalHeader()) {
+        ui->tableEmployes_2->horizontalHeader()->setSortIndicator(colonne, ordre);
+        ui->tableEmployes_2->horizontalHeader()->setSortIndicatorShown(true);
     }
 }

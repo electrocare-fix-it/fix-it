@@ -30,6 +30,7 @@ private slots:
     void on_btnStatistiques_2_clicked();
     void on_txtRecherche_2_textChanged(const QString& text);
     void on_tableEmployes_2_itemSelectionChanged();
+    void on_comboTri_currentIndexChanged(int index);
     void onEmployeeSelectedFromChatbot(int employeeId);
     void onFilterTableRequested(const QString& filter);
 
@@ -59,6 +60,7 @@ private:
     void actualiserTableau();
     bool creerSequenceEmploye();
     int obtenirProchainIdEmploye();
+    void appliquerTriDepuisSelection();
 };
 
 #endif // GESTIONEMPLOYE_H

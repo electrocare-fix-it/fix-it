@@ -35,7 +35,7 @@ bool Connection::createConnection()
     
     // Méthode 1: Utiliser la source de données ODBC avec utilisateur/mot de passe
     // La source ODBC utilise XE comme TNS Service Name
-    qDebug() << "Tentative 1a: Utilisation de la source de données ODBC 'source_projet2A' avec DSN";
+    qDebug() << "Tentative 1a: Utilisation de la source de données ODBC 'databseqodbc' avec DSN";
     
     if (db.isOpen()) {
         QString oldName = db.connectionName();
@@ -44,7 +44,7 @@ bool Connection::createConnection()
     }
     db = QSqlDatabase::addDatabase("QODBC");
     // Utiliser la source ODBC mais avec utilisateur et mot de passe
-    db.setDatabaseName("DSN=source_projet2A;UID=jacem;PWD=esprit18;");
+    db.setDatabaseName("DSN=databseqodbc;UID=hiba;PWD=0000;");
     
     if (db.open()) {
         qDebug() << "Connexion reussie avec la source de données ODBC (DSN)!";
@@ -53,11 +53,55 @@ bool Connection::createConnection()
         return true;
     } else {
         QSqlError error = db.lastError();
-        qDebug() << "Echec avec source_projet2A (DSN):" << error.text();
+        qDebug() << "Echec avec databseqodbc (DSN):" << error.text();
     }
     
     // Méthode 1b: Utiliser directement le nom de la source de données
-    qDebug() << "Tentative 1b: Utilisation directe de 'source_projet2A'";
+    qDebug() << "Tentative 1b: Utilisation directe de 'databseqodbc'";
+    
+    if (db.isOpen()) {
+        QString oldName = db.connectionName();
+        db.close();
+        QSqlDatabase::removeDatabase(oldName);
+    }
+    db = QSqlDatabase::addDatabase("QODBC");
+    db.setDatabaseName("databseqodbc");
+    db.setUserName("hiba");
+    db.setPassword("0000");
+    
+    if (db.open()) {
+        qDebug() << "Connexion reussie avec la source de données ODBC (direct)!";
+        qDebug() << "Driver utilise:" << db.driverName();
+        qDebug() << "Database name:" << db.databaseName();
+        return true;
+    } else {
+        QSqlError error = db.lastError();
+        qDebug() << "Echec avec databseqodbc (direct):" << error.text();
+    }
+    
+    // Méthode 1c: Essayer aussi avec source_projet2A comme DSN
+    qDebug() << "Tentative 1c: Utilisation de la source de données ODBC 'source_projet2A' avec DSN";
+    
+    if (db.isOpen()) {
+        QString oldName = db.connectionName();
+        db.close();
+        QSqlDatabase::removeDatabase(oldName);
+    }
+    db = QSqlDatabase::addDatabase("QODBC");
+    db.setDatabaseName("DSN=source_projet2A;UID=hiba;PWD=0000;");
+    
+    if (db.open()) {
+        qDebug() << "Connexion reussie avec la source de données ODBC source_projet2A (DSN)!";
+        qDebug() << "Driver utilise:" << db.driverName();
+        qDebug() << "Database name:" << db.databaseName();
+        return true;
+    } else {
+        QSqlError error = db.lastError();
+        qDebug() << "Echec avec source_projet2A (DSN):" << error.text();
+    }
+    
+    // Méthode 1d: Utilisation directe de source_projet2A
+    qDebug() << "Tentative 1d: Utilisation directe de 'source_projet2A'";
     
     if (db.isOpen()) {
         QString oldName = db.connectionName();
@@ -66,11 +110,11 @@ bool Connection::createConnection()
     }
     db = QSqlDatabase::addDatabase("QODBC");
     db.setDatabaseName("source_projet2A");
-    db.setUserName("jacem");
-    db.setPassword("esprit18");
+    db.setUserName("hiba");
+    db.setPassword("0000");
     
     if (db.open()) {
-        qDebug() << "Connexion reussie avec la source de données ODBC (direct)!";
+        qDebug() << "Connexion reussie avec la source de données ODBC source_projet2A (direct)!";
         qDebug() << "Driver utilise:" << db.driverName();
         qDebug() << "Database name:" << db.databaseName();
         return true;
@@ -86,21 +130,21 @@ bool Connection::createConnection()
     QStringList connectionStrings;
     
     // Format 1: Avec host:port/service (format recommandé) - XE est le service name
-    connectionStrings << "Driver={Oracle in XE};Dbq=localhost:1521/XE;Uid=jacem;Pwd=esprit18;";
-    connectionStrings << "Driver={Oracle};Dbq=localhost:1521/XE;Uid=jacem;Pwd=esprit18;";
+    connectionStrings << "Driver={Oracle in XE};Dbq=localhost:1521/XE;Uid=hiba;Pwd=0000;";
+    connectionStrings << "Driver={Oracle};Dbq=localhost:1521/XE;Uid=hiba;Pwd=0000;";
     
     // Format 2: Format TNS avec //host:port/service
-    connectionStrings << "Driver={Oracle in XE};Dbq=//localhost:1521/XE;Uid=jacem;Pwd=esprit18;";
-    connectionStrings << "Driver={Oracle};Dbq=//localhost:1521/XE;Uid=jacem;Pwd=esprit18;";
+    connectionStrings << "Driver={Oracle in XE};Dbq=//localhost:1521/XE;Uid=hiba;Pwd=0000;";
+    connectionStrings << "Driver={Oracle};Dbq=//localhost:1521/XE;Uid=hiba;Pwd=0000;";
     
     // Format 3: SID simple (XE comme SID)
-    connectionStrings << "Driver={Oracle in XE};Dbq=XE;Uid=jacem;Pwd=esprit18;";
-    connectionStrings << "Driver={Oracle};Dbq=XE;Uid=jacem;Pwd=esprit18;";
+    connectionStrings << "Driver={Oracle in XE};Dbq=XE;Uid=hiba;Pwd=0000;";
+    connectionStrings << "Driver={Oracle};Dbq=XE;Uid=hiba;Pwd=0000;";
     
-    // Format 4: Avec fix_it comme service name (au cas où)
-    connectionStrings << "Driver={Oracle in XE};Dbq=localhost:1521/fix_it;Uid=jacem;Pwd=esprit18;";
-    connectionStrings << "Driver={Oracle};Dbq=//localhost:1521/fix_it;Uid=jacem;Pwd=esprit18;";
-    connectionStrings << "Driver={Oracle in XE};Dbq=fix_it;Uid=jacem;Pwd=esprit18;";
+    // Format 4: Avec source_projet2A comme service name (au cas où)
+    connectionStrings << "Driver={Oracle in XE};Dbq=localhost:1521/source_projet2A;Uid=hiba;Pwd=0000;";
+    connectionStrings << "Driver={Oracle};Dbq=//localhost:1521/source_projet2A;Uid=hiba;Pwd=0000;";
+    connectionStrings << "Driver={Oracle in XE};Dbq=source_projet2A;Uid=hiba;Pwd=0000;";
     
     // Essayer avec différents noms de drivers Oracle communs
     QStringList oracleDrivers;

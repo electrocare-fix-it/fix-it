@@ -23,6 +23,35 @@ struct EmployeeResult {
     bool isActive() const { return statut.toUpper().contains("ACTIF"); }
 };
 
+// Structure pour représenter un client
+struct ClientResult {
+    QString cin;
+    QString nom;
+    QString prenom;
+    QString telephone;
+    QString email;
+    QString adresse;
+    QDate dateNaissance;
+
+    QString getFullName() const { return prenom + " " + nom; }
+};
+
+// Structure pour représenter un objet électronique
+struct ObjetResult {
+    QString reference;
+    QString nom;
+    QString marque;
+    QString modele;
+    QString couleur;
+    QString numeroSerie;
+    QString type;
+    QString etat;
+    QString technicien;
+    int prix = 0;
+
+    QString getDisplayName() const { return nom.isEmpty() ? reference : nom; }
+};
+
 // Structure pour représenter une intention détectée
 enum class IntentType {
     SEARCH_INFO,        // Recherche d'information générale
@@ -36,12 +65,38 @@ enum class IntentType {
     UNKNOWN             // Intention non reconnue
 };
 
+enum class EntityType {
+    EMPLOYEE,
+    CLIENT,
+    OBJECT
+};
+
+struct ChatResult {
+    EntityType type = EntityType::EMPLOYEE;
+    EmployeeResult employee;
+    ClientResult client;
+    ObjetResult objet;
+
+    QString displayName() const {
+        switch (type) {
+        case EntityType::EMPLOYEE:
+            return employee.getFullName();
+        case EntityType::CLIENT:
+            return client.getFullName();
+        case EntityType::OBJECT:
+            return objet.getDisplayName();
+        }
+        return {};
+    }
+};
+
 struct ParsedQuery {
-    QString employeeName;      // Nom ou prénom extrait
+    QString searchTerm;        // Terme recherché (nom, référence...)
     IntentType intent;         // Intention détectée
     QString originalQuery;     // Requête originale
+    EntityType entityType;     // Type d'entité ciblé
     bool isAmbiguous;          // Si plusieurs employés trouvés
-    QList<EmployeeResult> candidates; // Employés candidats
+    QList<ChatResult> candidates; // Résultats candidats
 };
 
 QT_BEGIN_NAMESPACE
@@ -75,6 +130,7 @@ private slots:
     void onSendButtonClicked();
     void onClearButtonClicked();
     void onSuggestionClicked(int employeeIndex);
+    void onToggleInputClicked();
 
 private:
     // Interface utilisateur
@@ -82,6 +138,7 @@ private:
     QLineEdit* m_inputField;
     QPushButton* m_sendButton;
     QPushButton* m_clearButton;
+    QPushButton* m_toggleInputButton;
     QVBoxLayout* m_mainLayout;
     QHBoxLayout* m_inputLayout;
     QVBoxLayout* m_suggestionsLayout;
@@ -90,34 +147,45 @@ private:
     // État du chatbot
     ParsedQuery m_currentQuery;
     bool m_waitingForClarification;
-    QList<EmployeeResult> m_pendingCandidates;
+    QList<ChatResult> m_pendingCandidates;
     
+    bool m_inputVisible;
+
     // Traitement de langage naturel
     ParsedQuery parseQuery(const QString& query);
     IntentType detectIntent(const QString& query);
-    QString extractEmployeeName(const QString& query);
+    EntityType detectEntityType(const QString& query) const;
+    QString extractNameFromQuery(const QString& query);
     
     // Recherche dans la base de données
     QList<EmployeeResult> searchEmployees(const QString& name);
     QList<EmployeeResult> searchEmployeesFuzzy(const QString& name);
     EmployeeResult getEmployeeById(int id);
     EmployeeResult getEmployeeByFullName(const QString& nom, const QString& prenom);
+    QList<ClientResult> searchClients(const QString& nameOrCin);
+    QList<ObjetResult> searchObjets(const QString& term);
+    QList<ChatResult> buildChatResults(EntityType type, const QString& term);
     
     // Génération de réponses
     QString generateResponse(const ParsedQuery& parsedQuery);
-    QString generateAmbiguityResponse(const QList<EmployeeResult>& candidates);
+    QString generateAmbiguityResponse(const QList<ChatResult>& candidates);
     QString generateInfoResponse(const EmployeeResult& employee, IntentType intent);
+    QString generateClientInfoResponse(const ClientResult& client, IntentType intent);
+    QString generateObjetInfoResponse(const ObjetResult& objet, IntentType intent);
     QString generateSummaryResponse(const EmployeeResult& employee);
     
     // Utilitaires
-    void showSuggestions(const QList<EmployeeResult>& candidates);
+    void showSuggestions(const QList<ChatResult>& candidates);
     void hideSuggestions();
     QString formatEmployeeInfo(const EmployeeResult& employee, bool detailed = false);
+    QString formatClientInfo(const ClientResult& client, bool detailed = false);
+    QString formatObjetInfo(const ObjetResult& objet, bool detailed = false);
     int calculateAge(const QDate& birthDate);
     
     // Styles
     void setupUI();
     void applyStyles();
+    void updateInputVisibility();
 };
 
 #endif // CHATBOTEMPLOYE_H

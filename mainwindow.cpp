@@ -41,9 +41,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&principale, SIGNAL(openObjects()), this, SLOT(openObjectsPage()));
     connect(&principale, SIGNAL(openClients()), this, SLOT(openClientsPage()));
     connect(&principale, SIGNAL(openEmployes()), this, SLOT(openEmployesPage()));
-    connect(&objets, SIGNAL(homeRequested()), this, SLOT(moveHome()));
-    connect(&clients, SIGNAL(HomeCliked()), this, SLOT(moveHome()));
-    connect(&employes, SIGNAL(homeRequested()), this, SLOT(moveHome()));
+    connect(&objets, SIGNAL(homeRequested()), this, SLOT(showMainMenu()));
+    connect(&clients, SIGNAL(HomeCliked()), this, SLOT(showMainMenu()));
+    connect(&employes, SIGNAL(homeRequested()), this, SLOT(showMainMenu()));
     
     // FORCER l'affichage de la page de login au démarrage
     stackedWidget->setCurrentIndex(0);
@@ -65,6 +65,13 @@ void MainWindow::moveHome()
     
     // Réinitialiser les champs de login
     loginPage.clearFields();
+}
+
+void MainWindow::showMainMenu()
+{
+    // Afficher la page principale (menu avec les 4 boutons)
+    stackedWidget->setCurrentIndex(1);
+    qDebug() << "Retour au menu principal depuis une page de gestion";
 }
 
 void MainWindow::openObjectsPage()
@@ -96,24 +103,27 @@ void MainWindow::onLoginCancelled()
 
 void MainWindow::setupPermissions(const QString& role)
 {
+    // Réinitialiser TOUS les boutons à false avant d'appliquer les nouvelles permissions
+    principale.setButtonAccessible("gestionEmployeButton", false);
+    principale.setButtonAccessible("gestionClientsButton", false);
+    principale.setButtonAccessible("gestionObjectsButton", false);
+    principale.setButtonAccessible("gestionPiecesButton", false);
+    
     // Configurer les permissions selon le rôle
     if (role == "Gérant de l'atelier") {
         // Accès à toutes les gestions
-        principale.setButtonVisible("gestionEmployeButton", true);
-        principale.setButtonVisible("gestionClientsButton", true);
-        principale.setButtonVisible("gestionObjectsButton", true);
-        principale.setButtonVisible("gestionPiecesButton", true);
+        principale.setButtonAccessible("gestionEmployeButton", true);
+        principale.setButtonAccessible("gestionClientsButton", true);
+        principale.setButtonAccessible("gestionObjectsButton", true);
+        principale.setButtonAccessible("gestionPiecesButton", true);
     } else if (role == "Technicien") {
-        // Accès à gestionobjetelectronique, gestionclient, gestionpiecesdetachées
-        principale.setButtonVisible("gestionEmployeButton", false);
-        principale.setButtonVisible("gestionClientsButton", true);
-        principale.setButtonVisible("gestionObjectsButton", true);
-        principale.setButtonVisible("gestionPiecesButton", true);
+        // Accès à gestionobjetelectronique, gestionclient et gestionpiecesdetachées
+        principale.setButtonAccessible("gestionClientsButton", true);
+        principale.setButtonAccessible("gestionObjectsButton", true);
+        principale.setButtonAccessible("gestionPiecesButton", true);
     } else if (role == "Réceptionniste") {
         // Accès à gestionclient et gestionemploye
-        principale.setButtonVisible("gestionEmployeButton", true);
-        principale.setButtonVisible("gestionClientsButton", true);
-        principale.setButtonVisible("gestionObjectsButton", false);
-        principale.setButtonVisible("gestionPiecesButton", false);
+        principale.setButtonAccessible("gestionEmployeButton", true);
+        principale.setButtonAccessible("gestionClientsButton", true);
     }
 }
