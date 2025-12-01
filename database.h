@@ -40,6 +40,7 @@ public:
     bool objetExists(const QString& reference) const;
     int getClientIdByObjetReference(const QString& reference) const;
     int getIdPieceByObjetReference(const QString& reference) const;
+    QString getEtatObjetByReference(const QString& reference, int idClient = -1) const;
     
     struct PieceDetachee {
         int id;

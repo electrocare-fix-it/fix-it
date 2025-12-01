@@ -139,8 +139,14 @@ bool DatabaseManager::insertClient(const Client& client)
     
     QSqlQuery query(db);
     
-    QString insertQuery = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
-                          "VALUES (SEQ_CLIENT.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, TO_DATE(:date_naissance, 'YYYY-MM-DD'))";
+    QString insertQuery;
+    if (client.getDateNaissance().isValid()) {
+        insertQuery = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
+                      "VALUES (SEQ_CLIENT.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, TO_DATE(:date_naissance, 'YYYY-MM-DD'))";
+    } else {
+        insertQuery = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
+                      "VALUES (SEQ_CLIENT.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, NULL)";
+    }
     
     query.prepare(insertQuery);
     
@@ -150,7 +156,10 @@ bool DatabaseManager::insertClient(const Client& client)
     query.bindValue(":telephone", client.getTelephone());
     query.bindValue(":email", client.getEmail());
     query.bindValue(":adresse", client.getAdresse());
-    query.bindValue(":date_naissance", client.getDateNaissance().toString("yyyy-MM-dd"));
+    
+    if (client.getDateNaissance().isValid()) {
+        query.bindValue(":date_naissance", client.getDateNaissance().toString("yyyy-MM-dd"));
+    }
     
     if (!query.exec()) {
         QString seqError = query.lastError().text();
@@ -162,8 +171,14 @@ bool DatabaseManager::insertClient(const Client& client)
             
             qDebug() << "Sequence SEQ_CLIENT non trouvee, essai avec SEQ_CLIENT_ID...";
             
-            QString insertQuery2 = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
-                                  "VALUES (SEQ_CLIENT_ID.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, TO_DATE(:date_naissance, 'YYYY-MM-DD'))";
+            QString insertQuery2;
+            if (client.getDateNaissance().isValid()) {
+                insertQuery2 = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
+                              "VALUES (SEQ_CLIENT_ID.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, TO_DATE(:date_naissance, 'YYYY-MM-DD'))";
+            } else {
+                insertQuery2 = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
+                              "VALUES (SEQ_CLIENT_ID.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, NULL)";
+            }
             
             query.prepare(insertQuery2);
             query.bindValue(":cin", client.getCin());
@@ -172,13 +187,21 @@ bool DatabaseManager::insertClient(const Client& client)
             query.bindValue(":telephone", client.getTelephone());
             query.bindValue(":email", client.getEmail());
             query.bindValue(":adresse", client.getAdresse());
-            query.bindValue(":date_naissance", client.getDateNaissance().toString("yyyy-MM-dd"));
+            if (client.getDateNaissance().isValid()) {
+                query.bindValue(":date_naissance", client.getDateNaissance().toString("yyyy-MM-dd"));
+            }
             
             if (!query.exec()) {
                 qDebug() << "Sequence SEQ_CLIENT_ID non trouvee, essai avec CLIENT_SEQ...";
                 
-                QString insertQuery3 = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
-                                      "VALUES (CLIENT_SEQ.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, TO_DATE(:date_naissance, 'YYYY-MM-DD'))";
+                QString insertQuery3;
+                if (client.getDateNaissance().isValid()) {
+                    insertQuery3 = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
+                                  "VALUES (CLIENT_SEQ.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, TO_DATE(:date_naissance, 'YYYY-MM-DD'))";
+                } else {
+                    insertQuery3 = "INSERT INTO CLIENT (ID_CLIENT, CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE) "
+                                  "VALUES (CLIENT_SEQ.NEXTVAL, :cin, :nom, :prenom, :telephone, :email, :adresse, NULL)";
+                }
                 
                 query.prepare(insertQuery3);
                 query.bindValue(":cin", client.getCin());
@@ -187,7 +210,9 @@ bool DatabaseManager::insertClient(const Client& client)
                 query.bindValue(":telephone", client.getTelephone());
                 query.bindValue(":email", client.getEmail());
                 query.bindValue(":adresse", client.getAdresse());
-                query.bindValue(":date_naissance", client.getDateNaissance().toString("yyyy-MM-dd"));
+                if (client.getDateNaissance().isValid()) {
+                    query.bindValue(":date_naissance", client.getDateNaissance().toString("yyyy-MM-dd"));
+                }
                 
                 if (!query.exec()) {
                     m_lastError = query.lastError().text();
@@ -215,14 +240,28 @@ bool DatabaseManager::updateClient(const Client& client)
     }
     
     QSqlQuery query(db);
-    query.prepare("UPDATE CLIENT SET "
-                  "NOM = :nom, "
-                  "PRENOM = :prenom, "
-                  "TELEPHONE = :telephone, "
-                  "EMAIL = :email, "
-                  "ADRESSE = :adresse, "
-                  "DATE_NAISSANCE = TO_DATE(:date_naissance, 'YYYY-MM-DD') "
-                  "WHERE CIN = :cin");
+    QString updateQuery;
+    if (client.getDateNaissance().isValid()) {
+        updateQuery = "UPDATE CLIENT SET "
+                      "NOM = :nom, "
+                      "PRENOM = :prenom, "
+                      "TELEPHONE = :telephone, "
+                      "EMAIL = :email, "
+                      "ADRESSE = :adresse, "
+                      "DATE_NAISSANCE = TO_DATE(:date_naissance, 'YYYY-MM-DD') "
+                      "WHERE CIN = :cin";
+    } else {
+        updateQuery = "UPDATE CLIENT SET "
+                      "NOM = :nom, "
+                      "PRENOM = :prenom, "
+                      "TELEPHONE = :telephone, "
+                      "EMAIL = :email, "
+                      "ADRESSE = :adresse, "
+                      "DATE_NAISSANCE = NULL "
+                      "WHERE CIN = :cin";
+    }
+    
+    query.prepare(updateQuery);
     
     query.bindValue(":cin", client.getCin());
     query.bindValue(":nom", client.getNom());
@@ -230,7 +269,10 @@ bool DatabaseManager::updateClient(const Client& client)
     query.bindValue(":telephone", client.getTelephone());
     query.bindValue(":email", client.getEmail());
     query.bindValue(":adresse", client.getAdresse());
-    query.bindValue(":date_naissance", client.getDateNaissance().toString("yyyy-MM-dd"));
+    
+    if (client.getDateNaissance().isValid()) {
+        query.bindValue(":date_naissance", client.getDateNaissance().toString("yyyy-MM-dd"));
+    }
     
     if (!query.exec()) {
         m_lastError = query.lastError().text();
@@ -269,7 +311,7 @@ QList<Client> DatabaseManager::getAllClients()
     }
     
     QSqlQuery query(db);
-    query.prepare("SELECT CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE FROM CLIENT ORDER BY NOM, PRENOM");
+    query.prepare("SELECT NVL(CIN, ''), NVL(NOM, ''), NVL(PRENOM, ''), NVL(TELEPHONE, ''), NVL(EMAIL, ''), NVL(ADRESSE, ''), NVL(TO_CHAR(DATE_NAISSANCE, 'DD-MM-YY'), '') FROM CLIENT ORDER BY NOM, PRENOM");
     
     if (!query.exec()) {
         m_lastError = query.lastError().text();
@@ -278,10 +320,39 @@ QList<Client> DatabaseManager::getAllClients()
     
     while (query.next()) {
         QDate dateNaissance;
-        if (query.value(6).typeId() == QMetaType::QDate) {
-            dateNaissance = query.value(6).toDate();
-        } else {
-            dateNaissance = QDate::fromString(query.value(6).toString(), "yyyy-MM-dd");
+        QVariant dateValue = query.value(6);
+        if (!dateValue.isNull() && dateValue.isValid()) {
+            if (dateValue.typeId() == QMetaType::QDate) {
+                dateNaissance = dateValue.toDate();
+            } else {
+                QString dateStr = dateValue.toString().trimmed();
+                if (!dateStr.isEmpty()) {
+                    dateNaissance = QDate::fromString(dateStr, "dd-MM-yyyy");
+                    if (!dateNaissance.isValid()) {
+                        dateNaissance = QDate::fromString(dateStr, "dd/MM/yyyy");
+                    }
+                    if (!dateNaissance.isValid()) {
+                        dateNaissance = QDate::fromString(dateStr, "yyyy-MM-dd");
+                    }
+                    if (!dateNaissance.isValid()) {
+                        QStringList parts = dateStr.split("-");
+                        if (parts.size() == 3) {
+                            bool ok;
+                            int day = parts[0].toInt(&ok);
+                            if (ok) {
+                                int month = parts[1].toInt(&ok);
+                                if (ok) {
+                                    int year = parts[2].toInt(&ok);
+                                    if (ok && year < 100) {
+                                        year += 2000;
+                                        dateNaissance = QDate(year, month, day);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         Client client(
@@ -309,7 +380,7 @@ Client DatabaseManager::getClientByCin(const QString& cin)
     }
     
     QSqlQuery query(db);
-    query.prepare("SELECT CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE FROM CLIENT WHERE CIN = :cin");
+    query.prepare("SELECT CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, NVL(TO_CHAR(DATE_NAISSANCE, 'DD-MM-YY'), '') FROM CLIENT WHERE CIN = :cin");
     query.bindValue(":cin", cin);
     
     if (!query.exec()) {
@@ -319,10 +390,39 @@ Client DatabaseManager::getClientByCin(const QString& cin)
     
     if (query.next()) {
         QDate dateNaissance;
-        if (query.value(6).typeId() == QMetaType::QDate) {
-            dateNaissance = query.value(6).toDate();
-        } else {
-            dateNaissance = QDate::fromString(query.value(6).toString(), "yyyy-MM-dd");
+        QVariant dateValue = query.value(6);
+        if (!dateValue.isNull() && dateValue.isValid()) {
+            if (dateValue.typeId() == QMetaType::QDate) {
+                dateNaissance = dateValue.toDate();
+            } else {
+                QString dateStr = dateValue.toString().trimmed();
+                if (!dateStr.isEmpty()) {
+                    dateNaissance = QDate::fromString(dateStr, "dd-MM-yyyy");
+                    if (!dateNaissance.isValid()) {
+                        dateNaissance = QDate::fromString(dateStr, "dd/MM/yyyy");
+                    }
+                    if (!dateNaissance.isValid()) {
+                        dateNaissance = QDate::fromString(dateStr, "yyyy-MM-dd");
+                    }
+                    if (!dateNaissance.isValid()) {
+                        QStringList parts = dateStr.split("-");
+                        if (parts.size() == 3) {
+                            bool ok;
+                            int day = parts[0].toInt(&ok);
+                            if (ok) {
+                                int month = parts[1].toInt(&ok);
+                                if (ok) {
+                                    int year = parts[2].toInt(&ok);
+                                    if (ok && year < 100) {
+                                        year += 2000;
+                                        dateNaissance = QDate(year, month, day);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         client = Client(
@@ -367,7 +467,7 @@ Client DatabaseManager::getClientById(int idClient) const
     }
     
     QSqlQuery query(db);
-    query.prepare("SELECT CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, DATE_NAISSANCE FROM CLIENT WHERE ID_CLIENT = :idClient");
+    query.prepare("SELECT CIN, NOM, PRENOM, TELEPHONE, EMAIL, ADRESSE, NVL(TO_CHAR(DATE_NAISSANCE, 'DD-MM-YY'), '') FROM CLIENT WHERE ID_CLIENT = :idClient");
     query.bindValue(":idClient", idClient);
     
     if (!query.exec()) {
@@ -376,10 +476,39 @@ Client DatabaseManager::getClientById(int idClient) const
     
     if (query.next()) {
         QDate dateNaissance;
-        if (query.value(6).typeId() == QMetaType::QDate) {
-            dateNaissance = query.value(6).toDate();
-        } else {
-            dateNaissance = QDate::fromString(query.value(6).toString(), "yyyy-MM-dd");
+        QVariant dateValue = query.value(6);
+        if (!dateValue.isNull() && dateValue.isValid()) {
+            if (dateValue.typeId() == QMetaType::QDate) {
+                dateNaissance = dateValue.toDate();
+            } else {
+                QString dateStr = dateValue.toString().trimmed();
+                if (!dateStr.isEmpty()) {
+                    dateNaissance = QDate::fromString(dateStr, "dd-MM-yyyy");
+                    if (!dateNaissance.isValid()) {
+                        dateNaissance = QDate::fromString(dateStr, "dd/MM/yyyy");
+                    }
+                    if (!dateNaissance.isValid()) {
+                        dateNaissance = QDate::fromString(dateStr, "yyyy-MM-dd");
+                    }
+                    if (!dateNaissance.isValid()) {
+                        QStringList parts = dateStr.split("-");
+                        if (parts.size() == 3) {
+                            bool ok;
+                            int day = parts[0].toInt(&ok);
+                            if (ok) {
+                                int month = parts[1].toInt(&ok);
+                                if (ok) {
+                                    int year = parts[2].toInt(&ok);
+                                    if (ok && year < 100) {
+                                        year += 2000;
+                                        dateNaissance = QDate(year, month, day);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         client = Client(
@@ -518,6 +647,68 @@ int DatabaseManager::getIdPieceByObjetReference(const QString& reference) const
     }
     
     return value.toInt();
+}
+
+QString DatabaseManager::getEtatObjetByReference(const QString& reference, int idClient) const
+{
+    QSqlDatabase& db = m_connection.getDatabase();
+    if (!db.isOpen()) {
+        return QString();
+    }
+    
+    if (!tableExists("ETAT_OBJET")) {
+        return QString();
+    }
+    
+    QString tableName = detectTableName();
+    QStringList columns = getTableColumns(tableName);
+    QString upperName = tableName.toUpper();
+    
+    QSqlQuery getIdQuery(db);
+    QString getIdQueryStr;
+    bool isNumeric = false;
+    int refAsInt = reference.toInt(&isNumeric);
+    
+    if (upperName.contains("OBJET_ELECTRONIQUE") && isNumeric) {
+        getIdQueryStr = QString("SELECT ID_OBJET FROM %1 WHERE ID_OBJET = :reference")
+                        .arg(tableName);
+        getIdQuery.prepare(getIdQueryStr);
+        getIdQuery.bindValue(":reference", refAsInt);
+    } else {
+        getIdQueryStr = QString("SELECT ID_OBJET FROM %1 WHERE %2 = :reference")
+                        .arg(tableName).arg(columns[0]);
+        getIdQuery.prepare(getIdQueryStr);
+        getIdQuery.bindValue(":reference", reference);
+    }
+    
+    if (!getIdQuery.exec() || !getIdQuery.next()) {
+        return QString();
+    }
+    
+    int idObjet = getIdQuery.value(0).toInt();
+    if (idObjet <= 0) {
+        return QString();
+    }
+    
+    QSqlQuery query(db);
+    QString selectQuery;
+    
+    if (idClient > 0) {
+        selectQuery = "SELECT ETAT FROM ETAT_OBJET WHERE ID_OBJET = :id_objet AND ID_CLIENT = :id_client ORDER BY DATE_MODIFICATION DESC";
+        query.prepare(selectQuery);
+        query.bindValue(":id_objet", idObjet);
+        query.bindValue(":id_client", idClient);
+    } else {
+        selectQuery = "SELECT ETAT FROM ETAT_OBJET WHERE ID_OBJET = :id_objet ORDER BY DATE_MODIFICATION DESC";
+        query.prepare(selectQuery);
+        query.bindValue(":id_objet", idObjet);
+    }
+    
+    if (!query.exec() || !query.next()) {
+        return QString();
+    }
+    
+    return query.value(0).toString();
 }
 
 bool DatabaseManager::insertObjet(const ObjetElectronique& objet, int idClient, int idPiece)

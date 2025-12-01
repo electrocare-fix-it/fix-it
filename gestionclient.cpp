@@ -1,7 +1,12 @@
 #include "gestionclient.h"
 #include "ui_gestionclient.h"
+#include "statcirclewidget.h"
+#include "agepiechartwidget.h"
 #include <QMessageBox>
+#include <QDate>
+#include <QScrollArea>
 #include <QTableWidgetItem>
+#include <QHeaderView>
 #include <QDate>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
@@ -18,6 +23,16 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QDebug>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QFrame>
+#include <QFont>
+#include <QDateTime>
+#include <QPixmap>
+#include <QBuffer>
+#include <QTime>
 #include "connection.h"
 
 gestionclient::gestionclient(QWidget *parent)
@@ -34,28 +49,57 @@ gestionclient::gestionclient(QWidget *parent)
     }
     
     QString tableStyle = "QTableWidget {"
-                        "background-color: #E3F2FD;"
-                        "alternate-background-color: #BBDEFB;"
-                        "gridline-color: #90CAF9;"
-                        "color: #0D47A1;"
+                        "background-color: #FFFFFF;"
+                        "alternate-background-color: #F5F9FF;"
+                        "gridline-color: #E0E0E0;"
+                        "color: #1A1A1A;"
+                        "border: 2px solid #0D47A1;"
+                        "border-radius: 8px;"
+                        "selection-background-color: #1976D2;"
+                        "selection-color: #FFFFFF;"
+                        "font-size: 11px;"
                         "}"
                         "QTableWidget::item {"
                         "border: none;"
-                        "padding: 5px;"
-                        "color: #0D47A1;"
+                        "border-bottom: 1px solid #E3F2FD;"
+                        "padding: 10px 8px;"
+                        "color: #1A1A1A;"
+                        "}"
+                        "QTableWidget::item:alternate {"
+                        "background-color: #F5F9FF;"
                         "}"
                         "QTableWidget::item:selected {"
-                        "background-color: #64B5F6;"
-                        "color: white;"
+                        "background-color: #1976D2;"
+                        "color: #FFFFFF;"
+                        "font-weight: bold;"
+                        "}"
+                        "QTableWidget::item:hover {"
+                        "background-color: #E3F2FD;"
                         "}"
                         "QHeaderView::section {"
-                        "background-color: transparent;"
-                        "color: #0D47A1;"
+                        "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+                        "stop:0 #0D47A1, stop:1 #1565C0);"
+                        "color: #FFFFFF;"
                         "font-weight: bold;"
-                        "padding: 8px;"
+                        "font-size: 12px;"
+                        "padding: 12px 10px;"
                         "border: none;"
-                        "border-right: 1px solid #90CAF9;"
-                        "border-bottom: 1px solid #90CAF9;"
+                        "border-right: 1px solid #0A3D7A;"
+                        "border-bottom: 2px solid #0A3D7A;"
+                        "text-align: left;"
+                        "}"
+                        "QHeaderView::section:first {"
+                        "border-top-left-radius: 6px;"
+                        "}"
+                        "QHeaderView::section:last {"
+                        "border-top-right-radius: 6px;"
+                        "border-right: none;"
+                        "}"
+                        "QTableCornerButton::section {"
+                        "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+                        "stop:0 #0D47A1, stop:1 #1565C0);"
+                        "border-top-left-radius: 6px;"
+                        "border: none;"
                         "}";
     ui->table_clients->setStyleSheet(tableStyle);
     
@@ -64,12 +108,26 @@ gestionclient::gestionclient(QWidget *parent)
     
     ui->groupBox_listClients->setStyleSheet("QGroupBox { color: #0D47A1; font-weight: bold; } QGroupBox::title { color: #0D47A1; }");
     
+    ui->table_clients->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->table_clients->horizontalHeader()->setStretchLastSection(true);
+    ui->table_clients->setColumnWidth(6, 150);
+    ui->table_clients->setSortingEnabled(true);
+    ui->table_clients->setShowGrid(false);
+    ui->table_clients->setAlternatingRowColors(true);
+    ui->table_clients->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->table_clients->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->table_clients->verticalHeader()->setVisible(false);
+    ui->table_clients->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    
     actualiserTableau();
     
     ui->dateEdit->setDateRange(QDate(1900, 1, 1), QDate::currentDate());
     
     connect(ui->table_clients, &QTableWidget::itemSelectionChanged,
             this, &gestionclient::on_table_clients_itemSelectionChanged);
+    
+    connect(ui->lineEdit_search, &QLineEdit::textChanged,
+            this, &gestionclient::on_searchTextChanged);
     
     remplirComboHistorique();
     connect(ui->comboBox_selectClient, QOverload<int>::of(&QComboBox::currentIndexChanged),
@@ -86,6 +144,107 @@ void gestionclient::on_pushButton_clicked()
     emit HomeCliked();
 }
 
+QPair<QString, QString> gestionclient::getPieceIdAndStateForClient(int idClient) const
+{
+    QPair<QString, QString> result;
+    result.first = "";
+    result.second = "";
+    
+    QSqlDatabase& database = Connection::createInstance().getDatabase();
+    if (!database.isOpen()) {
+        return result;
+    }
+    
+    QSqlQuery query(database);
+    
+    QString pieceQuery = "SELECT * FROM ("
+                        "SELECT DISTINCT u.ID_PIECE "
+                        "FROM OBJET_ELECTRONIQUE o "
+                        "JOIN UTILISER u ON o.ID_OBJET = u.ID_OBJET "
+                        "WHERE o.ID_CLIENT_COURANT = :id_client "
+                        "ORDER BY u.DATE_UTILISATION DESC NULLS LAST"
+                        ") WHERE ROWNUM <= 1";
+    
+    query.prepare(pieceQuery);
+    query.bindValue(":id_client", idClient);
+    
+    if (query.exec() && query.next()) {
+        QVariant pieceValue = query.value(0);
+        if (!pieceValue.isNull() && pieceValue.isValid()) {
+            result.first = pieceValue.toString();
+        }
+    }
+    
+    QString etatQuery = "SELECT * FROM ("
+                       "SELECT e.ETAT "
+                       "FROM ETAT_OBJET e "
+                       "JOIN OBJET_ELECTRONIQUE o ON e.ID_OBJET = o.ID_OBJET "
+                       "WHERE e.ID_CLIENT = :id_client "
+                       "AND o.ID_CLIENT_COURANT = :id_client "
+                       "ORDER BY e.DATE_MODIFICATION DESC"
+                       ") WHERE ROWNUM <= 1";
+    
+    query.prepare(etatQuery);
+    query.bindValue(":id_client", idClient);
+    
+    if (query.exec() && query.next()) {
+        QVariant etatValue = query.value(0);
+        if (!etatValue.isNull() && etatValue.isValid()) {
+            result.second = etatValue.toString();
+        }
+    }
+    
+    if (result.second.isEmpty()) {
+        QString etatFallbackQuery = "SELECT o.ETAT "
+                                   "FROM OBJET_ELECTRONIQUE o "
+                                   "WHERE o.ID_CLIENT_COURANT = :id_client "
+                                   "AND ROWNUM = 1";
+        query.prepare(etatFallbackQuery);
+        query.bindValue(":id_client", idClient);
+        if (query.exec() && query.next()) {
+            QVariant etatValue = query.value(0);
+            if (!etatValue.isNull() && etatValue.isValid()) {
+                result.second = etatValue.toString();
+            }
+        }
+    }
+    
+    if (result.first.isEmpty()) {
+        result.first = "N/A";
+    }
+    if (result.second.isEmpty()) {
+        result.second = "N/A";
+    }
+    
+    return result;
+}
+
+QString gestionclient::getIdObjetForClient(int idClient) const
+{
+    QSqlDatabase& database = Connection::createInstance().getDatabase();
+    if (!database.isOpen()) {
+        return "N/A";
+    }
+    
+    QSqlQuery query(database);
+    QString idObjetQuery = "SELECT ID_OBJET "
+                          "FROM OBJET_ELECTRONIQUE "
+                          "WHERE ID_CLIENT_COURANT = :id_client "
+                          "AND ROWNUM = 1";
+    
+    query.prepare(idObjetQuery);
+    query.bindValue(":id_client", idClient);
+    
+    if (query.exec() && query.next()) {
+        QVariant idObjetValue = query.value(0);
+        if (!idObjetValue.isNull() && idObjetValue.isValid()) {
+            return idObjetValue.toString();
+        }
+    }
+    
+    return "N/A";
+}
+
 void gestionclient::actualiserTableau()
 {
     DatabaseManager& db = DatabaseManager::getInstance();
@@ -96,14 +255,32 @@ void gestionclient::actualiserTableau()
     for (int i = 0; i < clients.size(); ++i) {
         const Client& client = clients[i];
         
-        ui->table_clients->setItem(i, 0, new QTableWidgetItem(client.getCin()));
-        ui->table_clients->setItem(i, 1, new QTableWidgetItem(client.getNom()));
-        ui->table_clients->setItem(i, 2, new QTableWidgetItem(client.getPrenom()));
-        ui->table_clients->setItem(i, 3, new QTableWidgetItem(client.getTelephone()));
-        ui->table_clients->setItem(i, 4, new QTableWidgetItem(client.getEmail()));
-        ui->table_clients->setItem(i, 5, new QTableWidgetItem(client.getAdresse()));
-        ui->table_clients->setItem(i, 6, new QTableWidgetItem(client.getDateNaissance().toString("dd/MM/yyyy")));
+        ui->table_clients->setItem(i, 0, new QTableWidgetItem(client.getCin().isEmpty() ? "N/A" : client.getCin()));
+        ui->table_clients->setItem(i, 1, new QTableWidgetItem(client.getNom().isEmpty() ? "N/A" : client.getNom()));
+        ui->table_clients->setItem(i, 2, new QTableWidgetItem(client.getPrenom().isEmpty() ? "N/A" : client.getPrenom()));
+        ui->table_clients->setItem(i, 3, new QTableWidgetItem(client.getTelephone().isEmpty() ? "N/A" : client.getTelephone()));
+        ui->table_clients->setItem(i, 4, new QTableWidgetItem(client.getEmail().isEmpty() ? "N/A" : client.getEmail()));
+        ui->table_clients->setItem(i, 5, new QTableWidgetItem(client.getAdresse().isEmpty() ? "N/A" : client.getAdresse()));
+        
+        QString dateStr;
+        if (client.getDateNaissance().isValid()) {
+            dateStr = client.getDateNaissance().toString("dd/MM/yyyy");
+        } else {
+            dateStr = "Non renseignée";
+        }
+        ui->table_clients->setItem(i, 6, new QTableWidgetItem(dateStr));
+        
+        int idClient = db.getClientIdByCin(client.getCin());
+        QPair<QString, QString> pieceInfo = getPieceIdAndStateForClient(idClient);
+        ui->table_clients->setItem(i, 7, new QTableWidgetItem(pieceInfo.first));
+        
+        QString idObjet = getIdObjetForClient(idClient);
+        ui->table_clients->setItem(i, 8, new QTableWidgetItem(idObjet));
     }
+    
+    ui->table_clients->resizeColumnsToContents();
+    ui->table_clients->setColumnWidth(6, 150);
+    ui->table_clients->sortItems(1, Qt::AscendingOrder);
 }
 
 void gestionclient::viderFormulaire()
@@ -603,26 +780,70 @@ void gestionclient::on_table_clients_itemSelectionChanged()
     }
 }
 
-void gestionclient::on_btn_search_clicked()
+QString gestionclient::normalizeString(const QString& str) const
 {
-    QString searchText = ui->lineEdit_search->text().trimmed().toLower();
+    QString normalized = str.normalized(QString::NormalizationForm_KD);
+    QString result;
+    for (QChar c : normalized) {
+        if (c.category() != QChar::Mark_NonSpacing) {
+            result.append(c.toLower());
+        }
+    }
+    return result;
+}
+
+void gestionclient::on_searchTextChanged(const QString& text)
+{
+    QString searchText = text.trimmed();
     
     if (searchText.isEmpty()) {
         actualiserTableau();
         return;
     }
     
+    performSearch(searchText);
+}
+
+void gestionclient::on_btn_search_clicked()
+{
+    QString searchText = ui->lineEdit_search->text().trimmed();
+    performSearch(searchText);
+}
+
+void gestionclient::performSearch(const QString& searchText)
+{
+    if (searchText.isEmpty()) {
+        actualiserTableau();
+        return;
+    }
+    
+    QString normalizedSearch = normalizeString(searchText);
+    
     DatabaseManager& db = DatabaseManager::getInstance();
     QList<Client> allClients = db.getAllClients();
     
     QList<Client> filteredClients;
     for (const Client& client : allClients) {
-        if (client.getNom().toLower().contains(searchText) ||
-            client.getPrenom().toLower().contains(searchText) ||
-            client.getCin().toLower().contains(searchText) ||
-            client.getTelephone().contains(searchText) ||
-            client.getEmail().toLower().contains(searchText) ||
-            client.getAdresse().toLower().contains(searchText)) {
+        bool matches = false;
+        
+        if (normalizeString(client.getNom()).contains(normalizedSearch) ||
+            normalizeString(client.getPrenom()).contains(normalizedSearch) ||
+            normalizeString(client.getCin()).contains(normalizedSearch) ||
+            normalizeString(client.getTelephone()).contains(normalizedSearch) ||
+            normalizeString(client.getEmail()).contains(normalizedSearch) ||
+            normalizeString(client.getAdresse()).contains(normalizedSearch)) {
+            matches = true;
+        }
+        
+        if (!matches && client.getDateNaissance().isValid()) {
+            QString dateStr = client.getDateNaissance().toString("dd/MM/yyyy");
+            QString dateStrAlt = client.getDateNaissance().toString("dd-MM-yyyy");
+            if (dateStr.contains(searchText) || dateStrAlt.contains(searchText)) {
+                matches = true;
+            }
+        }
+        
+        if (matches) {
             filteredClients.append(client);
         }
     }
@@ -630,13 +851,35 @@ void gestionclient::on_btn_search_clicked()
     ui->table_clients->setRowCount(filteredClients.size());
     for (int i = 0; i < filteredClients.size(); ++i) {
         const Client& client = filteredClients[i];
-        ui->table_clients->setItem(i, 0, new QTableWidgetItem(client.getCin()));
-        ui->table_clients->setItem(i, 1, new QTableWidgetItem(client.getNom()));
-        ui->table_clients->setItem(i, 2, new QTableWidgetItem(client.getPrenom()));
-        ui->table_clients->setItem(i, 3, new QTableWidgetItem(client.getTelephone()));
-        ui->table_clients->setItem(i, 4, new QTableWidgetItem(client.getEmail()));
-        ui->table_clients->setItem(i, 5, new QTableWidgetItem(client.getAdresse()));
-        ui->table_clients->setItem(i, 6, new QTableWidgetItem(client.getDateNaissance().toString("dd/MM/yyyy")));
+        ui->table_clients->setItem(i, 0, new QTableWidgetItem(client.getCin().isEmpty() ? "N/A" : client.getCin()));
+        ui->table_clients->setItem(i, 1, new QTableWidgetItem(client.getNom().isEmpty() ? "N/A" : client.getNom()));
+        ui->table_clients->setItem(i, 2, new QTableWidgetItem(client.getPrenom().isEmpty() ? "N/A" : client.getPrenom()));
+        ui->table_clients->setItem(i, 3, new QTableWidgetItem(client.getTelephone().isEmpty() ? "N/A" : client.getTelephone()));
+        ui->table_clients->setItem(i, 4, new QTableWidgetItem(client.getEmail().isEmpty() ? "N/A" : client.getEmail()));
+        ui->table_clients->setItem(i, 5, new QTableWidgetItem(client.getAdresse().isEmpty() ? "N/A" : client.getAdresse()));
+        
+        QString dateStr;
+        if (client.getDateNaissance().isValid()) {
+            dateStr = client.getDateNaissance().toString("dd/MM/yyyy");
+        } else {
+            dateStr = "Non renseignée";
+        }
+        ui->table_clients->setItem(i, 6, new QTableWidgetItem(dateStr));
+        
+        DatabaseManager& db = DatabaseManager::getInstance();
+        int idClient = db.getClientIdByCin(client.getCin());
+        QPair<QString, QString> pieceInfo = getPieceIdAndStateForClient(idClient);
+        ui->table_clients->setItem(i, 7, new QTableWidgetItem(pieceInfo.first));
+        
+        QString idObjet = getIdObjetForClient(idClient);
+        ui->table_clients->setItem(i, 8, new QTableWidgetItem(idObjet));
+    }
+    
+    ui->table_clients->resizeColumnsToContents();
+    ui->table_clients->setColumnWidth(6, 150);
+    
+    if (filteredClients.size() > 0) {
+        ui->table_clients->sortItems(1, Qt::AscendingOrder);
     }
 }
 
@@ -660,32 +903,78 @@ void gestionclient::exporterPDF()
     printer.setOutputFormat(QPrinter::PdfFormat);
     printer.setOutputFileName(fileName);
     printer.setPageSize(QPageSize::A4);
-    printer.setPageMargins(QMarginsF(20, 20, 20, 20), QPageLayout::Millimeter);
+    printer.setPageMargins(QMarginsF(15, 15, 15, 15), QPageLayout::Millimeter);
+    
+    QPixmap logoPixmap(":/res/equipe.png");
+    if (logoPixmap.isNull()) {
+        logoPixmap = QPixmap("equipe.png");
+    }
     
     QTextDocument document;
-    QString html = "<html><head><meta charset='UTF-8'></head><body>";
-    html += "<h1 style='text-align: center; color: #2C5F75;'>Liste des Clients</h1>";
-    html += "<p style='text-align: right;'>Date: " + QDate::currentDate().toString("dd/MM/yyyy") + "</p>";
-    html += "<table border='1' cellpadding='5' cellspacing='0' style='width: 100%; border-collapse: collapse;'>";
-    html += "<tr style='background-color: #90C9A8;'>";
-    html += "<th>CIN</th><th>Nom</th><th>Prénom</th><th>Téléphone</th><th>Email</th><th>Adresse</th><th>Date de Naissance</th>";
-    html += "</tr>";
+    QString html = "<html><head><meta charset='UTF-8'>";
+    html += "<style>";
+    html += "body { font-family: 'Arial', 'Helvetica', sans-serif; margin: 0; padding: 25px; background-color: #F8F9FA; }";
+    html += ".header { text-align: center; margin-bottom: 30px; padding: 20px; background-color: #FFFFFF; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }";
+    html += ".logo { max-width: 150px; max-height: 80px; margin-bottom: 15px; }";
+    html += "h1 { color: #0D47A1; font-size: 26px; margin: 10px 0; font-weight: bold; letter-spacing: 1px; }";
+    html += ".info { color: #616161; font-size: 12px; margin: 5px 0; }";
+    html += ".table-wrapper { background-color: #FFFFFF; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 20px; }";
+    html += "table { width: 100%; border-collapse: collapse; margin: 0; font-size: 10px; }";
+    html += "th { background-color: #0D47A1; color: #FFFFFF; padding: 14px 12px; text-align: left; font-weight: bold; font-size: 11px; border: 1px solid #0A3D7A; }";
+    html += "td { padding: 12px 12px; border: 1px solid #E0E0E0; background-color: #FFFFFF; color: #212121; font-size: 10px; }";
+    html += "tr:nth-child(even) td { background-color: #F5F9FF; }";
+    html += "tr:hover td { background-color: #E3F2FD; }";
+    html += ".footer { margin-top: 30px; padding: 20px; background-color: #FFFFFF; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }";
+    html += ".total { font-weight: bold; color: #0D47A1; font-size: 14px; margin-bottom: 8px; }";
+    html += ".footer-text { color: #616161; font-size: 11px; }";
+    html += "</style></head><body>";
+    
+    html += "<div class='header'>";
+    if (!logoPixmap.isNull()) {
+        QByteArray byteArray;
+        QBuffer buffer(&byteArray);
+        buffer.open(QIODevice::WriteOnly);
+        logoPixmap.save(&buffer, "PNG");
+        QString base64Logo = QString::fromLatin1(byteArray.toBase64().data());
+        html += "<img src='data:image/png;base64," + base64Logo + "' class='logo' alt='Logo' />";
+    }
+    html += "<h1>📋 LISTE DES CLIENTS</h1>";
+    html += "<div class='info'>Date d'exportation: " + QDate::currentDate().toString("dd/MM/yyyy") + "</div>";
+    html += "<div class='info'>Heure: " + QTime::currentTime().toString("HH:mm:ss") + "</div>";
+    html += "</div>";
+    
+    html += "<div class='table-wrapper'>";
+    html += "<table>";
+    html += "<thead><tr>";
+    html += "<th>CIN</th><th>Nom</th><th>Prénom</th><th>Téléphone</th><th>Email</th>";
+    html += "<th>Adresse</th><th>Date de Naissance</th><th>Réf Pièce</th><th>ID Objet</th>";
+    html += "</tr></thead><tbody>";
     
     for (int row = 0; row < ui->table_clients->rowCount(); ++row) {
         html += "<tr>";
         for (int col = 0; col < ui->table_clients->columnCount(); ++col) {
             QTableWidgetItem* item = ui->table_clients->item(row, col);
-            QString text = item ? item->text() : "";
+            QString text = item ? item->text() : "N/A";
+            if (text.isEmpty()) {
+                text = "N/A";
+            }
             html += "<td>" + text.toHtmlEscaped() + "</td>";
         }
         html += "</tr>";
     }
     
-    html += "</table>";
-    html += "<p style='margin-top: 20px;'>Total: " + QString::number(ui->table_clients->rowCount()) + " client(s)</p>";
+    html += "</tbody></table>";
+    html += "</div>";
+    
+    html += "<div class='footer'>";
+    html += "<div class='total'>Total: " + QString::number(ui->table_clients->rowCount()) + " client(s)</div>";
+    html += "<div class='footer-text'>Système de Gestion - Document généré automatiquement</div>";
+    html += "</div>";
+    
     html += "</body></html>";
     
     document.setHtml(html);
+    document.setPageSize(printer.pageRect(QPrinter::Point).size());
     document.print(&printer);
     
     afficherMessageSucces("Succès", "Le fichier PDF a été exporté avec succès:\n" + fileName);
@@ -702,35 +991,158 @@ void gestionclient::afficherStatistiques()
     QList<Client> clients = db.getAllClients();
     
     int totalClients = clients.size();
-    int avecEmail = 0;
-    int avecTelephone = 0;
+    QDate currentDate = QDate::currentDate();
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+    
+    QMap<QString, int> ageGroups;
+    ageGroups["Moins de 20 ans"] = 0;
+    ageGroups["20-30 ans"] = 0;
+    ageGroups["31-40 ans"] = 0;
+    ageGroups["41-50 ans"] = 0;
+    ageGroups["51-60 ans"] = 0;
+    ageGroups["Plus de 60 ans"] = 0;
+    ageGroups["Âge non renseigné"] = 0;
     
     for (const Client& client : clients) {
-        if (!client.getEmail().isEmpty()) avecEmail++;
-        if (!client.getTelephone().isEmpty()) avecTelephone++;
+        if (client.getDateNaissance().isValid()) {
+            int age = currentDate.year() - client.getDateNaissance().year();
+            int monthDiff = currentDate.month() - client.getDateNaissance().month();
+            int dayDiff = currentDate.day() - client.getDateNaissance().day();
+            
+            if (monthDiff < 0 || (monthDiff == 0 && dayDiff < 0)) {
+                age--;
+            }
+            
+            if (age < 20) {
+                ageGroups["Moins de 20 ans"]++;
+            } else if (age >= 20 && age <= 30) {
+                ageGroups["20-30 ans"]++;
+            } else if (age >= 31 && age <= 40) {
+                ageGroups["31-40 ans"]++;
+            } else if (age >= 41 && age <= 50) {
+                ageGroups["41-50 ans"]++;
+            } else if (age >= 51 && age <= 60) {
+                ageGroups["51-60 ans"]++;
+            } else {
+                ageGroups["Plus de 60 ans"]++;
+            }
+        } else {
+            ageGroups["Âge non renseigné"]++;
+        }
     }
     
-    QString stats = QString(
-        "<div style='color: #1a237e;'>"
-        "📊 <b style='color: #1a237e;'>STATISTIQUES DES CLIENTS</b><br><br>"
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━<br><br>"
-        "👥 <b style='color: #1a237e;'>Total des clients:</b> <span style='color: #1a237e;'>%1</span><br><br>"
-        "📧 <b style='color: #1a237e;'>Clients avec email:</b> <span style='color: #1a237e;'>%2 (%3%)</span><br>"
-        "📱 <b style='color: #1a237e;'>Clients avec téléphone:</b> <span style='color: #1a237e;'>%4 (%5%)</span><br><br>"
-        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        "</div>"
-    )
-    .arg(totalClients)
-    .arg(avecEmail)
-    .arg(totalClients > 0 ? QString::number((avecEmail * 100.0) / totalClients, 'f', 1) : "0")
-    .arg(avecTelephone)
-    .arg(totalClients > 0 ? QString::number((avecTelephone * 100.0) / totalClients, 'f', 1) : "0");
+    QDialog* dialog = new QDialog(this);
+    dialog->setWindowTitle("Statistiques des Clients par Âge");
+    dialog->setMinimumSize(1000, 700);
+    dialog->setStyleSheet(
+        "QDialog {"
+        "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+        "stop:0 #E3F2FD, stop:1 #BBDEFB);"
+        "}"
+    );
     
-    QMessageBox msgBox(this);
-    msgBox.setWindowTitle("Statistiques");
-    msgBox.setText(stats);
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.exec();
+    QVBoxLayout* mainLayout = new QVBoxLayout(dialog);
+    mainLayout->setSpacing(25);
+    mainLayout->setContentsMargins(40, 40, 40, 40);
+    
+    QHBoxLayout* headerLayout = new QHBoxLayout();
+    
+    QLabel* titleLabel = new QLabel("📊 Répartition des Clients par Tranche d'Âge", dialog);
+    titleLabel->setStyleSheet(
+        "QLabel {"
+        "font-size: 28px;"
+        "font-weight: bold;"
+        "color: #0D47A1;"
+        "padding: 15px 0px;"
+        "background-color: rgba(255, 255, 255, 0.7);"
+        "border-radius: 10px;"
+        "}"
+    );
+    titleLabel->setAlignment(Qt::AlignCenter);
+    headerLayout->addWidget(titleLabel);
+    
+    QLabel* updateLabel = new QLabel(dialog);
+    QString updateText = QString("🕒 Mise à jour: %1")
+                        .arg(currentDateTime.toString("dd/MM/yyyy HH:mm:ss"));
+    updateLabel->setText(updateText);
+    updateLabel->setStyleSheet(
+        "QLabel {"
+        "font-size: 11px;"
+        "color: #424242;"
+        "font-weight: 500;"
+        "padding: 8px 12px;"
+        "background-color: rgba(255, 255, 255, 0.9);"
+        "border-radius: 8px;"
+        "border: 1px solid #BBDEFB;"
+        "}"
+    );
+    updateLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    headerLayout->addWidget(updateLabel);
+    
+    mainLayout->addLayout(headerLayout);
+    
+    QFrame* chartContainer = new QFrame(dialog);
+    chartContainer->setStyleSheet(
+        "QFrame {"
+        "background-color: white;"
+        "border: 3px solid #1976D2;"
+        "border-radius: 15px;"
+        "padding: 20px;"
+        "}"
+    );
+    
+    QVBoxLayout* containerLayout = new QVBoxLayout(chartContainer);
+    containerLayout->setContentsMargins(10, 10, 10, 10);
+    
+    QLabel* subtitleLabel = new QLabel("Distribution des clients selon leur âge", chartContainer);
+    subtitleLabel->setStyleSheet(
+        "QLabel {"
+        "font-size: 16px;"
+        "font-weight: 600;"
+        "color: #424242;"
+        "padding: 10px;"
+        "}"
+    );
+    subtitleLabel->setAlignment(Qt::AlignCenter);
+    containerLayout->addWidget(subtitleLabel);
+    
+    AgePieChartWidget* pieChart = new AgePieChartWidget(ageGroups, totalClients, chartContainer);
+    containerLayout->addWidget(pieChart);
+    
+    mainLayout->addWidget(chartContainer);
+    mainLayout->addStretch();
+    
+    QPushButton* closeBtn = new QPushButton("Fermer", dialog);
+    closeBtn->setStyleSheet(
+        "QPushButton {"
+        "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+        "stop:0 #1976D2, stop:1 #0D47A1);"
+        "color: white;"
+        "font-size: 16px;"
+        "font-weight: bold;"
+        "padding: 12px 50px;"
+        "border-radius: 8px;"
+        "min-width: 150px;"
+        "}"
+        "QPushButton:hover {"
+        "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+        "stop:0 #2196F3, stop:1 #1565C0);"
+        "}"
+        "QPushButton:pressed {"
+        "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+        "stop:0 #1565C0, stop:1 #0A3D7A);"
+        "}"
+    );
+    connect(closeBtn, &QPushButton::clicked, dialog, &QDialog::accept);
+    
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    buttonLayout->addStretch();
+    buttonLayout->addWidget(closeBtn);
+    buttonLayout->addStretch();
+    mainLayout->addLayout(buttonLayout);
+    
+    dialog->exec();
+    delete dialog;
 }
 
 void gestionclient::on_btn_notifier_clicked()
@@ -757,8 +1169,50 @@ void gestionclient::envoyerNotificationEmail(const Client& client, const QString
         return;
     }
     
+    DatabaseManager& db = DatabaseManager::getInstance();
+    int idClient = db.getClientIdByCin(client.getCin());
+    
+    QString objetsInfo = "";
+    if (idClient > 0) {
+        QSqlDatabase& database = Connection::createInstance().getDatabase();
+        if (database.isOpen()) {
+            QSqlQuery query(database);
+            QString objetsQuery = "SELECT o.ID_OBJET, o.NOM_OBJET, o.MARQUE, o.MODELE, "
+                                 "NVL(e.ETAT, o.ETAT) AS ETAT_OBJET "
+                                 "FROM OBJET_ELECTRONIQUE o "
+                                 "LEFT JOIN ETAT_OBJET e ON o.ID_OBJET = e.ID_OBJET AND e.ID_CLIENT = :id_client "
+                                 "WHERE o.ID_CLIENT_COURANT = :id_client "
+                                 "ORDER BY o.ID_OBJET";
+            query.prepare(objetsQuery);
+            query.bindValue(":id_client", idClient);
+            
+            if (query.exec()) {
+                int count = 0;
+                while (query.next() && count < 10) {
+                    QString refObjet = query.value(0).toString();
+                    QString nomObjet = query.value(1).toString();
+                    QString marque = query.value(2).toString();
+                    QString modele = query.value(3).toString();
+                    QString etat = query.value(4).toString();
+                    if (etat.isEmpty()) {
+                        etat = "Non défini";
+                    }
+                    
+                    objetsInfo += QString("- Réf: %1 - État: %2\n")
+                                 .arg(refObjet)
+                                 .arg(etat);
+                    count++;
+                }
+            }
+        }
+    }
+    
     QString sujet;
     QString message;
+    
+    QDate dateAjout = QDate::currentDate();
+    QDate dateRappel = dateAjout.addDays(4);
+    QString dateRappelStr = dateRappel.toString("dd/MM/yyyy");
     
     if (typeOperation == "ajout") {
         sujet = "Bienvenue - Inscription confirmée";
@@ -772,9 +1226,6 @@ void gestionclient::envoyerNotificationEmail(const Client& client, const QString
             "- Téléphone: %4\n"
             "- Email: %5\n"
             "- Adresse: %6\n\n"
-            "Merci de votre confiance.\n\n"
-            "Cordialement,\n"
-            "L'équipe de gestion"
         ).arg(client.getNom())
          .arg(client.getPrenom())
          .arg(client.getCin())
@@ -793,9 +1244,6 @@ void gestionclient::envoyerNotificationEmail(const Client& client, const QString
             "- Téléphone: %4\n"
             "- Email: %5\n"
             "- Adresse: %6\n\n"
-            "Si vous n'avez pas effectué cette modification, veuillez nous contacter immédiatement.\n\n"
-            "Cordialement,\n"
-            "L'équipe de gestion"
         ).arg(client.getNom())
          .arg(client.getPrenom())
          .arg(client.getCin())
@@ -814,8 +1262,6 @@ void gestionclient::envoyerNotificationEmail(const Client& client, const QString
             "- Téléphone: %4\n"
             "- Email: %5\n"
             "- Adresse: %6\n\n"
-            "Cordialement,\n"
-            "L'équipe de gestion"
         ).arg(client.getNom())
          .arg(client.getPrenom())
          .arg(client.getCin())
@@ -823,6 +1269,24 @@ void gestionclient::envoyerNotificationEmail(const Client& client, const QString
          .arg(client.getEmail())
          .arg(client.getAdresse());
     }
+    
+    if (!objetsInfo.isEmpty()) {
+        message += "État de vos objets:\n";
+        message += objetsInfo;
+        message += "\n";
+    }
+    
+    if (typeOperation == "ajout") {
+        message += QString("Nous vous rappelons que vous pouvez nous contacter le %1 pour toute question concernant vos objets.\n\n")
+                   .arg(dateRappelStr);
+        message += "Merci de votre confiance.\n\n";
+    } else if (typeOperation == "modification") {
+        message += "Si vous n'avez pas effectué cette modification, veuillez nous contacter immédiatement.\n\n";
+    }
+    
+    message += "Pour toute assistance, contactez-nous au: 29839200\n\n";
+    message += "Cordialement,\n";
+    message += "L'équipe de gestion";
     
     QUrl mailtoUrl;
     mailtoUrl.setScheme("mailto");
@@ -921,13 +1385,17 @@ void gestionclient::afficherHistorique(const QString& cin)
             
             if (query.exec() && query.next() && query.value(0).toInt() > 0) {
                 hasHistory = true;
-                historique += QString("📦 HISTORIQUE DES OBJETS:\n");
-                historique += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+                if (!historique.contains("📦 HISTORIQUE DES OBJETS:")) {
+                    historique += QString("📦 HISTORIQUE DES OBJETS:\n");
+                    historique += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+                }
                 
                 if (tableName == "POSSEDER") {
-                    QString histQuery = "SELECT o.NOM_OBJET, o.MARQUE, p.DATE_DEBUT, p.DATE_FIN "
+                    QString histQuery = "SELECT o.ID_OBJET, o.NOM_OBJET, o.MARQUE, p.DATE_DEBUT, p.DATE_FIN, "
+                                       "NVL(e.ETAT, o.ETAT) AS ETAT_OBJET "
                                        "FROM POSSEDER p "
                                        "JOIN OBJET_ELECTRONIQUE o ON p.ID_OBJET = o.ID_OBJET "
+                                       "LEFT JOIN ETAT_OBJET e ON o.ID_OBJET = e.ID_OBJET AND p.ID_CLIENT = e.ID_CLIENT "
                                        "WHERE p.ID_CLIENT = (SELECT ID_CLIENT FROM CLIENT WHERE CIN = :cin) "
                                        "ORDER BY p.DATE_DEBUT DESC";
                     query.prepare(histQuery);
@@ -936,11 +1404,18 @@ void gestionclient::afficherHistorique(const QString& cin)
                     if (query.exec()) {
                         int count = 0;
                         while (query.next() && count < 10) {
-                            historique += QString("• %1 - %2 (Du %3 au %4)\n")
-                                         .arg(query.value(0).toString())
+                            QString refObjet = query.value(0).toString();
+                            QString etatObjet = query.value(5).toString();
+                            if (etatObjet.isEmpty()) {
+                                etatObjet = "Non défini";
+                            }
+                            historique += QString("• %1 - %2 (Réf: %3, Du %4 au %5) - État: %6\n")
                                          .arg(query.value(1).toString())
-                                         .arg(query.value(2).toDate().toString("dd/MM/yyyy"))
-                                         .arg(query.value(3).toDate().toString("dd/MM/yyyy"));
+                                         .arg(query.value(2).toString())
+                                         .arg(refObjet)
+                                         .arg(query.value(3).toDate().toString("dd/MM/yyyy"))
+                                         .arg(query.value(4).toDate().toString("dd/MM/yyyy"))
+                                         .arg(etatObjet);
                             count++;
                         }
                     }

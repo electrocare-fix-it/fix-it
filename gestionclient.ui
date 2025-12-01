@@ -103,7 +103,7 @@
         </property>
         <property name="styleSheet">
          <string notr="true">background-color: #5DADE2;
-color:balck;</string>
+color: #00008B;</string>
         </property>
         <property name="text">
          <string>🔍 Afficher Historique</string>
@@ -154,6 +154,9 @@ color:balck;</string>
         </item>
         <item>
          <widget class="QLineEdit" name="lineEdit_search">
+          <property name="styleSheet">
+           <string notr="true">color: #00008B;</string>
+          </property>
           <property name="placeholderText">
            <string>Rechercher par nom, CIN, téléphone, email...</string>
           </property>
@@ -168,7 +171,8 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #B0E0E6;</string>
+           <string notr="true">background-color: #B0E0E6;
+color: #00008B;</string>
           </property>
           <property name="text">
            <string>statistiques</string>
@@ -184,7 +188,8 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #87CEEB;</string>
+           <string notr="true">background-color: #87CEEB;
+color: #00008B;</string>
           </property>
           <property name="text">
            <string>Rechercher</string>
@@ -242,6 +247,16 @@ color:balck;</string>
           <string>Date de Naissance</string>
          </property>
         </column>
+        <column>
+         <property name="text">
+          <string>Réf Pièce</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>ID Objet</string>
+         </property>
+        </column>
        </widget>
       </item>
       <item>
@@ -258,7 +273,8 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #B0E0E6;</string>
+           <string notr="true">background-color: #B0E0E6;
+color: #00008B;</string>
           </property>
           <property name="text">
            <string>✏️ Modifier</string>
@@ -274,7 +290,8 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #B0E0E6;</string>
+           <string notr="true">background-color: #B0E0E6;
+color: #00008B;</string>
           </property>
           <property name="text">
            <string>🗑️ Supprimer</string>
@@ -290,7 +307,8 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #5DADE2;</string>
+           <string notr="true">background-color: #5DADE2;
+color: #00008B;</string>
           </property>
           <property name="text">
            <string>📄 Exportation PDF</string>
@@ -306,7 +324,8 @@ color:balck;</string>
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: #87CEEB;</string>
+           <string notr="true">background-color: #87CEEB;
+color: #00008B;</string>
           </property>
           <property name="text">
            <string>📧 Notifier</string>
@@ -465,7 +484,7 @@ color: #4682B4;</string>
         </property>
         <property name="styleSheet">
          <string notr="true">background-color: #87CEEB;
-color:black;</string>
+color: #00008B;</string>
         </property>
         <property name="text">
          <string>✅ Ajouter le Client</string>

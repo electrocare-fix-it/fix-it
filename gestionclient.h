@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QList>
+#include <QPair>
 #include <QRegularExpressionValidator>
 #include <QIntValidator>
 #include "client.h"
@@ -37,6 +38,8 @@ private:
     bool validerDateNaissance(const QDate& date);
     void afficherMessageErreur(const QString& titre, const QString& message);
     void afficherMessageSucces(const QString& titre, const QString& message);
+    QString normalizeString(const QString& str) const;
+    void performSearch(const QString& searchText);
 
 signals:
     void HomeCliked();
@@ -53,6 +56,7 @@ private slots:
     void on_btn_notifier_clicked();
     void on_btn_showHistory_clicked();
     void on_comboBox_selectClient_currentIndexChanged(int index);
+    void on_searchTextChanged(const QString& text);
     
 private:
     void exporterPDF();
@@ -60,6 +64,8 @@ private:
     void afficherHistorique(const QString& cin);
     void envoyerNotificationEmail(const Client& client, const QString& typeOperation);
     void remplirComboHistorique();
+    QPair<QString, QString> getPieceIdAndStateForClient(int idClient) const;
+    QString getIdObjetForClient(int idClient) const;
 };
 
 #endif // GESTIONCLIENT_H

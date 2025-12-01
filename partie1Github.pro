@@ -21,7 +21,10 @@ SOURCES += \
     connection.cpp \
     login.cpp \
     chatbotemploye.cpp \
-    callmebot.cpp
+    callmebot.cpp \
+    stateindicator.cpp \
+    statcirclewidget.cpp \
+    agepiechartwidget.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -35,7 +38,10 @@ HEADERS += \
     connection.h \
     login.h \
     chatbotemploye.h \
-    callmebot.h
+    callmebot.h \
+    stateindicator.h \
+    statcirclewidget.h \
+    agepiechartwidget.h
 
 FORMS += \
     gestionemploye.ui \
