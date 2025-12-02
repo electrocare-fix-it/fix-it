@@ -21,6 +21,7 @@ private slots:
     void on_gestionObjectsButton_clicked();
     void on_gestionClientsButton_clicked();
     void on_gestionEmployeButton_clicked();
+    void on_gestionPiecesButton_clicked();
 
 private:
     Ui::menuprincipale *ui;
@@ -30,6 +31,7 @@ signals:
     void openObjects();
     void openClients();
     void openEmployes();
+    void openPieces();
 };
 
 #endif // MENUPRINCIPALE_H

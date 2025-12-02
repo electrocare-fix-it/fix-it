@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     stackedWidget->insertWidget(2, &objets);
     stackedWidget->insertWidget(3, &clients);
     stackedWidget->insertWidget(4, &employes);
+    stackedWidget->insertWidget(5, &pieces);
     
     qDebug() << "Toutes les pages insérées. Nombre total:" << stackedWidget->count();
     
@@ -41,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&principale, SIGNAL(openObjects()), this, SLOT(openObjectsPage()));
     connect(&principale, SIGNAL(openClients()), this, SLOT(openClientsPage()));
     connect(&principale, SIGNAL(openEmployes()), this, SLOT(openEmployesPage()));
+    connect(&principale, SIGNAL(openPieces()), this, SLOT(openPiecesPage()));
     connect(&objets, SIGNAL(homeRequested()), this, SLOT(showMainMenu()));
     connect(&clients, SIGNAL(HomeCliked()), this, SLOT(showMainMenu()));
     connect(&employes, SIGNAL(homeRequested()), this, SLOT(showMainMenu()));
@@ -87,6 +89,11 @@ void MainWindow::openClientsPage()
 void MainWindow::openEmployesPage()
 {
     stackedWidget->setCurrentIndex(4); // Index 4 car login=0, menu=1, objets=2, clients=3, employes=4
+}
+
+void MainWindow::openPiecesPage()
+{
+    stackedWidget->setCurrentIndex(5); // Index 5 pour gestion des pièces détachées
 }
 
 void MainWindow::onLoginSuccessful(const QString& role)

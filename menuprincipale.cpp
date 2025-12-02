@@ -80,6 +80,11 @@ void menuprincipale::on_gestionEmployeButton_clicked()
     emit openEmployes();
 }
 
+void menuprincipale::on_gestionPiecesButton_clicked()
+{
+    emit openPieces();
+}
+
 
 
 

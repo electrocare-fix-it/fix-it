@@ -8,6 +8,7 @@
 #include "gestionclient.h"
 #include "gestionemploye.h"
 #include "login.h"
+#include "gestionpieces.h"
 
 class MainWindow : public QMainWindow
 {
@@ -23,6 +24,7 @@ private slots:
     void openObjectsPage();
     void openClientsPage();
     void openEmployesPage();
+    void openPiecesPage();
     void onLoginSuccessful(const QString& role);
     void onLoginCancelled();
     void setupPermissions(const QString& role);
@@ -34,6 +36,7 @@ private:
     gestionobjetelectronique objets;
     gestionclient clients;
     gestionemploye employes;
+    gestionpieces pieces;
     QString currentRole;
 };
 

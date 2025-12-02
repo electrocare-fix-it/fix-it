@@ -24,7 +24,9 @@ SOURCES += \
     callmebot.cpp \
     stateindicator.cpp \
     statcirclewidget.cpp \
-    agepiechartwidget.cpp
+    agepiechartwidget.cpp \
+    gestionpieces.cpp
+
 
 HEADERS += \
     mainwindow.h \
@@ -41,14 +43,16 @@ HEADERS += \
     callmebot.h \
     stateindicator.h \
     statcirclewidget.h \
-    agepiechartwidget.h
+    agepiechartwidget.h \
+    gestionpieces.h
 
 FORMS += \
     gestionemploye.ui \
     menuprincipale.ui \
     gestionobjetelectronique.ui \
     gestionclient.ui \
-    login.ui
+    login.ui \
+    gestionpieces.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
