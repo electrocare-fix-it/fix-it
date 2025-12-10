@@ -1,5 +1,7 @@
 #include "gestionpieces.h"
 #include "ui_gestionpieces.h"
+#include "connection.h"
+#include "serialportmanager.h"
 
 #include <QMessageBox>
 #include <QSqlError>
@@ -15,10 +17,14 @@
 #include <QPainter>
 #include <QPageLayout>
 #include <QPageSize>
+#include <QDebug>
+#include <QApplication>
 
 gestionpieces::gestionpieces(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::gestionpieces)
+    , m_serialManager(new SerialPortManager(this))
+    , m_accessGranted(false)
 {
     ui->setupUi(this);
 
@@ -38,6 +44,16 @@ gestionpieces::gestionpieces(QWidget *parent)
     );
 
     initialiserBase();
+    
+    // IMPORTANT: Le système RFID ne dépend PAS de la base de données
+    // Il lit directement les IDs des cartes depuis l'Arduino via le port série
+    qDebug() << "=== INITIALISATION GESTION PIECES ===";
+    qDebug() << "Le système RFID fonctionne INDEPENDAMMENT de la base de données";
+    qDebug() << "Les IDs des cartes sont lus directement depuis l'Arduino";
+    
+    // Configurer l'accès RFID
+    setupRFIDAccess();
+    disableAccess(); // Désactiver par défaut jusqu'à ce qu'une carte autorisée soit scannée
 
     connect(ui->btnAjouter_2, &QPushButton::clicked, this, &gestionpieces::ajouterPiece);
     connect(ui->btnSupprimer_2, &QPushButton::clicked, this, &gestionpieces::supprimerPiece);
@@ -47,6 +63,7 @@ gestionpieces::gestionpieces(QWidget *parent)
     connect(ui->btnTrierPrix, &QPushButton::clicked, this, &gestionpieces::trierPiecesParPrix);
     connect(ui->btnRechercher_2, &QPushButton::clicked, this, &gestionpieces::rechercherPieces);
     connect(ui->btnExportPDF_2, &QPushButton::clicked, this, &gestionpieces::exporterTableauPDF);
+    connect(ui->pushButton, &QPushButton::clicked, this, &gestionpieces::on_pushButton_clicked); // Bouton Home
 
     ui->lblApercuImage->setScaledContents(true);
     ui->lblApercuImage->setMinimumSize(200, 150);
@@ -62,11 +79,17 @@ gestionpieces::~gestionpieces()
 
 void gestionpieces::initialiserBase()
 {
-    db = QSqlDatabase::addDatabase("QOCI", "PIECES_CONN");
-    db.setHostName("localhost");
-    db.setDatabaseName("XE");
-    db.setUserName("jacem");
-    db.setPassword("esprit18");
+    // Utiliser la même connexion que le reste de l'application
+    Connection& conn = Connection::createInstance();
+    if (!conn.getDatabase().isOpen()) {
+        if (!conn.createConnection()) {
+            QMessageBox::critical(this, tr("Erreur de connexion"),
+                                  tr("Impossible de se connecter à la base de données:\n%1")
+                                      .arg(conn.getDatabase().lastError().text()));
+            return;
+        }
+    }
+    db = conn.getDatabase();
 
     if (!db.open()) {
         QMessageBox::critical(this, tr("Erreur de connexion"),
@@ -608,6 +631,350 @@ void gestionpieces::exporterTableauPDF()
     QMessageBox::information(this,
                              tr("Export PDF"),
                              tr("Le tableau a été exporté avec succès en PDF.\n\nChemin : %1").arg(fichier));
+}
+
+void gestionpieces::on_pushButton_clicked()
+{
+    // Émettre le signal pour retourner au menu principal
+    emit homeRequested();
+}
+
+void gestionpieces::setupRFIDAccess()
+{
+    // Connecter les signaux du gestionnaire de port série
+    connect(m_serialManager, &SerialPortManager::accessGranted,
+            this, [this](const QString &employeeName, const QString &status) {
+                qDebug() << "========================================";
+                qDebug() << "*** SIGNAL accessGranted RECU ***";
+                qDebug() << "Employee:" << employeeName;
+                qDebug() << "Status:" << status;
+                qDebug() << "========================================";
+                
+                // Forcer le traitement des événements
+                QApplication::processEvents();
+                
+                m_currentEmployee = employeeName;
+                
+                // ACTIVER L'ACCÈS IMMÉDIATEMENT
+                enableAccess();
+                qDebug() << "Interface activee";
+                
+                // ÉMETTRE LE SIGNAL AVANT D'AFFICHER LE MESSAGE
+                qDebug() << "*** EMISSION DU SIGNAL accessGrantedForMenu (AVANT MESSAGE) ***";
+                emit accessGrantedForMenu();
+                qDebug() << "Signal accessGrantedForMenu emis - Le bouton sera reactive";
+                
+                // Forcer le traitement des événements pour que le signal soit traité
+                QApplication::processEvents();
+                
+                // Message pour Hiba Riahi
+                QString message = "Bienvenue Hiba Riahi tu as l'accès pour l'interface de la gestion pièces détachées.";
+                
+                qDebug() << "Preparation du message:" << message;
+                
+                // Afficher directement avec QMessageBox pour forcer l'affichage
+                QMessageBox *msgBox = new QMessageBox(this);
+                msgBox->setIcon(QMessageBox::Information);
+                msgBox->setWindowTitle("Accès Autorisé");
+                msgBox->setText(message);
+                msgBox->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                msgBox->setModal(true);
+                
+                qDebug() << "Ouverture du QMessageBox...";
+                msgBox->show();
+                msgBox->raise();
+                msgBox->activateWindow();
+                
+                QApplication::processEvents();
+                
+                msgBox->exec();
+                msgBox->deleteLater();
+                
+                qDebug() << "Message affiche et ferme";
+            });
+    
+    connect(m_serialManager, &SerialPortManager::accessDenied,
+            this, [this](const QString &employeeName, const QString &status) {
+                qDebug() << "========================================";
+                qDebug() << "*** SIGNAL accessDenied RECU ***";
+                qDebug() << "Employee:" << employeeName;
+                qDebug() << "Status:" << status;
+                qDebug() << "========================================";
+                
+                // Forcer le traitement des événements
+                QApplication::processEvents();
+                
+                m_currentEmployee = employeeName;
+                
+                // DÉSACTIVER L'ACCÈS IMMÉDIATEMENT
+                disableAccess();
+                qDebug() << "Interface desactivee (grises)";
+                
+                // ÉMETTRE LE SIGNAL AVANT D'AFFICHER LE MESSAGE (IMPORTANT!)
+                qDebug() << "*** EMISSION DU SIGNAL accessDeniedForMenu (AVANT MESSAGE) ***";
+                emit accessDeniedForMenu();
+                qDebug() << "Signal accessDeniedForMenu emis - Le bouton sera desactive";
+                
+                // Forcer le traitement des événements pour que le signal soit traité
+                QApplication::processEvents();
+                
+                // Message spécifique pour Omar Askri
+                QString message;
+                if (employeeName.toUpper() == "OMAR_ASKRI" || employeeName.toUpper().contains("OMAR") || employeeName.toUpper().contains("ASKRI")) {
+                    message = "Accès non autorisé Omar Askri tu n'as pas l'accès pour la gestion pièces détachées.";
+                } else {
+                    message = "Accès non autorisé. Tu n'as pas l'accès pour la gestion pièces détachées.";
+                }
+                
+                qDebug() << "Preparation du message:" << message;
+                
+                // Afficher directement avec QMessageBox pour forcer l'affichage
+                QMessageBox *msgBox = new QMessageBox(this);
+                msgBox->setIcon(QMessageBox::Warning);
+                msgBox->setWindowTitle("Accès Refusé");
+                msgBox->setText(message);
+                msgBox->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+                msgBox->setModal(true);
+                
+                qDebug() << "Ouverture du QMessageBox...";
+                msgBox->show();
+                msgBox->raise();
+                msgBox->activateWindow();
+                
+                QApplication::processEvents();
+                
+                msgBox->exec();
+                msgBox->deleteLater();
+                
+                qDebug() << "Message affiche et ferme";
+            });
+    
+    connect(m_serialManager, &SerialPortManager::errorOccurred,
+            this, [this](const QString &error) {
+                QMessageBox::warning(this, "Erreur RFID", 
+                    QString("Erreur de communication avec l'Arduino:\n%1\n\nL'accès sera désactivé par défaut.").arg(error));
+                disableAccess();
+            });
+    
+    // Tenter de se connecter à l'Arduino (essaiera automatiquement tous les ports)
+    QStringList ports = m_serialManager->getAvailablePorts();
+    qDebug() << "=== TEST CONNEXION ARDUINO RFID ===";
+    qDebug() << "Ports série disponibles:" << ports;
+    
+    if (ports.isEmpty()) {
+        qDebug() << "ERREUR: Aucun port série disponible pour l'Arduino";
+        QMessageBox::information(this, "Arduino non détecté", 
+            "Aucun port série n'a été détecté.\n\n"
+            "Vérifiez que:\n"
+            "1. L'Arduino est connecté via USB\n"
+            "2. Les pilotes USB sont installés\n"
+            "3. Le port COM est visible dans le Gestionnaire de périphériques");
+        disableAccess();
+    } else {
+        // Essayer de se connecter (essaiera automatiquement tous les ports disponibles)
+        qDebug() << "Tentative de connexion (essaiera tous les ports disponibles)...";
+        qDebug() << "NOTE: Le système RFID ne dépend PAS de la base de données";
+        qDebug() << "Les IDs des cartes sont lus directement depuis l'Arduino";
+        
+        if (m_serialManager->connectToArduino(QString(), 9600)) { // Port vide = essaie tous les ports
+            qDebug() << "✓✓✓ SUCCÈS: Connecté à l'Arduino sur le port:" << m_serialManager->getCurrentPort();
+            qDebug() << "En attente de scan de carte RFID...";
+            qDebug() << "=== CONNEXION RFID ACTIVE ===";
+            qDebug() << "Le signal readyRead devrait se declencher quand une carte est scannee";
+            
+            // Vérifier que la connexion est vraiment active
+            if (m_serialManager->isConnected()) {
+                qDebug() << "✓ Connexion verifiee: ACTIVE";
+                
+                // Afficher un message de confirmation de connexion
+                QMessageBox::information(this, "Connexion RFID", 
+                    QString("Connexion à l'Arduino établie sur le port %1.\n\n"
+                           "Scannez votre carte RFID pour accéder à l'interface.\n\n"
+                           "Carte Hiba Riahi (8B 8C ED 00) → Accès autorisé\n"
+                           "Carte Omar Askri (03 D1 10 2D) → Accès refusé")
+                    .arg(m_serialManager->getCurrentPort()));
+            } else {
+                qDebug() << "!!! ATTENTION: Connexion verifiee: INACTIVE !!!";
+            }
+        } else {
+            qDebug() << "ERREUR: Impossible de se connecter à l'Arduino après avoir essayé tous les ports";
+            QMessageBox::warning(this, "Erreur de Connexion", 
+                "Impossible de se connecter à l'Arduino.\n\n"
+                "Vérifiez que:\n"
+                "1. L'Arduino est branché via USB\n"
+                "2. Le code Arduino est téléversé\n"
+                "3. Aucun autre programme n'utilise le port série\n"
+                "4. Le Moniteur Série Arduino est fermé");
+            disableAccess();
+        }
+    }
+}
+
+void gestionpieces::enableAccess()
+{
+    qDebug() << "=== enableAccess APPELE ===";
+    m_accessGranted = true;
+    
+    // Activer tous les widgets de l'interface (boutons CRUD)
+    ui->btnAjouter_2->setEnabled(true);
+    ui->btnSupprimer_2->setEnabled(true);
+    ui->btnNouveau_2->setEnabled(true);
+    ui->btnChargerImage->setEnabled(true);
+    ui->btnTrierPrix->setEnabled(true);
+    ui->btnRechercher_2->setEnabled(true);
+    ui->btnExportPDF_2->setEnabled(true);
+    
+    // Activer les champs de saisie
+    ui->txtReference_2->setEnabled(true);
+    ui->txtNom_2->setEnabled(true);
+    ui->cmbCategorie_2->setEnabled(true);
+    ui->spinQuantite_2->setEnabled(true);
+    ui->spinPrix_2->setEnabled(true);
+    ui->txtFournisseur_2->setEnabled(true);
+    ui->dateEntree_2->setEnabled(true);
+    ui->dateSortie_2->setEnabled(true);
+    ui->tablePieces_2->setEnabled(true);
+    
+    // SUPPRIMER TOUS LES STYLES GRIS - Réinitialiser les styles à vide pour utiliser les styles par défaut
+    // Cela permettra aux styles du constructeur (setStyleSheet global) de s'appliquer
+    ui->btnAjouter_2->setStyleSheet("");
+    ui->btnSupprimer_2->setStyleSheet("");
+    ui->btnNouveau_2->setStyleSheet("");
+    ui->btnChargerImage->setStyleSheet("");
+    ui->btnTrierPrix->setStyleSheet("");
+    ui->btnRechercher_2->setStyleSheet("");
+    ui->btnExportPDF_2->setStyleSheet("");
+    
+    // Réinitialiser les styles des champs de saisie
+    ui->txtReference_2->setStyleSheet("");
+    ui->txtNom_2->setStyleSheet("");
+    ui->cmbCategorie_2->setStyleSheet("");
+    ui->spinQuantite_2->setStyleSheet("");
+    ui->spinPrix_2->setStyleSheet("");
+    ui->txtFournisseur_2->setStyleSheet("");
+    ui->dateEntree_2->setStyleSheet("");
+    ui->dateSortie_2->setStyleSheet("");
+    ui->tablePieces_2->setStyleSheet("");
+    
+    // Réappliquer le style global pour restaurer l'apparence normale
+    // Les widgets hériteront du style du parent (gestionpieces)
+    this->setStyleSheet(
+        "QWidget#gestionpieces { background-color: #E0F6FF; }"
+        "QLabel { color: #0D47A1; }"
+        "QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QDateEdit {"
+        "  color: #0D47A1;"
+        "  background-color: white;"
+        "}"
+        "QTableWidget {"
+        "  color: #0D47A1;"
+        "  gridline-color: #90CAF9;"
+        "}"
+    );
+    
+    // Forcer la mise à jour visuelle de tous les widgets
+    ui->btnAjouter_2->update();
+    ui->btnSupprimer_2->update();
+    ui->btnNouveau_2->update();
+    ui->btnChargerImage->update();
+    ui->btnTrierPrix->update();
+    ui->btnRechercher_2->update();
+    ui->btnExportPDF_2->update();
+    
+    ui->txtReference_2->update();
+    ui->txtNom_2->update();
+    ui->cmbCategorie_2->update();
+    ui->spinQuantite_2->update();
+    ui->spinPrix_2->update();
+    ui->txtFournisseur_2->update();
+    ui->dateEntree_2->update();
+    ui->dateSortie_2->update();
+    ui->tablePieces_2->update();
+    
+    // Forcer la mise à jour visuelle globale
+    QApplication::processEvents();
+    this->repaint();
+    
+    qDebug() << "Tous les widgets sont maintenant ACTIVES - Styles gris supprimes - Interface restauree a l'etat initial";
+}
+
+void gestionpieces::disableAccess()
+{
+    qDebug() << "=== disableAccess APPELE ===";
+    m_accessGranted = false;
+    
+    // Désactiver tous les widgets de l'interface
+    ui->btnAjouter_2->setEnabled(false);
+    ui->btnSupprimer_2->setEnabled(false);
+    ui->btnNouveau_2->setEnabled(false);
+    ui->btnChargerImage->setEnabled(false);
+    ui->btnTrierPrix->setEnabled(false);
+    ui->btnRechercher_2->setEnabled(false);
+    ui->btnExportPDF_2->setEnabled(false);
+    
+    // Désactiver les champs de saisie
+    ui->txtReference_2->setEnabled(false);
+    ui->txtNom_2->setEnabled(false);
+    ui->cmbCategorie_2->setEnabled(false);
+    ui->spinQuantite_2->setEnabled(false);
+    ui->spinPrix_2->setEnabled(false);
+    ui->txtFournisseur_2->setEnabled(false);
+    ui->dateEntree_2->setEnabled(false);
+    ui->dateSortie_2->setEnabled(false);
+    ui->tablePieces_2->setEnabled(false);
+    
+    // Appliquer un style gris pour rendre visuellement l'interface désactivée
+    QString disabledStyle = 
+        "QPushButton { background-color: #dfe3e8; color: #8a8f99; border: 2px dashed #b5bcc5; border-radius: 15px; padding: 12px; }"
+        "QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QDateEdit { background-color: #f0f0f0; color: #8a8f99; }"
+        "QTableWidget { background-color: #f0f0f0; color: #8a8f99; }";
+    
+    // Appliquer le style aux widgets principaux
+    ui->btnAjouter_2->setStyleSheet(disabledStyle);
+    ui->btnSupprimer_2->setStyleSheet(disabledStyle);
+    ui->btnNouveau_2->setStyleSheet(disabledStyle);
+    
+    // Forcer la mise à jour visuelle
+    QApplication::processEvents();
+    
+    qDebug() << "Tous les widgets sont maintenant DESACTIVES (grises)";
+}
+
+void gestionpieces::showAccessMessage(const QString &message, bool isGranted)
+{
+    qDebug() << "=== showAccessMessage APPELE ===";
+    qDebug() << "Message:" << message;
+    qDebug() << "isGranted:" << isGranted;
+    
+    // Forcer le traitement des événements avant d'afficher
+    QApplication::processEvents();
+    
+    // Créer le message box
+    QMessageBox *msgBox = new QMessageBox(this);
+    msgBox->setText(message);
+    msgBox->setIcon(isGranted ? QMessageBox::Information : QMessageBox::Warning);
+    msgBox->setWindowTitle(isGranted ? "Accès Autorisé" : "Accès Refusé");
+    
+    // Forcer la fenêtre au premier plan et visible
+    msgBox->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
+    msgBox->setModal(true);
+    
+    // S'assurer que la fenêtre est visible
+    msgBox->show();
+    msgBox->raise();
+    msgBox->activateWindow();
+    
+    qDebug() << "Ouverture du QMessageBox...";
+    
+    // Forcer l'affichage
+    QApplication::processEvents();
+    
+    // Afficher le message
+    msgBox->exec();
+    
+    // Nettoyer
+    msgBox->deleteLater();
+    
+    qDebug() << "QMessageBox ferme";
 }
 
 

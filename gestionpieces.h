@@ -10,6 +10,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class gestionpieces; }
 QT_END_NAMESPACE
 
+class SerialPortManager;
+
 class gestionpieces : public QWidget
 {
     Q_OBJECT
@@ -17,6 +19,10 @@ class gestionpieces : public QWidget
 public:
     explicit gestionpieces(QWidget *parent = nullptr);
     ~gestionpieces();
+    
+    // Méthodes publiques pour activer/désactiver l'accès depuis MainWindow
+    void enableAccess();
+    void disableAccess();
 
 private slots:
     void ajouterPiece();
@@ -30,9 +36,17 @@ private slots:
     void trierPiecesParPrix();
     void rechercherPieces();
     void exporterTableauPDF();
+    void on_pushButton_clicked(); // Bouton Home
+
+signals:
+    void homeRequested(); // Signal pour retourner au menu principal
+    void accessDeniedForMenu(); // Signal pour désactiver le bouton dans le menu principal
+    void accessGrantedForMenu(); // Signal pour réactiver le bouton dans le menu principal
 
 private:
     void initialiserBase();
+    void setupRFIDAccess();
+    void showAccessMessage(const QString &message, bool isGranted);
 
     Ui::gestionpieces *ui;
     QSqlDatabase db;
@@ -42,6 +56,10 @@ private:
     QString texteRechercheCourant;
     QString categorieFiltreCourante;
     QString ordreTriCourant;
+    
+    SerialPortManager *m_serialManager;
+    bool m_accessGranted;
+    QString m_currentEmployee;
 };
 
 #endif // GESTIONPIECES_H

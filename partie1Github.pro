@@ -26,7 +26,8 @@ SOURCES += \
     statcirclewidget.cpp \
     agepiechartwidget.cpp \
     gestionpieces.cpp \
-    arduinoserial.cpp
+    arduinoserial.cpp \
+    serialportmanager.cpp
 
 
 HEADERS += \
@@ -46,7 +47,8 @@ HEADERS += \
     statcirclewidget.h \
     agepiechartwidget.h \
     gestionpieces.h \
-    arduinoserial.h
+    arduinoserial.h \
+    serialportmanager.h
 
 FORMS += \
     gestionemploye.ui \

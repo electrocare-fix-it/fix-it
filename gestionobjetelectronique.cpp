@@ -168,13 +168,9 @@ gestionobjetelectronique::gestionobjetelectronique(QWidget *parent)
         }
     });
     
-    if (m_arduinoSerial->connectToArduino()) {
-        QString portName = m_arduinoSerial->getPortName();
-        qDebug() << "Arduino connecte avec succes sur" << portName;
-    } else {
-        QStringList ports = m_arduinoSerial->getAvailablePorts();
-        qDebug() << "Impossible de connecter Arduino. Ports disponibles:" << ports;
-    }
+    // MODIFICATION: Ne pas se connecter automatiquement pour éviter le conflit avec gestionpieces
+    // La connexion se fera seulement quand nécessaire (lazy connection)
+    qDebug() << "ArduinoSerial initialise mais pas encore connecte (connexion paresseuse)";
     
     DatabaseManager& db = DatabaseManager::getInstance();
     if (!db.connect()) {
@@ -1595,6 +1591,18 @@ void gestionobjetelectronique::on_tableWidget_cellChanged(int row, int column)
 
 void gestionobjetelectronique::traiterCinArduino(const QString& cin)
 {
+    // Connexion paresseuse : se connecter seulement si pas déjà connecté
+    if (m_arduinoSerial && !m_arduinoSerial->isConnected()) {
+        qDebug() << "Connexion automatique a l'Arduino pour lire le CIN...";
+        if (m_arduinoSerial->connectToArduino()) {
+            QString portName = m_arduinoSerial->getPortName();
+            qDebug() << "Arduino connecte avec succes sur" << portName;
+        } else {
+            qDebug() << "Impossible de connecter Arduino pour lire le CIN";
+            return;
+        }
+    }
+    
     qDebug() << "=== traiterCinArduino - CIN recu:" << cin;
     
     DatabaseManager& db = DatabaseManager::getInstance();

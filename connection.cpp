@@ -41,9 +41,9 @@ bool Connection::createConnection()
     //   FIXIT_DB_HOST, FIXIT_DB_PORT, FIXIT_DB_SERVICE, FIXIT_DB_USER, FIXIT_DB_PASSWORD
     const QString host     = envOrDefault("FIXIT_DB_HOST", "localhost");
     const int     port     = qEnvironmentVariableIntValue("FIXIT_DB_PORT", nullptr) == 0 ? 1521 : qEnvironmentVariableIntValue("FIXIT_DB_PORT", nullptr);
-    const QString service  = envOrDefault("FIXIT_DB_SERVICE", "XE");
-    const QString user     = envOrDefault("FIXIT_DB_USER", "jacem");
-    const QString password = envOrDefault("FIXIT_DB_PASSWORD", "esprit18");
+    const QString service  = envOrDefault("FIXIT_DB_SERVICE", "source_projet2A");
+    const QString user     = envOrDefault("FIXIT_DB_USER", "hiba");
+    const QString password = envOrDefault("FIXIT_DB_PASSWORD", "0000");
 
     qDebug() << "Paramètres Oracle:" << "host" << host << "service" << service << "user" << user;
 

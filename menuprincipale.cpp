@@ -1,6 +1,8 @@
 #include "menuprincipale.h"
 #include "ui_menuprincipale.h"
 #include <QPushButton>
+#include <QDebug>
+#include <QApplication>
 
 menuprincipale::menuprincipale(QWidget *parent)
     : QWidget(parent)
@@ -13,8 +15,11 @@ void menuprincipale::setButtonAccessible(const QString& buttonName, bool enabled
 {
     QPushButton* button = this->findChild<QPushButton*>(buttonName);
     if (!button) {
+        qDebug() << "ERREUR: Bouton" << buttonName << "non trouve dans menuprincipale";
         return;
     }
+
+    qDebug() << "setButtonAccessible:" << buttonName << "->" << (enabled ? "ACTIVE" : "DESACTIVE");
 
     button->setVisible(true);
     button->setEnabled(enabled);
@@ -53,6 +58,13 @@ void menuprincipale::setButtonAccessible(const QString& buttonName, bool enabled
             "}"
         );
     }
+    
+    // Forcer la mise à jour visuelle
+    button->update();
+    button->repaint();
+    QApplication::processEvents();
+    
+    qDebug() << "Bouton" << buttonName << "mis a jour - Enabled:" << button->isEnabled() << "Visible:" << button->isVisible();
 }
 
 menuprincipale::~menuprincipale()
@@ -82,6 +94,13 @@ void menuprincipale::on_gestionEmployeButton_clicked()
 
 void menuprincipale::on_gestionPiecesButton_clicked()
 {
+    // Vérifier si le bouton est activé avant d'émettre le signal
+    QPushButton* button = this->findChild<QPushButton*>("gestionPiecesButton");
+    if (button && !button->isEnabled()) {
+        qDebug() << "Tentative de clic sur le bouton Gestion Pieces Detachees - BOUTON DESACTIVE, IGNORE";
+        return; // Ne pas émettre le signal si le bouton est désactivé
+    }
+    
     emit openPieces();
 }
 
